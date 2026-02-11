@@ -7,12 +7,15 @@ Default arguments assume the use of the NanoAOD format but any ROOT TTree can be
 These instructions use python3 and CMSSW. The instructions below have been tested on el8 and el9, both lxplus and lpc.
 
 ```
+source /cvmfs/cms.cern.ch/cmsset_default.sh # this should go in your ~/.bashrc or ~/.bash_profile so it's done automatically when you log in
+mkdir nobackup/BBto2b4tau
+cd nobackup/BBto2b4tau/
 cmsrel CMSSW_13_2_10
 cd CMSSW_13_2_10
 cmsenv
 cd ..
 python3 -m virtualenv timber-env #If this step fails, you might need to do `python3 -m pip install --user virtualenv`
-git clone git@github.com:JHU-Tools/TIMBER.git
+git clone git@github.com:jmhogan/TIMBER.git # this requires an "SSH key" for cmslpc-el9. If you don't have it, use the https:// clone method
 cd TIMBER/
 mkdir bin
 cd bin
@@ -52,12 +55,24 @@ cd TIMBER
 source setup.sh
 ```
 
-After installation, each new shell only requires `cmsenv` and `source timber-env/bin/activate`
-
-
 Tip: Add the lines below to the top of `timber-env/bin/activate` script. With this, one can skip doing `cmsenv` every time after opening a new shell and just activate the environment instead.
 ```
 cd CMSSW_13_2_10
 cmsenv
 cd ..
 ```
+
+## Everyday run setup
+
+You only need to do the installation and compile instructions once. To get back into your TIMBER environment for editing and running our code: 
+
+```
+voms-proxy-init --voms cms --valid 168:00 # will be valid for a week, only need to run when the proxy's time is up
+cd nobackup/BBto2b4tau/
+source timber-env/bin/activate
+cd TIMBER/
+python3 BBTo2b4tau.py condor/NanoList/Bprime_M1000_2023NanoList.txt 0 0 2023 # args: file list, first file number, last file number, year
+```
+
+Many text files live in the `condor/NanoList` folder, for signal, data, and background simulations. Any will work to test the script interactively.
+
