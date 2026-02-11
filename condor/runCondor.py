@@ -71,15 +71,15 @@ if runanalyzer:
     
     # ------ Making the Tar File ------
     
-    # print ('--- Making tar ---')    
-    # if os.path.exists(tarfile): 
-    #     print ('*********** tar already exists! I ASSUME YOU WANT TO MAKE A NEW ONE! *************')
-    #     os.system('rm '+tarfile)
-    # os.chdir(relbase)
-    # print ('tar --exclude="TIMBER/.git" --exclude="CMSSW*/tmp/" --exclude="vlq-BtoTW-RDF" --exclude="condor*Run3" --exclude="vlq-TTBBto2tb4tau-SLA" --exclude="TIMBER/*.root" --exclude="TIMBER/docs" --exclude="TIMBER/*/*.root" -zcf '+tarfile+' ./*')
-    # os.system('tar --exclude="TIMBER/.git" --exclude="CMSSW*/tmp/" --exclude="vlq-BtoTW-RDF" --exclude="condor*Run3" --exclude="vlq-TTBBto2tb4tau-SLA" --exclude="TIMBER/*.root" --exclude="TIMBER/docs" --exclude="TIMBER/*/*.root" -zcf '+tarfile+' ./*')
-    # os.chdir(runDir)
-    #exit(0)
+    print ('--- Making tar ---')    
+    if os.path.exists(tarfile): 
+        print ('*********** tar already exists! I ASSUME YOU WANT TO MAKE A NEW ONE! *************')
+        os.system('rm '+tarfile)
+    os.chdir(relbase)
+    print ('tar --exclude="TIMBER/.git" --exclude="CMSSW*/tmp/" --exclude="vlq-BtoTW-RDF" --exclude="condor*Run3" --exclude="vlq-TTBBto2tb4tau-SLA" --exclude="TIMBER/*.root" --exclude="TIMBER/docs" --exclude="TIMBER/*/*.root" -zcf '+tarfile+' ./*')
+    os.system('tar --exclude="TIMBER/.git" --exclude="CMSSW*/tmp/" --exclude="vlq-BtoTW-RDF" --exclude="condor*Run3" --exclude="vlq-TTBBto2tb4tau-SLA" --exclude="TIMBER/*.root" --exclude="TIMBER/docs" --exclude="TIMBER/*/*.root" -zcf '+tarfile+' ./*')
+    os.chdir(runDir)
+    #exit(0) #stop after the tar
 
     count = 0
 

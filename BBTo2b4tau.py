@@ -14,7 +14,6 @@
 #        print(f'RETURN: {code.co_name}({code.co_filename}:{code.co_firstlineno})')
 #    return trace_calls
 
-
 from TIMBER.Analyzer import *
 from TIMBER.Tools.Common import *
 
@@ -798,7 +797,6 @@ def analyze(jesvar):
   rframeVars.Add('VLQ_BBbar_DeltaPhiDecayVisible', 'VLQ[14]')
   rframeVars.Add('VLQ_BBbar_DeltaPhiBoostVisible', 'VLQ[15]')
   rframeVars.Add('VLQ_BBbar_VisibleShape', 'VLQ[16]')
-
 
   # # -------------------------------------
 
