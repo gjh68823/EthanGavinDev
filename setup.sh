@@ -28,6 +28,14 @@ if [ ! -d "bin/libarchive" ]; then
   rm -rf libarchive
 fi
 
+if [ ! -f bin/restframes/lib/librestframes.so ]
+then
+  echo "Building RestFrames"
+  cd bin/restframes/
+  make
+  cd ../../
+fi
+
 # Build libtimber if not present
 if [ ! -d "bin/libtimber" ]; then
   make
