@@ -467,11 +467,11 @@ RVec<double> Bprime_RestFrames_Container_new::return_doubles(int thread_index, R
     if (lepton_charge[i] < 0) {
       if (neg_leptons[0] == -1) neg_leptons[0] = i;
       else if (neg_leptons[1] == -1) neg_leptons[1] = i;
-      else std::cout << "More than 2 negative leptons" << std::endl;
+      //else std::cout << "More than 2 negative leptons" << std::endl;
     } else {
       if (pos_leptons[0] == -1) pos_leptons[0] = i;
       else if (pos_leptons[1] == -1) pos_leptons[1] = i;
-      else std::cout << "More than 2 positive leptons" << std::endl;
+      //else std::cout << "More than 2 positive leptons" << std::endl;
     }
   }
   
