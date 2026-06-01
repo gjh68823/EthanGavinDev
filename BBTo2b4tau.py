@@ -4,6 +4,7 @@ import ROOT
 from ROOT import TFile
 import sys, os
 import gc
+from rates import to_cpp_vec2d, pnet_loose
 
 gc.disable()
 
@@ -220,6 +221,9 @@ def analyze(jesvar):
   string METyr = \""""+METyr[year]+"""\";
   string METsimpleyr = \""""+METsimpleyr[year]+"""\";
   string btagname = \""""+btagname[year]+"""\";
+
+  std::vector<int> btagptbins = {15,20,30,50,70,100,150,200,300,400,500,600,800,1000,1200,1500};
+  std::vector<std::vector<float>> btageffs = """ + to_cpp_vec2d(pnet_loose[year]) + """;
   """)
 
   # *************** muonisocorr does not match the muon definition !!!!! (change to mediumPFIso hopefully) *****************
@@ -432,7 +436,7 @@ def analyze(jesvar):
     lepSFs.Add('muonisoSF', 'muisofunc(muonisocorr, Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_ID)')
     lepSFs.Add('tauidVSeSF', 'tauefunc(tauidVSecorr, Good4Lepton_eta, Good4Lepton_TauDM, Good4Lepton_TauMch, Good4Lepton_ID)')
     lepSFs.Add('tauidVSmuSF', 'taumufunc(tauidVSmucorr, Good4Lepton_eta, Good4Lepton_TauMch, Good4Lepton_ID)')
-    lepSFs.Add('tauidVSjetSF', 'taujetfunc(tauidVSjetcorr, Good4Lepton_pt, Good4Lepton_TauDM, Good4Lepton_TauMch, Good4Lepton_ID)') 
+    lepSFs.Add('tauidVSjetSF', 'taujetfunc(tauidVSjetcorr, Good4Lepton_pt, Good4Lepton_TauDM, Good4Lepton_TauMch, Good4Lepton_ID)')
 
   # -------------------------- TRIGGERS -------------------------------
   TrigVars = VarGroup('Triggers Vars')
@@ -462,10 +466,15 @@ def analyze(jesvar):
   TrigVars.Add('isSingleEleTrig', '(HLT_Ele30_WPTight_Gsf == 1) && (NEle30 >= 1)') # in Egamma dataset
   TrigVars.Add('isSingleTauTrig', '(HLT_LooseDeepTauPFTauHPS180_L2NN_eta2p1 == 1) && (NTauLooseTrig >= 1)') # in tau dataset
   
-  TrigVars.Add('passesMuPD', '(isMuMuTrig == 1 || isSingleMuTrig == 1 || isMuTauTrig == 1) && (isMC == 1 || dataset == 1)')
-  TrigVars.Add('passesMuEGPD', '(isMuElTrig == 1) && (isMC == 1 || dataset == 2)')
-  TrigVars.Add('passesEGPD', '(isElElTrig == 1 || isSingleEleTrig == 1 || isElTauTrig == 1) && (isMC == 1 || dataset == 3)')
-  TrigVars.Add('passesTauPD', '(isTauTauTrig == 1 || isSingleTauTrig == 1) && (isMC == 1 || dataset == 4)')
+  TrigVars.Add('SortMuPD','isMuMuTrig == 1 || isSingleMuTrig == 1 || isMuTauTrig == 1')
+  TrigVars.Add('SortMuEGPD','SortMuPD == 0 && isMuElTrig == 1')
+  TrigVars.Add('SortEGPD','SortMuPD == 0 && SortMuEGPD == 0 && (isElElTrig == 1 || isSingleEleTrig == 1 || isElTauTrig == 1)')
+  TrigVars.Add('SortTauPD','SortMuPD == 0 && SortMuEGPD == 0 && SortEGPD == 0 && (isTauTauTrig == 1 || isSingleTauTrig == 1)')
+  
+  TrigVars.Add('passesMuPD', 'SortMuPD && (isMC == 1 || dataset == 1)')
+  TrigVars.Add('passesMuEGPD', 'SortMuEGPD && (isMC == 1 || dataset == 2)')
+  TrigVars.Add('passesEGPD', 'SortEGPD && (isMC == 1 || dataset == 3)')
+  TrigVars.Add('passesTauPD', 'SortTauPD && (isMC == 1 || dataset == 4)')
 
   TrigCuts = CutGroup('Trigger Cuts')
   TrigCuts.Add('Dataset Filter', 'passesMuPD == 1 || passesMuEGPD == 1 || passesEGPD == 1 || passesTauPD == 1') #getting errors?
@@ -531,8 +540,6 @@ def analyze(jesvar):
   jVars.Add("gcJet_mass", "reorder(cleanJet_mass[goodcleanJets == true],gcJet_ptargsort)")
   
   jVars.Add("gcJet_vetomap", "jetvetofunc(jetvetocorr, gcJet_eta, gcJet_phi)")
-  if (isMC):
-      jVars.Add("gcJet_hflav", "reorder(Jet_hadronFlavour[goodcleanJets == true],gcJet_ptargsort)")
  
   jVars.Add("gcJet_PNet", "reorder(Jet_btagPNetB[goodcleanJets == true],gcJet_ptargsort)")
   jVars.Add("gcJet_PNetL", "gcJet_PNet > PNetL") 
@@ -544,6 +551,9 @@ def analyze(jesvar):
   jVars.Add("gcBJet_mass", "gcJet_mass[gcJet_PNetL]")
 
   jVars.Add("gcJet_ht", "Sum(gcJet_pt)")
+  if isMC:
+    jVars.Add("gcJet_hflav", "reorder(Jet_hadronFlavour[goodcleanJets == true],gcJet_ptargsort)")
+    jVars.Add('btagWeights', 'btagshapefunc(year,jesvar,btagwpbccorr,btagwplcorr,btagptbins,btageffs,PNetL,gcJet_pt,gcJet_eta,gcJet_PNet,gcJet_hflav)')
 
   jCuts = CutGroup('JetCuts')  
   jCuts.Add('NgoodcleanJets >= 2', 'NgoodcleanJets >= 2')

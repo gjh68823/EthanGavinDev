@@ -1,5 +1,6 @@
 from TIMBER.Analyzer import *
 from TIMBER.Tools.Common import *
+from rates import *
 import ROOT
 from ROOT import TFile
 import sys, os
@@ -44,13 +45,6 @@ sampleName = filelist[0]
 print(f"Sample Name: {sampleName}")
 
 # Parse the incoming file names to assign labels  
-isSig = ("Bprime" in sampleName)
-isMadgraphBkg = (("QCD" in sampleName) or ("madgraphMLM" in sampleName))
-isTOP = (("Mtt" in sampleName) or ("ST" in sampleName) or ("ttZ" in sampleName) or ("ttW" in sampleName) or ("ttH" in sampleName) or ("TTTo" in sampleName))
-isTT = (("TT_Tune" in sampleName) or ("Mtt" in sampleName) or ("TTTo" in sampleName))
-isVV = (("WW_" in sampleName) or ("WZ_" in sampleName) or ("ZZ_" in sampleName))
-isSM = ("Muon" in sampleName)
-isSE = (("SingleElectron" in sampleName) or ("EGamma" in sampleName))
 isMC = not (("Single" in sampleName) or ("Muon" in sampleName) or ("EGamma" in sampleName) or ("MuonEG" in sampleName) or ("Tau/" in sampleName))
 dataset = int(-1)
 if "MuonEG" in sampleName: dataset = 2
@@ -62,41 +56,26 @@ elif "Tau/" in sampleName: dataset = 4
 #'root://cms-xrd-global.cern.ch//store/data/Run2018A/SingleMuon/NANOAOD/UL2018_MiniAODv2_NanoAODv9-v2/2550000/28FF17A8-95EB-FD41-A55B-2EFAF2D6AF91.root' 
 tokens = sampleName.split("/")
 sample = tokens[7] # was 5
-era = ''
-ver = ''
-if not isMC:
-  runera = tokens[6] # was 4
-  process = tokens[9] # was 7
-  era = runera[-1] # last char
-  print(process)
-  ver = process[process.find('_')+1:process.find('_')+3]
+runera = tokens[6] # was 4
+process = tokens[9] # was 7
+era = runera[-1] # last char
+print(process)
+ver = process[process.find('_')+1:process.find('_')+3]
 del tokens
 
-jecera = ''
-if not isMC:
-  jecera = era
-  if year == '2022':
-    jecera = 'CD'
-  elif year == '2023':
-    if(ver != 'v4'):
-      jecera = 'Cv123'
-    else:
-      jecera = 'Cv4'
+jecera = era
+if year == '2022':
+  jecera = 'CD'
+elif year == '2023':
+  if(ver != 'v4'):
+    jecera = 'Cv123'
+  else:
+    jecera = 'Cv4'
     
-if isMC:
-  if (("_ext1" in sampleName)): era = "ext1"
-  if (("_ext2" in sampleName)): era = "ext2"
-  if (("_ext3" in sampleName)): era = "ext3"
-
-region = "Signal"
-if isTT:
-  region = "TTbar" # TPrimeTPrime or BPrimeBPrime
-elif not isSig:
-  region = "DataBkg"
+region = "DataBkg"
 
 print('============== RUN SETTINGS ===============')
 print('isMC = ',isMC)
-print('isSig = ',isSig)
 print('sample = ',sample)
 print('era = ',era)
 print('jecera = ',jecera)
@@ -116,8 +95,12 @@ CompileCpp('TIMBER/Framework/Tprime1lep/lumiMask.cc')
 CompileCpp('TIMBER/Framework/Tprime1lep/selfDerived_corrs.cc')
 CompileCpp('TIMBER/Framework/Tprime1lep/corr_funcs.cc') 
 CompileCpp('TIMBER/Framework/Tprime1lep/topographInput.cc') 
-CompileCpp('TIMBER/Framework/Tprime1lep/manualreco.cc') 
+CompileCpp('TIMBER/Framework/Tprime1lep/manualreco.cc')
+CompileCpp('TIMBER/Framework/Tprime1lep/nonpromptweight.cc')
 ROOT.gInterpreter.ProcessLine('#include "TString.h"')
+
+#ROOT.gInterpreter.ProcessLine('#include "TIMBER/Framework/Tprime1lep/neononpromptweight.cc"')
+
 
 # Enable using 4 threads
 ROOT.ROOT.EnableImplicitMT(num_threads)
@@ -143,7 +126,6 @@ ROOT.gInterpreter.Declare("""
 
   bool isMC = """+str(isMC).lower()+"""; 
   bool debug = """+str(debug).lower()+""";
-  bool isSig = """+str(isSig).lower()+""";
   int dataset = """+str(dataset)+""";
   """)
 
@@ -211,7 +193,25 @@ def analyze(jesvar):
   auto ak4corrL1 = ak4corrset->at(jecyr+"_"+jecver+"_DATA_L1FastJet_AK4PFPuppi");
   auto ak8corr = ak8corrset->compound().at(jecyr+"_"+jecver+"_DATA_L1L2L3Res_AK8PFPuppi");
   """)
- 
+
+  ROOT.gInterpreter.Declare("""
+  std::vector<float> etabinsel = {-2.5,-2.0,-1.566,-1.444,-0.8,0.0,0.8,1.444,1.566,2.0,2.5};
+  std::vector<float> etabinsmu = {0.0,0.9,1.2,2.1,2.4};
+  std::vector<float> ptbins = {10.0,20.0,30.0,40.0,50.0,70.0,100.0,200.0,9999.0};
+  std::vector<float> ptbins_datafake = {10.0,15.0,20.0,25.0,30.0,40.0,50.0,70.0,9999.0};
+
+  std::vector<std::vector<float>> ePromptRatesMC = """ + to_cpp_vec2d(prompt_ttbar_el[year]) + """;
+  std::vector<std::vector<float>> mPromptRatesMC = """ + to_cpp_vec2d(prompt_ttbar_mu[year]) + """;
+  std::vector<std::vector<float>> tPromptRatesMC = """ + to_cpp_vec2d(prompt_ttbar_tau[year]) + """;
+  std::vector<std::vector<float>> eFakeRatesMC = """ + to_cpp_vec2d(fake_QCD_el[year]) + """;
+  std::vector<std::vector<float>> mFakeRatesMC = """ + to_cpp_vec2d(fake_QCD_mu[year]) + """;
+  std::vector<std::vector<float>> tFakeRatesMC = """ + to_cpp_vec2d(fake_QCD_tau[year]) + """;
+  std::vector<std::vector<float>> ePromptRatesData = """ + to_cpp_vec2d(prompt_Data_el[year]) + """;
+  std::vector<std::vector<float>> mPromptRatesData = """ + to_cpp_vec2d(prompt_Data_mu[year]) + """;
+  std::vector<std::vector<float>> eFakeRatesData = """ + to_cpp_vec2d(fake_Data_el[year]) + """;
+  std::vector<std::vector<float>> mFakeRatesData = """ + to_cpp_vec2d(fake_Data_mu[year]) + """;
+  """)
+  
   # ------------------ Flag Cuts ------------------
   flagCuts = CutGroup('FlagCuts')
   flagCuts.Add('Bad Event Filters', 'Flag_EcalDeadCellTriggerPrimitiveFilter == 1 && Flag_goodVertices == 1 && Flag_eeBadScFilter == 1 && Flag_globalSuperTightHalo2016Filter == 1 && Flag_BadPFMuonFilter == 1 && Flag_BadPFMuonDzFilter == 1')
@@ -408,11 +408,16 @@ def analyze(jesvar):
   TrigVars.Add('isSingleMuTrig', '(HLT_IsoMu24 == 1) && (NMu25 >= 1)') # in muon dataset
   TrigVars.Add('isSingleEleTrig', '(HLT_Ele30_WPTight_Gsf == 1) && (NEle30 >= 1)') # in Egamma dataset
   TrigVars.Add('isSingleTauTrig', '(HLT_LooseDeepTauPFTauHPS180_L2NN_eta2p1 == 1) && (NTauLooseTrig >= 1)') # in tau dataset
+
+  TrigVars.Add('SortMuPD','isMuMuTrig == 1 || isSingleMuTrig == 1 || isMuTauTrig == 1')
+  TrigVars.Add('SortMuEGPD','SortMuPD == 0 && isMuElTrig == 1')
+  TrigVars.Add('SortEGPD','SortMuPD == 0 && SortMuEGPD == 0 && (isElElTrig == 1 || isSingleEleTrig == 1 || isElTauTrig == 1)')
+  TrigVars.Add('SortTauPD','SortMuPD == 0 && SortMuEGPD == 0 && SortEGPD == 0 && (isTauTauTrig == 1 || isSingleTauTrig == 1)')
   
-  TrigVars.Add('passesMuPD', '(isSingleMuTrig == 1 || isMuMuTrig == 1 || isMuTauTrig == 1) && (isMC == 1 || dataset == 1)')
-  TrigVars.Add('passesMuEGPD', '(isMuElTrig == 1) && (isMC == 1 || dataset == 2)')
-  TrigVars.Add('passesEGPD', '(isSingleEleTrig == 1 || isElElTrig == 1 || isElTauTrig == 1) && (isMC == 1 || dataset == 3)')
-  TrigVars.Add('passesTauPD', '(isTauTauTrig == 1 || isSingleTauTrig == 1) && (isMC == 1 || dataset == 4)')
+  TrigVars.Add('passesMuPD', 'SortMuPD && (isMC == 1 || dataset == 1)')
+  TrigVars.Add('passesMuEGPD', 'SortMuEGPD && (isMC == 1 || dataset == 2)')
+  TrigVars.Add('passesEGPD', 'SortEGPD && (isMC == 1 || dataset == 3)')
+  TrigVars.Add('passesTauPD', 'SortTauPD && (isMC == 1 || dataset == 4)')
 
   TrigCuts = CutGroup('Trigger Cuts')
   TrigCuts.Add('Dataset Filter', 'passesMuPD == 1 || passesMuEGPD == 1 || passesEGPD == 1 || passesTauPD == 1')
@@ -446,10 +451,16 @@ def analyze(jesvar):
 
   jVars.Add("gcJet_ht", "Sum(gcJet_pt)")
 
-  jCuts = CutGroup('JetCuts')  
+  jCuts = CutGroup('JetCuts')
+  jCuts.Add('Event has no vetoed jets', 'Sum(gcJet_vetomap) == 0')
   jCuts.Add('NgoodcleanJets >= 2', 'NgoodcleanJets >= 2')
   jCuts.Add('2 B Jets Pass (Loose)', 'NJets_PNetL >= 2')
-  
+
+  # ---------------- Nonprompt Weight ----------------
+  npVars = VarGroup('NonpromptVars')
+  npVars.Add("nonpromptWeightMCMC", "neononpromptweight(ptbins, ptbins, etabinsel, etabinsmu, ePromptRatesMC, mPromptRatesMC, tPromptRatesMC, eFakeRatesMC, mFakeRatesMC, tFakeRatesMC, Loose4Lepton_pt, Loose4Lepton_eta, Loose4Lepton_ID, Loose4Lepton_isTight)")
+  npVars.Add("nonpromptWeightDD", "neononpromptweight(ptbins, ptbins_datafake, etabinsel, etabinsmu, ePromptRatesData, mPromptRatesData, tPromptRatesMC, eFakeRatesData, mFakeRatesData, tFakeRatesMC, Loose4Lepton_pt, Loose4Lepton_eta, Loose4Lepton_ID, Loose4Lepton_isTight)")
+  npVars.Add("nonpromptWeightDMC", "neononpromptweight(ptbins, ptbins, etabinsel, etabinsmu, ePromptRatesData, mPromptRatesData, tPromptRatesMC, eFakeRatesMC, mFakeRatesMC, tFakeRatesMC, Loose4Lepton_pt, Loose4Lepton_eta, Loose4Lepton_ID, Loose4Lepton_isTight)")
 
   # ------------------ Results ------------------
   manualVars = VarGroup('manualVars')
@@ -486,7 +497,7 @@ def analyze(jesvar):
 
   # # -------------------------------------
 
-  nodeToPlot = a.Apply([flagCuts, gjsonVars, gjsonCuts, tVars, eandmuVars, lVars, lCuts])
+  nodeToPlot = a.Apply([flagCuts, gjsonVars, gjsonCuts, tVars, eandmuVars, lVars, lCuts, TrigVars, TrigCuts])
 
   # # Solution to cleanJets() problem:
   # #       The analyzer .Apply() calls the analyzer .Define().  This .Define() calls self._collectionOrg.CollectionDefCheck(var, newNode).
@@ -497,9 +508,7 @@ def analyze(jesvar):
   
   newNode = a.ActiveNode.Apply(jVars)
   a.SetActiveNode(newNode)
-  if isSig:
-      a.Apply([recoGenVars])
-  a.Apply([jCuts, metVars, metCuts, TrigVars, TrigCuts, manualVars]) #, rframeVars])
+  a.Apply([jCuts, metVars, metCuts, npVars]) #, manualVars, rframeVars])
   
   allColumns = a.GetColumnNames()
      
@@ -538,9 +547,7 @@ def analyze(jesvar):
      columns.append(col)
      
 
-  finalFile = sample + era + "_" + year + "_" + str(testNum1) + ".root"
-  if not isMC:
-    finalFile = sample + era + ver + "_" + year + "_" + str(testNum1) + ".root";
+  finalFile = 'Nonprompt'+ sample + era + ver + "_" + year + "_" + str(testNum1) + ".root";
  
   mode = 'RECREATE'
   if jesvar != "Nominal":
@@ -558,10 +565,4 @@ def analyze(jesvar):
     
   a.Close()
 
-if not isMC:
-  analyze("Nominal")
-else:
-  analyze("Nominal")
-  #TODO fix why this not work?  shifts = ["Nominal","JECup","JECdn","JERup","JERdn"]
-  #for shift in shifts:
-  #  analyze(shift)
+analyze("Nominal")
