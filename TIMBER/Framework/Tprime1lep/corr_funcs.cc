@@ -290,7 +290,7 @@ RVec<double> hltfunc(correction::Correction::Ref& muonhltcorr, vector<float> &el
  }; 
 
 // WORK ON THIS JULIE
-RVec<float> btagshapefunc(string year, string jesvar, correction::Correction::Ref& btagwpbccorr, correction::Correction::Ref& btagwplcorr, std::vector<float> btagpts, std::vector<std::vector<float>> btageffs, float deepjetL, const RVec<float> &pt, const RVec<float> &eta, const RVec<float> &disc, const RVec<unsigned char> &flav) {
+RVec<float> btagshapefunc(string year, string jesvar, correction::Correction::Ref& btagwpbccorr, correction::Correction::Ref& btagwplcorr, std::vector<int> btagpts, std::vector<std::vector<float>> btageffs, float deepjetL, const RVec<float> &pt, const RVec<float> &eta, const RVec<float> &disc, const RVec<unsigned char> &flav) {
 
    std::string nominal = "central";
    if(jesvar == "JECup") nominal = "up_jes";
@@ -305,9 +305,9 @@ RVec<float> btagshapefunc(string year, string jesvar, correction::Correction::Re
        string downcorrelated = "down_correlated"; string upcorrelated = "up_correlated";
        std::vector<int> shift = {0,4};
        
-       if(flav.at(ijet) < 4){wpcorr = btagwplcorr; eff = btageffs[ptbin][2]; shift = {4,0}; downcorrelated = "down"; upcorrelated = "up";}
-       else if(flav.at(ijet) == 4){wpcorr = btagwpbccorr; eff = btageffs[ptbin][1];}
-       else{wpcorr = btagwpbccorr; eff = btageffs[ptbin][0];}
+       if(flav.at(ijet) < 4){wpcorr = btagwplcorr; eff = btageffs[2][ptbin]; shift = {4,0}; downcorrelated = "down"; upcorrelated = "up";}
+       else if(flav.at(ijet) == 4){wpcorr = btagwpbccorr; eff = btageffs[1][ptbin];}
+       else{wpcorr = btagwpbccorr; eff = btageffs[0][ptbin];}
 
        if(disc.at(ijet) > deepjetL){
 		weights[0] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}); // seemed like P(Data)/P(MC) reduces to SF
