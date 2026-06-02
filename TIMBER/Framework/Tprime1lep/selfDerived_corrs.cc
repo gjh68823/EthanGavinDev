@@ -249,6 +249,7 @@ void initialize(string year)   ///void initialize(string initargument) --OR-- vo
     };
   }else if(year == "2022EE"){
 
+
     elecidsfs = {
       {0.999, 1.001, 0.982, 0.985, 0.978, 0.994, 0.988, 0.970, 0.985, 0.991},
       {1.039, 1.026, 1.060, 1.017, 0.998, 1.009, 0.995, 1.083, 0.994, 1.012},
@@ -289,6 +290,7 @@ void initialize(string year)   ///void initialize(string initargument) --OR-- vo
     };
   }else if(year == "2023"){
 
+
     elecidsfs = {
       {1.013, 0.994, 1.001, 0.983, 0.979, 0.980, 0.983, 0.967, 0.994, 1.023},
       {1.019, 1.001, 1.026, 1.011, 0.992, 0.992, 0.990, 0.990, 1.023, 1.028},
@@ -328,7 +330,8 @@ void initialize(string year)   ///void initialize(string initargument) --OR-- vo
       {0.251020,0.428866,1.000000,0.851152,1.000000}
     };
   }else{ //2023BPix
-    
+
+
     elecidsfs = {
       {0.986, 0.980, 1.021, 0.964, 0.973, 0.973, 0.973, 0.980, 0.976, 0.969},
       {0.984, 0.987, 1.083, 0.992, 0.977, 0.991, 1.001, 1.076, 0.991, 0.986},
