@@ -58,6 +58,12 @@ isVV = (("WW_" in sampleName) or ("WZ_" in sampleName) or ("ZZ_" in sampleName))
 isSM = ("Muon" in sampleName)
 isSE = (("SingleElectron" in sampleName) or ("EGamma" in sampleName))
 isMC = not (("Single" in sampleName) or ("Muon" in sampleName) or ("EGamma" in sampleName))
+#NOTE: BB has lines below:
+#dataset = int(-1)
+#if "MuonEG" in sampleName: dataset = 2
+#elif ("Muon" in sampleName) or ("Muon0" in sampleName) or ("Muon1" in sampleName): dataset = 1
+#elif ("EGamma" in sampleName) or ("EGamma0" in sampleName) or ("EGamma1" in sampleName): dataset = 3
+#elif "Tau/" in sampleName: dataset = 4
 
 #'root://cms-xrd-global.cern.ch//store/data/Run2018A/SingleMuon/NANOAOD/UL2018_MiniAODv2_NanoAODv9-v2/2550000/28FF17A8-95EB-FD41-A55B-2EFAF2D6AF91.root' 
 tokens = sampleName.split("/")
@@ -68,6 +74,7 @@ if not isMC:
   runera = tokens[6] # was 4
   process = tokens[9] # was 7
   era = runera[-1] # last char
+  print(process)
   ver = process[process.find('_'):process.find('_')+2]
 del tokens
 
@@ -112,13 +119,15 @@ CompileCpp('TIMBER/Framework/Tprime1lep/cleanjet.cc') # Compile Our vlq c++ code
 CompileCpp('TIMBER/Framework/Tprime1lep/utilities.cc') # Compile Our vlq c++ code
 CompileCpp('TIMBER/Framework/Tprime1lep/lumiMask.cc')
 CompileCpp('TIMBER/Framework/Tprime1lep/selfDerived_corrs.cc')
-CompileCpp('TIMBER/Framework/Tprime1lep/corr_funcs.cc') 
+CompileCpp('TIMBER/Framework/Tprime1lep/corr_funcs.cc')
+CompileCpp('TIMBER/Framework/Tprime1lep/topographInput.cc') 
+CompileCpp('TIMBER/Framework/Tprime1lep/manualreco.cc') 
 ROOT.gInterpreter.ProcessLine('#include "TString.h"')
 
 # Enable using 4 threads
 ROOT.ROOT.EnableImplicitMT(num_threads)
 
-# load rest frames handler
+# load rest frames handler NEED TO UPDATE FOR CURRENT
 #handler_name = 'Tprime_handler_W.cc'
 #class_name = 'Tprime_RestFrames_Container_W'
 #load_restframes(num_threads, handler_name, class_name, 'rfc')
@@ -135,6 +144,7 @@ ROOT.gInterpreter.Declare("""
 
   bool isMC = """+str(isMC).lower()+"""; 
   bool debug = """+str(debug).lower()+""";
+  bool isSig = """+str(isSig).lower()+""";
 """)
 
 def analyze(jesvar):
@@ -175,10 +185,13 @@ def analyze(jesvar):
   yrstr = {'2022':"2022_Summer22",'2022EE':"2022_Summer22EE",'2023':"2023_Summer23",'2023BPix':"2023_Summer23BPix"}
   jecyr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23"}
   jeryr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23_RunCv1234",'2023BPix':"Summer23BPixPrompt23_RunD"}
-  jecver = {'2022':"V2",'2022EE':"V2",'2023':"V1",'2023BPix':"V1"}
+  jecver = {'2022':"V3",'2022EE':"V3",'2023':"V2",'2023BPix':"V3"}
   puname = {'2022':"Collisions2022_355100_357900_eraBCD_GoldenJson",'2022EE':"Collisions2022_359022_362760_eraEFG_GoldenJson",'2023':"Collisions2023_366403_369802_eraBC_GoldenJson",'2023BPix':"Collisions2023_369803_370790_eraD_GoldenJson"}
   jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1"}
   elecyr = {'2022':"2022Re-recoBCD",'2023EE':"2022Re-recoE+PromptFG",'2023':"2023PromptC",'2023BPix':"2023PromptD"}
+
+  print("jecyr and jecver below")
+  print(jecyr[year]+"_"+jecver[year]+"_DATA_L1L2L3Res_AK4PFPuppi")
 
   ROOT.gInterpreter.Declare("""
   float deepjetL = """+str(deepjetL[year])+""";
@@ -217,10 +230,17 @@ def analyze(jesvar):
     auto ak8corr = ak8corrset->compound().at(jecyr+"_Run"+jecera+"_"+jecver+"_DATA_L1L2L3Res_AK8PFPuppi");
     """)
   else:
+    print(yrstr[year])
+    print("/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/JME/"+yrstr[year]+"/jet_jerc.json.gz")
     ROOT.gInterpreter.Declare("""
-    auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/JME/"+yrstr+"/jet_jerc.json.gz"); 
+    auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/JME/"+yrstr+"/jet_jerc.json.gz");
     auto ak8corrset = correction::CorrectionSet::from_file("/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/JME/"+yrstr+"/fatJet_jerc.json.gz"); 
+    """)
 
+    print(ROOT.ak4corrset)
+    print(jecyr[year]+"_"+jecver[year]+"_MC_L1FastJet_AK4PFPuppi")
+    
+    ROOT.gInterpreter.Declare("""
     auto ak4corr = ak4corrset->compound().at(jecyr+"_"+jecver+"_MC_L1L2L3Res_AK4PFPuppi");
     auto ak4corrL1 = ak4corrset->at(jecyr+"_"+jecver+"_MC_L1FastJet_AK4PFPuppi");
     auto ak4corrUnc = ak4corrset->at(jecyr+"_"+jecver+"_MC_Total_AK4PFPuppi");
@@ -229,6 +249,8 @@ def analyze(jesvar):
     auto ak8corr = ak8corrset->compound().at(jecyr+"_"+jecver+"_MC_L1L2L3Res_AK8PFPuppi");
     auto ak8corrUnc = ak8corrset->at(jecyr+"_"+jecver+"_MC_Total_AK8PFPuppi");
     """)
+
+    
     
   # ------------------ Flag Cuts ------------------
   flagCuts = CutGroup('FlagCuts')
@@ -466,8 +488,10 @@ def analyze(jesvar):
   a.Close()
 
 if not isMC:
+  print("file is not MC")
   analyze("Nominal")
 else:
+  print("file is MC")
   analyze("Nominal")
   #TODO fix why this not work?  shifts = ["Nominal","JECup","JECdn","JERup","JERdn"]
   #for shift in shifts:

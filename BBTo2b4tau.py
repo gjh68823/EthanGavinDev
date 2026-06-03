@@ -200,6 +200,7 @@ def analyze(jesvar):
   METsimpleyr = {'2022':"2022",'2022EE':"2022",'2023':"2023",'2023BPix':"2023"} 
   btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"deepJet_comb",'2023BPix':"deepJet_comb"}
 
+  print("jecyr and jecver below")
   print(jecyr[year]+"_"+jecver[year]+"_DATA_L1L2L3Res_AK4PFPuppi")
  
   ROOT.gInterpreter.Declare("""
@@ -235,6 +236,11 @@ def analyze(jesvar):
   auto muoncorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/"+yrstr+"/"+muotag+"/muon_Z.json.gz");
   auto taucorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/"+yrstr+"/"+tautag+"/tau_DeepTau2018v2p5_"+tauyr+".json.gz");
   auto METcorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/met_xyCorrections_"+METsimpleyr+"_"+METyr+".json.gz");
+
+  std::print("Available keys in pileupcorrset:");
+  for (const auto& pair : *pileupcorrset) {
+    std::print("  ", pair.first, std::endl);
+  }
 
   auto pileupcorr = pileupcorrset->at(puname);
   auto btagwpbccorr = btagcorrset->at(btagname);
