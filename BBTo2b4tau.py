@@ -556,6 +556,7 @@ def analyze(jesvar):
     jVars.Add('btagWeights', 'btagshapefunc(year,jesvar,btagwpbccorr,btagwplcorr,btagptbins,btageffs,PNetL,gcJet_pt,gcJet_eta,gcJet_PNet,gcJet_hflav)')
 
   jCuts = CutGroup('JetCuts')  
+  jCuts.Add('Event has no vetoed jets', 'Sum(gcJet_vetomap) == 0')
   jCuts.Add('NgoodcleanJets >= 2', 'NgoodcleanJets >= 2')
   jCuts.Add('2 B Jets Pass (Loose)', 'NJets_PNetL >= 2')
 
