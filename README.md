@@ -34,6 +34,8 @@ if [[ "\$SCRAM_ARCH" == "el8_amd64_gcc11" ]]; then
   BOOSTPATH=/cvmfs/cms.cern.ch/el8_amd64_gcc11/external/boost/1.78.0-dfb1dc972d1e1af822bb548909730506/lib
 elif [[ "\$SCRAM_ARCH" == "el9_amd64_gcc11" ]]; then
   BOOSTPATH=/cvmfs/cms.cern.ch/el9_amd64_gcc11/external/boost/1.78.0-c49033d06e1a3bf1beac1c01e1ef27d6/lib
+elif [[ "\$SCRAM_ARCH" == "el9_amd64_gcc12" ]]; then
+  BOOSTPATH=/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/boost/1.80.0-e4b2127ad40e46379cea2f9087beeda8/lib
 else
   BOOSTPATH=/cvmfs/cms.cern.ch/el8_amd64_gcc10/external/boost/1.78.0-0d68c45b1e2660f9d21f29f6d0dbe0a0/lib
 fi
