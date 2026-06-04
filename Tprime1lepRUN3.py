@@ -112,7 +112,8 @@ CompileCpp('TIMBER/Framework/Tprime1lep/cleanjet.cc') # Compile Our vlq c++ code
 CompileCpp('TIMBER/Framework/Tprime1lep/utilities.cc') # Compile Our vlq c++ code
 CompileCpp('TIMBER/Framework/Tprime1lep/lumiMask.cc')
 CompileCpp('TIMBER/Framework/Tprime1lep/selfDerived_corrs.cc')
-CompileCpp('TIMBER/Framework/Tprime1lep/corr_funcs.cc') 
+CompileCpp('TIMBER/Framework/Tprime1lep/corr_funcs.cc')
+CompileCpp('TIMBER/Framework/Tprime1lep/StandardTT_fatjet_matching.cc')
 ROOT.gInterpreter.ProcessLine('#include "TString.h"')
 
 # Enable using 4 threads
