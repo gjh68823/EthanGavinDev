@@ -3,7 +3,6 @@ using namespace ROOT::VecOps;
 
 auto get_daughters(int id) {
   vector<unsigned int> daughters;
-  daughters.clear()
   for (unsigned int d = id; d < nGenPart; d++){
 	if (GenPart_genPartIdxMother[d]!=id){continue;}
 	daughters.push_back(d); //get a list of all the daughters of this particle
@@ -12,23 +11,25 @@ auto get_daughters(int id) {
   return daughters;
 }
 
-auto fxn_name(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, RVec<float> &GenPart_mass, RVec<float> &GenPart_pt, RVec<float> &GenPart_phi, RVec<float> &GenPart_eta, RVec<short> &GenPart_genPartIdxMother, RVec<int> &GenPart_status, RVec<unsigned short> &GenPart_statusFlags)
+auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, RVec<float> &GenPart_mass, RVec<float> &GenPart_pt, RVec<float> &GenPart_phi, RVec<float> &GenPart_eta, RVec<short> &GenPart_genPartIdxMother, RVec<int> &GenPart_status, RVec<unsigned short> &GenPart_statusFlags)
 {
   RVec<int> pID; //particle id of the parent
   RVec<int> pStatus; //where in the chain the parent particle is?
-
   RVec<double> pPt;
   RVec<double> pEta;
   RVec<double> pPhi;
   RVec<double> pE;
+  
   RVec<double> d0Pt;
   RVec<double> d0Eta;
   RVec<double> d0Phi;
   RVec<double> d0E;
+  
   RVec<double> d1Pt;
   RVec<double> d1Eta;
   RVec<double> d1Phi;
   RVec<double> d1E;
+  
   RVec<double> d2Pt;
   RVec<double> d2Eta;
   RVec<double> d2Phi;
@@ -61,11 +62,11 @@ auto fxn_name(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, RV
       if(hasRadiation) continue;
       if(hasLepton) continue;
       if(GenPart_pt[p] < 175) continue;
-
+      
       vector<unsigned int>siblings = get_daughters(GenPart_genPartIdxMother[p]);
       
       if(abs(id) == 24) { //if W
-	double dRWb = 1000;
+	double dRWb = 1000;//could cut this down if we want, not necessary
 	double dRWW = 1000;
 
 	//find topmost mother of a repeating chain
@@ -89,17 +90,17 @@ auto fxn_name(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, RV
 	  }
 	  if(dr < dRWW) dRWW = dr;
 	}
-
+	
 	if(dRWW < 0.8) continue; //W from merged H
 	if(dRWb < 0.8) continue; //W from merged t
       } //end of if W
-
+      
       if(abs(id) == 23) { //if Z
 	double dRZZ = 1000;
 
 	//find topmost mother of a repeating chain
 	while(GenPart_genPartIdxMother[p] != -1 && abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 23) {p = GenPart_genPartIdxMother[p]}
-
+	
 	if(GenPart_genPartIdxMother[p] == 25) {
 	  double dr = 1000;
 	  if(GenPart_pdgId[p]*GenPart_pdgId[siblings[0]] > 0) {
@@ -107,11 +108,11 @@ auto fxn_name(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, RV
 	  }else{
 	    dr = DeltaR(GenPart_eta[p], GenPart_eta[siblings[0]], GenPart_phi[p], GenPart_phi[siblings[0]]);
 	  }
-	    if(dr < dRZZ) dRZZ = dr;
+	  if(dr < dRZZ) dRZZ = dr;
 	}
 	if(dRZZ < 0.8) continue; // Z from merged H
       }
-
+      
       if(daughters.size() < 2) {
 	std::cout << daughters.size() << " daughters from " << GenPart_pdgId[p] << std::endl;
       }
@@ -153,16 +154,19 @@ auto fxn_name(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, RV
 	  b = daughters[0];
 	}
 
-	//insert weird photon stuff here?????
+	//insert weird photon stuff here.
 
 	vector<unsigned int> W_daughters = get_daughters(W);
+	if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22) {
+	  std::cout << "W has a photon daughter" << std::endl;
+	}
 
 	d0Status.push_back(GenPart_status[b]);
 	d0ID.push_back(GenPart_pdgId[b]);
 	d0Pt.push_back(GenPart_pt[b]);
 	d0Eta.push_back(GenPart_eta[b]);
 	d0Phi.push_back(GenPart_phi[b]);
-	d0E.push_back(GenPart_mass[b]]);
+	d0E.push_back(GenPart_mass[b]);
 
 	d1Status.push_back(GenPart_status[W_daughters[0]]);
 	d1ID.push_back(GenPart_pdgId[W_daughters[0]]);
@@ -178,7 +182,45 @@ auto fxn_name(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, RV
 	d2Phi.push_back(GenPart_phi[W_daughters[1]]);
 	d2E.push_back(GenPart_mass[W_daughters[1]]);
     
-    		}
-  		}
-	}
-}
+      }
+    }
+  }
+
+  for(unsigned int i = 0; i < goodCleanFatJet_Pt.size(); i++){
+    //define a tlv for fatjets
+  
+    float minDR = 1000;
+    float matchedPt= -99;
+    int matchedID = 0;
+    bool isWmatched = false;
+    bool isHmatched = false;
+    bool isZmatched = false;
+    bool isTmatched = false;
+    bool isJmatched = false;
+    bool isBmatched = false;
+    TLorentzVector truePart, d1, d2, d3;
+
+    //collapse the loops, dont put things into vectors, just continue the previous loop here?
+    
+    for(unsigned int i = 0, i < pPt.size(); i++) {
+      truePart.SetPtEtaPhiM(pPt[i], pEta[i], pPhi[i], pE[i]);
+
+      //TODO: add good clean fatjet Timber branches into here. need pt, eta, phi, mass
+      //also need sj_idx1/2 may need to implement goodclean versions in timber, and subjet_hadronFlavour from NanoAOD file
+      //
+    
+      if(DeltaR(trueW) < minDR) {
+      
+      }
+    }
+  }
+  return //vector of goodCleanFatJet_truth;
+    //might be nice to return a vect of vects, containing truth, matched pt,
+    //truth values are the parent particle
+    //matched pt is what it sounds like
+    } // '/t' tabs in on couts
+
+
+  
+
+
