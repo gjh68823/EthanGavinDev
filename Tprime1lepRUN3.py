@@ -406,7 +406,7 @@ def analyze(jesvar):
   jVars.Add("cleanJet_eta", "cleanedJets[1]")
   jVars.Add("cleanJet_phi", "cleanedJets[2]")
   jVars.Add("cleanJet_mass", "cleanedJets[3]")
-  jVars.Add("cleanFatJet_pt", "cleanFatJets[0]")
+  jVars.Add("cleanFatJet_pt", "cleanFatJets[0]") #valid options for clean fat jets
   jVars.Add("cleanFatJet_eta", "cleanFatJets[1]")
   jVars.Add("cleanFatJet_phi", "cleanFatJets[2]")
   jVars.Add("cleanFatJet_mass", "cleanFatJets[3]")
@@ -431,9 +431,9 @@ def analyze(jesvar):
   jVars.Add("goodcleanJets", "cleanJet_pt > 30 && abs(cleanJet_eta) < 2.4 && Jet_jetId > 1 && (DR_lepJets > 0.4 || ptrel_lepJets > 20)")
   jVars.Add("NgoodcleanJets", "Sum(goodcleanJets)")
 
-  jVars.Add("DR_lepFatJets","DeltaR_VecAndFloat(FatJet_eta,FatJet_phi,lepton_eta,lepton_phi)")
-  jVars.Add("ptrel_lepFatJets","ptRel(FatJet_pt,FatJet_eta,FatJet_phi,FatJet_mass,lepton_pt,lepton_eta,lepton_phi,lepton_mass)")  
-  jVars.Add("goodcleanFatJets", "FatJet_pt > 200 && abs(FatJet_eta) < 2.4 && FatJet_jetId > 1 && (DR_lepFatJets > 0.8 || ptrel_lepFatJets > 20)")
+  jVars.Add("DR_lepFatJets","DeltaR_VecAndFloat(cleanFatJet_eta,cleanFatJet_phi,lepton_eta,lepton_phi)")
+  jVars.Add("ptrel_lepFatJets","ptRel(cleanFatJet_pt,cleanFatJet_eta,cleanFatJet_phi,cleanFatJet_mass,lepton_pt,lepton_eta,lepton_phi,lepton_mass)")  
+  jVars.Add("goodcleanFatJets", "cleanFatJet_pt > 200 && abs(cleanFatJet_eta) < 2.4 && FatJet_jetId > 1 && (DR_lepFatJets > 0.8 || ptrel_lepFatJets > 20)")
   jVars.Add("NFatJets", "(int) Sum(goodcleanFatJets)")
     
   jVars.Add("gcJet_HT","Sum(cleanJet_pt[goodcleanJets == true])")
@@ -454,14 +454,15 @@ def analyze(jesvar):
   jVars.Add("gcJet_PNetL", "gcJet_PNet > PNetL") 
   jVars.Add("NJets_PNetL", "Sum(gcJet_PNetL)")
 
-  jVars.Add("gcFatJet_pt_unsort", "FatJet_pt[goodcleanFatJets == true]")
+  jVars.Add("gcFatJet_pt_unsort", "cleanFatJet_pt[goodcleanFatJets == true]")
   jVars.Add("gcFatJet_ptargsort","ROOT::VecOps::Reverse(ROOT::VecOps::Argsort(gcFatJet_pt_unsort))")
   
   jVars.Add("gcFatJet_pt","reorder(gcFatJet_pt_unsort,gcFatJet_ptargsort)")  
-  jVars.Add("gcFatJet_eta", "reorder(FatJet_eta[goodcleanFatJets == true],gcFatJet_ptargsort)")
-  jVars.Add("gcFatJet_phi", "reorder(FatJet_phi[goodcleanFatJets == true],gcFatJet_ptargsort)")
-  jVars.Add("gcFatJet_mass", "reorder(FatJet_mass[goodcleanFatJets == true],gcFatJet_ptargsort)")
-  jVars.Add("gcFatJet_sdmass", "reorder(FatJet_msoftdrop[goodcleanFatJets == true],gcFatJet_ptargsort)")
+  jVars.Add("gcFatJet_eta", "reorder(cleanFatJet_eta[goodcleanFatJets == true],gcFatJet_ptargsort)")
+  jVars.Add("gcFatJet_phi", "reorder(cleanFatJet_phi[goodcleanFatJets == true],gcFatJet_ptargsort)")
+  jVars.Add("gcFatJet_mass", "reorder(cleanFatJet_mass[goodcleanFatJets == true],gcFatJet_ptargsort)")
+  jVars.Add("gcFatJet_sdmass", "reorder(cleanFatJet_msoftdrop[goodcleanFatJets == true],gcFatJet_ptargsort)")
+  #jVars.Add("gcFatJet_subj_idx1", "reorder(FatJet_idxstring here[goodcleanFatJets == true], gcFatJet_ptargsort)")
   
   jVars.Add("gcFatJet_vetomap", "jetvetofunc(jetvetocorr, gcFatJet_eta, gcFatJet_phi)")
   #WORK ON THIS MORE -- need to just be isolated from the 3 highest-pt fat jets, not any of them...
