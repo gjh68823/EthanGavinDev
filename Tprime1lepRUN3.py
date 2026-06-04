@@ -463,9 +463,13 @@ def analyze(jesvar):
   jVars.Add("gcFatJet_phi", "reorder(cleanFatJet_phi[goodcleanFatJets == true],gcFatJet_ptargsort)")
   jVars.Add("gcFatJet_mass", "reorder(cleanFatJet_mass[goodcleanFatJets == true],gcFatJet_ptargsort)")
   jVars.Add("gcFatJet_sdmass", "reorder(cleanFatJet_msoftdrop[goodcleanFatJets == true],gcFatJet_ptargsort)")
-  #jVars.Add("gcFatJet_subj_idx1", "reorder(FatJet_idxstring here[goodcleanFatJets == true], gcFatJet_ptargsort)")
+  jVars.Add("gcFatJet_subJetIdx1", "reorder(FatJet_subJetIdx1[goodcleanFatJets == true], gcFatJet_ptargsort)")
+  jVars.Add("gcFatJet_subJetIdx2", "reorder(FatJet_subJetIdx2[goodcleanFatJets == true], gcFatJet_ptargsort)")
+  jVars.Add("gcFatJet_hadronFlavour", "reorder(FatJet_hadronFlavour[goodcleanFatJets == true], gcFatJet_ptargsort)")
   
   jVars.Add("gcFatJet_vetomap", "jetvetofunc(jetvetocorr, gcFatJet_eta, gcFatJet_phi)")
+  if isMc:
+    jVars.Add("gcFatJet_matches", "fatjet_matching(region, nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status, GenPart_statusFlags, gcFatJet_pt, gcFatJet_eta, gcFatJet_phi, gcFatJet_mass, gcFatJet_subJetIdx1, gcFatJet_subJetIdx2, gcFatJet_hadronFlavour)")
   #WORK ON THIS MORE -- need to just be isolated from the 3 highest-pt fat jets, not any of them...
   #jVars.Add("Isolated_AK4","standalone_Jet(gcJet_eta, gcJet_phi, gcFatJet_eta, gcFatJet_phi)")
 
