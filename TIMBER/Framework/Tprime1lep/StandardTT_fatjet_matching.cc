@@ -177,7 +177,8 @@ auto fxn_name(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, RV
 	d2Eta.push_back(GenPart_eta[W_daughters[1]]);
 	d2Phi.push_back(GenPart_phi[W_daughters[1]]);
 	d2E.push_back(GenPart_mass[W_daughters[1]]);
-    }
-    }
-  }
+    
+    		}
+  		}
+	}
 }
