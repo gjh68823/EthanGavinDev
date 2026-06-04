@@ -15,25 +15,25 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 {
   RVec<int> pID; //particle id of the parent
   RVec<int> pStatus; //where in the chain the parent particle is?
-  RVec<double> pPt;
-  RVec<double> pEta;
-  RVec<double> pPhi;
-  RVec<double> pE;
+  RVec<float> pPt;
+  RVec<float> pEta;
+  RVec<float> pPhi;
+  RVec<float> pM;
   
-  RVec<double> d0Pt;
-  RVec<double> d0Eta;
-  RVec<double> d0Phi;
-  RVec<double> d0E;
+  RVec<float> d0Pt;
+  RVec<float> d0Eta;
+  RVec<float> d0Phi;
+  RVec<float> d0M;
   
-  RVec<double> d1Pt;
-  RVec<double> d1Eta;
-  RVec<double> d1Phi;
-  RVec<double> d1E;
+  RVec<float> d1Pt;
+  RVec<float> d1Eta;
+  RVec<float> d1Phi;
+  RVec<float> d1M;
   
-  RVec<double> d2Pt;
-  RVec<double> d2Eta;
-  RVec<double> d2Phi;
-  RVec<double> d2E;
+  RVec<float> d2Pt;
+  RVec<float> d2Eta;
+  RVec<float> d2Phi;
+  RVec<float> d2M;
 
   for(unsigned int i = 0; i < nGenPart; i++){
     int p = i; //initialize the parent idx
@@ -66,22 +66,22 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
       vector<unsigned int>siblings = get_daughters(GenPart_genPartIdxMother[p]);
       
       if(abs(id) == 24) { //if W
-	double dRWb = 1000;//could cut this down if we want, not necessary
-	double dRWW = 1000;
+	float dRWb = 1000;//could cut this down if we want, not necessary
+	float dRWW = 1000;
 
 	//find topmost mother of a repeating chain
 	while(GenPart_genPartIdxMother[p] != -1 && abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 24) {p = GenPart_genPartIdxMother[p]}
 
 	if(abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 6) {
 	  //dr btwn current particle and its sibling
-	  double dr = DeltaR(GenPart_eta[p], GenPart_eta[siblings[1]], GenPart_phi[p], GenPart_phi[siblings[1]]);
+	  float dr = DeltaR(GenPart_eta[p], GenPart_eta[siblings[1]], GenPart_phi[p], GenPart_phi[siblings[1]]);
 	  
 	  if(GenPart_pdgId[sibling[1]] == 24) {
 	    dr = DeltaR(GenPart_eta[p], GenPart_eta[siblings[0]], GenPart_phi[p], GenPart_phi[siblings[0]]);}
 	  if(dr < dRWb) dRWb = dr;
 	  
 	}else if(abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 25){
-	  double dr = 1000;
+	  float dr = 1000;
 	  
 	  if(GenPart_pdgId[p]*GenPart_pdgId[siblings[0]] > 0) {
 	    dr = DeltaR(GenPart_eta[p], GenPart_eta[siblings[1]], GenPart_phi[p], GenPart_phi[siblings[1]]); 
@@ -96,13 +96,13 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
       } //end of if W
       
       if(abs(id) == 23) { //if Z
-	double dRZZ = 1000;
+	float dRZZ = 1000;
 
 	//find topmost mother of a repeating chain
 	while(GenPart_genPartIdxMother[p] != -1 && abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 23) {p = GenPart_genPartIdxMother[p]}
 	
 	if(GenPart_genPartIdxMother[p] == 25) {
-	  double dr = 1000;
+	  float dr = 1000;
 	  if(GenPart_pdgId[p]*GenPart_pdgId[siblings[0]] > 0) {
 	    dr = DeltaR(GenPart_eta[p], GenPart_eta[siblings[1]], GenPart_phi[p], GenPart_phi[siblings[1]]); 
 	  }else{
@@ -122,7 +122,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
       pPt.push_back(GenPart_pt[p]);
       pEta.push_back(GenPart_eta[p]);
       pPhi.push_back(GenPart_phi[p]);
-      pE.push_back(GenPart_mass[p]);
+      pM.push_back(GenPart_mass[p]);
 
       if(abs(id) != 6) {
 	d0Status.push_back(GenPart_status[daughters[0]]);
@@ -130,21 +130,21 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	d0Pt.push_back(GenPart_pt[daughters[0]]);
 	d0Eta.push_back(GenPart_eta[daughters[0]]);
 	d0Phi.push_back(GenPart_phi[daughters[0]]);
-	d0E.push_back(GenPart_mass[daughters[0]]);
+	d0M.push_back(GenPart_mass[daughters[0]]);
 
 	d1Status.push_back(GenPart_status[daughters[1]]);
 	d1ID.push_back(GenPart_pdgId[daughters[1]]);
 	d1Pt.push_back(GenPart_pt[daughters[1]]);
 	d1Eta.push_back(GenPart_eta[daughters[1]]);
 	d1Phi.push_back(GenPart_phi[daughters[1]]);
-	d1E.push_back(GenPart_mass[daughters[1]]);
+	d1M.push_back(GenPart_mass[daughters[1]]);
 
 	d2Status.push_back(-99.9);
 	d2ID.push_back(-99.9);
 	d2Pt.push_back(-99.9);
 	d2Eta.push_back(-99.9);
 	d2Phi.push_back(-99.9);
-	d2E.push_back(-99.9);
+	d2M.push_back(-99.9);
       }else{ //if is t
 	if(abs(GenPart_pdgId[daughters[0]]) == 24) {
 	  W = daughters[0];
@@ -166,21 +166,21 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	d0Pt.push_back(GenPart_pt[b]);
 	d0Eta.push_back(GenPart_eta[b]);
 	d0Phi.push_back(GenPart_phi[b]);
-	d0E.push_back(GenPart_mass[b]);
+	d0M.push_back(GenPart_mass[b]);
 
 	d1Status.push_back(GenPart_status[W_daughters[0]]);
 	d1ID.push_back(GenPart_pdgId[W_daughters[0]]);
 	d1Pt.push_back(GenPart_pt[W_daughters[0]]);
 	d1Eta.push_back(GenPart_eta[W_daughters[0]]);
 	d1Phi.push_back(GenPart_phi[W_daughters[0]]);
-	d1E.push_back(GenPart_mass[W_daughters[0]]);
+	d1M.push_back(GenPart_mass[W_daughters[0]]);
 
         d2Status.push_back(GenPart_status[W_daughters[1]]);
 	d2ID.push_back(GenPart_pdgId[W_daughters[1]]);
 	d2Pt.push_back(GenPart_pt[W_daughters[1]]);
 	d2Eta.push_back(GenPart_eta[W_daughters[1]]);
 	d2Phi.push_back(GenPart_phi[W_daughters[1]]);
-	d2E.push_back(GenPart_mass[W_daughters[1]]);
+	d2M.push_back(GenPart_mass[W_daughters[1]]);
     
       }
     }
@@ -203,7 +203,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
     //collapse the loops, dont put things into vectors, just continue the previous loop here?
     
     for(unsigned int i = 0, i < pPt.size(); i++) {
-      truePart.SetPtEtaPhiM(pPt[i], pEta[i], pPhi[i], pE[i]);
+      truePart.SetPtEtaPhiM(pPt[i], pEta[i], pPhi[i], pM[i]);
 
       //TODO: add good clean fatjet Timber branches into here. need pt, eta, phi, mass
       //also need sj_idx1/2 may need to implement goodclean versions in timber, and subjet_hadronFlavour from NanoAOD file
