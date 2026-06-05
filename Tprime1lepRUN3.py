@@ -139,6 +139,7 @@ ROOT.gInterpreter.Declare("""
 """)
 
 def analyze(jesvar):
+  print("inside analyze")
   ROOT.gInterpreter.ProcessLine('string jesvar = "' + jesvar + '"; ')
 
   # Create analyzer instance
@@ -194,8 +195,8 @@ def analyze(jesvar):
   METsimpleyr = {'2022':"2022",'2022EE':"2022",'2023':"2023",'2023BPix':"2023"} 
   btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"deepJet_comb",'2023BPix':"deepJet_comb"}
 
+  #float deepjetL = """+str(deepjetL[year])+""";
   ROOT.gInterpreter.Declare("""
-  float deepjetL = """+str(deepjetL[year])+""";
   string yrstr = \""""+yrstr[year]+"""\";
   string jecyr = \""""+jecyr[year]+"""\";
   string jeryr = \""""+jeryr[year]+"""\";
@@ -393,6 +394,7 @@ def analyze(jesvar):
   jVars.Add("DummyZero","float(0.0)")
   
   if isMC:          #TODO fix dummy comments
+    print("About to work on cleaning the jets")
     print(GenJet_pt)
     jVars.Add("GenJet_P4","fVectorConstructor(GenJet_pt,GenJet_eta,GenJet_phi,GenJet_mass)")
     jVars.Add("cleanedJets", "cleanJetsMC(debug,year,jesvar,ak4corr,ak4corrL1,ak4corrUnc,ak4ptres,ak4jer,ak8corr,ak8corrUnc,Jet_P4,Jet_rawFactor,Jet_muonSubtrFactor,Jet_area,Jet_EmEF,Jet_jetId,GenJet_P4,Jet_genJetIdx,SMuon_P4,SMuon_jetIdx,SElectron_P4,SElectron_jetIdx,Rho_fixedGridRhoFastjetAll,DummyZero,DummyZero)") # muon and EM factors unused in this call
@@ -521,6 +523,7 @@ def analyze(jesvar):
   
   a.Apply([jCuts, metVars, metCuts])  #, rframeVars
   
+  print("trimming the columns down")
   allColumns = a.GetColumnNames()
   columns = []
   for col in allColumns:
@@ -579,6 +582,7 @@ def analyze(jesvar):
 if not isMC:
   analyze("Nominal")
 else:
+  print("analyzing MC now")
   analyze("Nominal")
   #TODO fix why this not work?  shifts = ["Nominal","JECup","JECdn","JERup","JERdn"]
   #for shift in shifts:
