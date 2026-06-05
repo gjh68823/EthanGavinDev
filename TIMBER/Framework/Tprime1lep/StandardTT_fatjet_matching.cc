@@ -11,7 +11,7 @@ auto get_daughters(int id, unsigned int length, RVec<short> GenPart_genPartIdxMo
   return daughters;
 }
 
-RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, RVec<float> &GenPart_mass, RVec<float> &GenPart_pt, RVec<float> &GenPart_phi, RVec<float> &GenPart_eta, RVec<short> &GenPart_genPartIdxMother, RVec<int> &GenPart_status, RVec<unsigned short> &GenPart_statusFlags, RVec<float> &gcFatJet_pt, RVec<float> &gcFatJet_eta, RVec<float> &gcFatJet_phi, RVec<float> &gcFatJet_M, RVec<int> &gcFatJet_subj_idx1, RVec<int> &gcFatJet_subj_idx2, RVec<unsigned char> &SubJet_hadronFlavour)
+RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, RVec<float> &GenPart_mass, RVec<float> &GenPart_pt, RVec<float> &GenPart_phi, RVec<float> &GenPart_eta, RVec<short> &GenPart_genPartIdxMother, RVec<int> &GenPart_status, RVec<unsigned short> &GenPart_statusFlags, RVec<float> &gcFatJet_pt, RVec<float> &gcFatJet_eta, RVec<float> &gcFatJet_phi, RVec<float> &gcFatJet_M, RVec<short> &gcFatJet_subj_idx1, RVec<short> &gcFatJet_subj_idx2, RVec<unsigned char> &SubJet_hadronFlavour)
 {
   RVec<int> pID; //particle id of the parent
   RVec<int> pStatus; //where in the chain the parent particle is?
@@ -138,29 +138,38 @@ RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int
       pEta.push_back(GenPart_eta[p]);
       pPhi.push_back(GenPart_phi[p]);
       pM.push_back(GenPart_mass[p]);
-
+  
+      std::cout << "Pushed back all parent information" << std::endl;
+      
       if(abs(id) != 6) {
-	d0Status.push_back(GenPart_status[daughters[0]]);
-	d0ID.push_back(GenPart_pdgId[daughters[0]]);
-	d0Pt.push_back(GenPart_pt[daughters[0]]);
-	d0Eta.push_back(GenPart_eta[daughters[0]]);
-	d0Phi.push_back(GenPart_phi[daughters[0]]);
-	d0M.push_back(GenPart_mass[daughters[0]]);
 
-	d1Status.push_back(GenPart_status[daughters[1]]);
-	d1ID.push_back(GenPart_pdgId[daughters[1]]);
-	d1Pt.push_back(GenPart_pt[daughters[1]]);
-	d1Eta.push_back(GenPart_eta[daughters[1]]);
-	d1Phi.push_back(GenPart_phi[daughters[1]]);
-	d1M.push_back(GenPart_mass[daughters[1]]);
+        std::cout << "Particle is not a top, push back daughter info" << std::endl;
 
-	d2Status.push_back(-99);
-	d2ID.push_back(-99);
-	d2Pt.push_back(-99.9);
-	d2Eta.push_back(-99.9);
-	d2Phi.push_back(-99.9);
-	d2M.push_back(-99.9);
+        d0Status.push_back(GenPart_status[daughters[0]]);
+        d0ID.push_back(GenPart_pdgId[daughters[0]]);
+        d0Pt.push_back(GenPart_pt[daughters[0]]);
+        d0Eta.push_back(GenPart_eta[daughters[0]]);
+        d0Phi.push_back(GenPart_phi[daughters[0]]);
+        d0M.push_back(GenPart_mass[daughters[0]]);
+
+        d1Status.push_back(GenPart_status[daughters[1]]);
+        d1ID.push_back(GenPart_pdgId[daughters[1]]);
+        d1Pt.push_back(GenPart_pt[daughters[1]]);
+        d1Eta.push_back(GenPart_eta[daughters[1]]);
+        d1Phi.push_back(GenPart_phi[daughters[1]]);
+        d1M.push_back(GenPart_mass[daughters[1]]);
+
+        d2Status.push_back(-99);
+        d2ID.push_back(-99);
+        d2Pt.push_back(-99.9);
+        d2Eta.push_back(-99.9);
+        d2Phi.push_back(-99.9);
+        d2M.push_back(-99.9);
+
+        std::cout << "push back success" << std::endl;
+
       }else{ //if is t
+        std::cout << "Particle is a top, pushing back daughter info" << std::endl;
 
   //Can mess around with value if needed
   unsigned int W = 1000;
@@ -173,6 +182,8 @@ RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int
 	  W = daughters[1];
 	  b = daughters[0];
 	}
+
+  std::cout << "W and b have been assigned" << std::endl;
 
 	vector<unsigned int> W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
 	if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22) {
@@ -193,15 +204,18 @@ RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int
 	d1Phi.push_back(GenPart_phi[W_daughters[0]]);
 	d1M.push_back(GenPart_mass[W_daughters[0]]);
 
-        d2Status.push_back(GenPart_status[W_daughters[1]]);
+  d2Status.push_back(GenPart_status[W_daughters[1]]);
 	d2ID.push_back(GenPart_pdgId[W_daughters[1]]);
 	d2Pt.push_back(GenPart_pt[W_daughters[1]]);
 	d2Eta.push_back(GenPart_eta[W_daughters[1]]);
 	d2Phi.push_back(GenPart_phi[W_daughters[1]]);
 	d2M.push_back(GenPart_mass[W_daughters[1]]);
+
+  std::cout << "push back success" << std::endl;
     
       }
     }
+  std::cout << "Finished particle " << i << " it is a: " << abs(id) << std::endl;
   }
 
   RVec<float> fatjet_truth;
