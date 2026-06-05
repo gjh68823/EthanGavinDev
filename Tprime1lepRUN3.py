@@ -123,6 +123,7 @@ CompileCpp('TIMBER/Framework/Tprime1lep/selfDerived_corrs.cc')
 CompileCpp('TIMBER/Framework/Tprime1lep/corr_funcs.cc')
 CompileCpp('TIMBER/Framework/Tprime1lep/topographInput.cc') 
 CompileCpp('TIMBER/Framework/Tprime1lep/manualreco.cc') 
+CompileCpp('TIMBER/Framework/Tprime1lep/StandardTT_fatjet_matching.cc') 
 ROOT.gInterpreter.ProcessLine('#include "TString.h"')
 
 # Enable using 4 threads
@@ -423,7 +424,7 @@ def analyze(jesvar):
   jVars.Add("gcFatJet_hadronFlavour", "reorder(FatJet_hadronFlavour[goodcleanFatJets == true], gcFatJet_ptargsort)")
   
   jVars.Add("gcFatJet_vetomap", "jetvetofunc(jetvetocorr, gcFatJet_eta, gcFatJet_phi)")
-  if isMc:
+  if isMC:
     jVars.Add("gcFatJet_matches", "fatjet_matching(region, nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status, GenPart_statusFlags, gcFatJet_pt, gcFatJet_eta, gcFatJet_phi, gcFatJet_mass, gcFatJet_subJetIdx1, gcFatJet_subJetIdx2, gcFatJet_hadronFlavour)")
   
   #WORK ON THIS MORE -- need to just be isolated from the 3 highest-pt fat jets, not any of them...
