@@ -20,16 +20,22 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
   RVec<float> pPhi;
   RVec<float> pM;
   
+  RVec<float> d0ID;
+  RVec<float> d0Status;
   RVec<float> d0Pt;
   RVec<float> d0Eta;
   RVec<float> d0Phi;
   RVec<float> d0M;
   
+  RVec<float> d1ID;
+  RVec<float> d1Status;
   RVec<float> d1Pt;
   RVec<float> d1Eta;
   RVec<float> d1Phi;
   RVec<float> d1M;
   
+  RVec<float> d2ID;
+  RVec<float> d2Status;
   RVec<float> d2Pt;
   RVec<float> d2Eta;
   RVec<float> d2Phi;
@@ -54,8 +60,8 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	if(abs(dID) == abs(id)) {hasRadiation = true;} //check for radiation
 	else if(abs(dID) == 24 || abs(dID) == 23) { //check t->Wb->leptons and H->WW->leptons, check H->ZZ->leptons
 	  vector<unsigned int>granddaughters = get_daughters(daughters[j]);
-	  if(abs(GenPart_pdgId[granddaughters[0]]) > 10 && abs(GenPart_pdgId[granddaughters[0]]) < 17) {hasLepton = true}
-	  if(abs(GenPart_pdgId[granddaughters[1]]) > 10 && abs(GenPart_pdgId[granddaughters[1]]) < 17) {hasLepton = true}
+	  if(abs(GenPart_pdgId[granddaughters[0]]) > 10 && abs(GenPart_pdgId[granddaughters[0]]) < 17) {hasLepton = true;}
+	  if(abs(GenPart_pdgId[granddaughters[1]]) > 10 && abs(GenPart_pdgId[granddaughters[1]]) < 17) {hasLepton = true;}
 
 	}
 	else if(abs(dID) > 10 && abs(dID) < 17) {hasLepton = true;}
@@ -71,7 +77,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
       //if(hasLepton) continue;
       //if(GenPart_pt[p] < 175) continue;
       
-      vector<unsigned int>siblings = get_daughters(GenPart_genPartIdxMother[p]);
+      vector<unsigned int> siblings = get_daughters(GenPart_genPartIdxMother[p]);
       
       if(abs(id) == 24) { //if W
 	std::cout << "\t particle is a W, will now investigate the dR." << std::endl;
@@ -79,7 +85,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	float dR = 1000;
 
 	//find topmost mother of a repeating chain
-	while(GenPart_genPartIdxMother[p] != -1 && abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 24) {p = GenPart_genPartIdxMother[p]}
+	while(GenPart_genPartIdxMother[p] != -1 && abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 24) {p = GenPart_genPartIdxMother[p];}
 
 	if(abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 6) { //dRWB
 	  //dr btwn current particle and its sibling
@@ -107,7 +113,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	std::cout << "\t particle is a Z, will now investigate the dR." << std::endl;
 
 	//find topmost mother of a repeating chain
-	while(GenPart_genPartIdxMother[p] != -1 && abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 23) {p = GenPart_genPartIdxMother[p]}
+	while(GenPart_genPartIdxMother[p] != -1 && abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 23) {p = GenPart_genPartIdxMother[p];}
 	
 	if(GenPart_genPartIdxMother[p] == 25) {
 	  float dr = 1000;
@@ -155,6 +161,11 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	d2Phi.push_back(-99.9);
 	d2M.push_back(-99.9);
       }else{ //if is t
+
+  //Can mess around with value if needed
+  unsigned int W = 1000;
+  unsigned int b = 1000;
+
 	if(abs(GenPart_pdgId[daughters[0]]) == 24) {
 	  W = daughters[0];
 	  b = daughters[1];
