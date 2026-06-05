@@ -175,7 +175,9 @@ def analyze(jesvar):
   mutrig = "OldMu100_or_TkMu100"
   
   PNetL = {'2022':0.047,'2022EE':0.0499,'2023':0.0358,'2023BPix':0.0359} #PN
-  yrstr = {'2022':"Run3-22CDSep23-Summer22-NanoAODv12",'2022EE':"Run3-22EFGSep23-Summer22EE-NanoAODv12",'2023':"Run3-23CSep23-Summer23-NanoAODv12",'2023BPix':"Run3-23DSep23-Summer23BPix-NanoAODv12"}
+#  yrstr = {'2022':"Run3-22CDSep23-Summer22-NanoAODv12",'2022EE':"Run3-22EFGSep23-Summer22EE-NanoAODv12",'2023':"Run3-23CSep23-Summer23-NanoAODv12",'2023BPix':"Run3-23DSep23-Summer23BPix-NanoAODv12"}
+  yrstr = {'2022' : "2022_Summer22",'2022EE':"2022_Summer22EE",'2023':"2023_Summer23",'2023BPix':"2023_Summer23BPix"}
+
   jmetags = {'2022':'2025-09-23','2022EE':'2025-10-07','2023':'2025-10-07','2023BPix':'2025-10-07'}
   btvtags = {'2022':'2025-08-20','2022EE':'2025-08-20','2023':'2025-08-20','2023BPix':'2025-08-20'}
   egmtags = {'2022':'2025-10-22','2022EE':'2025-10-22','2023':'2025-10-22','2023BPix':'2025-10-22'}

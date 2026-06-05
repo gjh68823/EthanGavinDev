@@ -1,9 +1,9 @@
 using namespace std;
 using namespace ROOT::VecOps;
 
-auto get_daughters(int id) {
+auto get_daughters(int id, unsigned int length, RVec<short> GenPart_genPartIdxMother) {
   vector<unsigned int> daughters;
-  for (unsigned int d = id; d < nGenPart; d++){
+  for (unsigned int d = id; d < length; d++){
 	if (GenPart_genPartIdxMother[d]!=id){continue;}
 	daughters.push_back(d); //get a list of all the daughters of this particle
       }
@@ -11,7 +11,7 @@ auto get_daughters(int id) {
   return daughters;
 }
 
-auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, RVec<float> &GenPart_mass, RVec<float> &GenPart_pt, RVec<float> &GenPart_phi, RVec<float> &GenPart_eta, RVec<short> &GenPart_genPartIdxMother, RVec<int> &GenPart_status, RVec<unsigned short> &GenPart_statusFlags, RVec<float> &gcFatJet_pt, RVec<float> &gcFatJet_eta, RVec<float> &gcFatJet_phi, RVec<float> &gcFatJet_M, RVec<int> &gcFatJet_subj_idx1, RVec<int> &gcFatJet_subj_idx2, RVec<int> &FatJet_hadronFlavour)
+RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, RVec<float> &GenPart_mass, RVec<float> &GenPart_pt, RVec<float> &GenPart_phi, RVec<float> &GenPart_eta, RVec<short> &GenPart_genPartIdxMother, RVec<int> &GenPart_status, RVec<unsigned short> &GenPart_statusFlags, RVec<float> &gcFatJet_pt, RVec<float> &gcFatJet_eta, RVec<float> &gcFatJet_phi, RVec<float> &gcFatJet_M, RVec<int> &gcFatJet_subj_idx1, RVec<int> &gcFatJet_subj_idx2, RVec<unsigned char> &SubJet_hadronFlavour)
 {
   RVec<int> pID; //particle id of the parent
   RVec<int> pStatus; //where in the chain the parent particle is?
@@ -20,22 +20,22 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
   RVec<float> pPhi;
   RVec<float> pM;
   
-  RVec<float> d0ID;
-  RVec<float> d0Status;
+  RVec<int> d0ID;
+  RVec<int> d0Status;
   RVec<float> d0Pt;
   RVec<float> d0Eta;
   RVec<float> d0Phi;
   RVec<float> d0M;
   
-  RVec<float> d1ID;
-  RVec<float> d1Status;
+  RVec<int> d1ID;
+  RVec<int> d1Status;
   RVec<float> d1Pt;
   RVec<float> d1Eta;
   RVec<float> d1Phi;
   RVec<float> d1M;
   
-  RVec<float> d2ID;
-  RVec<float> d2Status;
+  RVec<int> d2ID;
+  RVec<int> d2Status;
   RVec<float> d2Pt;
   RVec<float> d2Eta;
   RVec<float> d2Phi;
@@ -52,14 +52,14 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 
     if(abs(id) == 23 || abs(id) == 24 || abs(id) == 25 || abs(id) == 6){
       std::cout << "\t particle is a " << abs(id) << ", will now check for leptons and radiation." << std::endl;
-      vector<unsigned int> daughters = get_daughters(id);
+      vector<unsigned int> daughters = get_daughters(id, nGenPart, GenPart_genPartIdxMother);
 
       //check for radiation and leptons
       for (unsigned int j = 0; j < daughters.size(); j++){
 	int dID = GenPart_pdgId[daughters[j]];
 	if(abs(dID) == abs(id)) {hasRadiation = true;} //check for radiation
 	else if(abs(dID) == 24 || abs(dID) == 23) { //check t->Wb->leptons and H->WW->leptons, check H->ZZ->leptons
-	  vector<unsigned int>granddaughters = get_daughters(daughters[j]);
+	  vector<unsigned int>granddaughters = get_daughters(daughters[j], nGenPart, GenPart_genPartIdxMother);
 	  if(abs(GenPart_pdgId[granddaughters[0]]) > 10 && abs(GenPart_pdgId[granddaughters[0]]) < 17) {hasLepton = true;}
 	  if(abs(GenPart_pdgId[granddaughters[1]]) > 10 && abs(GenPart_pdgId[granddaughters[1]]) < 17) {hasLepton = true;}
 
@@ -77,7 +77,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
       //if(hasLepton) continue;
       //if(GenPart_pt[p] < 175) continue;
       
-      vector<unsigned int> siblings = get_daughters(GenPart_genPartIdxMother[p]);
+      vector<unsigned int> siblings = get_daughters(GenPart_genPartIdxMother[p], nGenPart, GenPart_genPartIdxMother);
       
       if(abs(id) == 24) { //if W
 	std::cout << "\t particle is a W, will now investigate the dR." << std::endl;
@@ -91,7 +91,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	  //dr btwn current particle and its sibling
 	  dR = DeltaR(GenPart_eta[p], GenPart_eta[siblings[1]], GenPart_phi[p], GenPart_phi[siblings[1]]);
 	  
-	  if(GenPart_pdgId[sibling[1]] == 24) {
+	  if(GenPart_pdgId[siblings[1]] == 24) {
 	    dR = DeltaR(GenPart_eta[p], GenPart_eta[siblings[0]], GenPart_phi[p], GenPart_phi[siblings[0]]);}
 	  
 	}else if(abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 25){ //dRWW
@@ -154,8 +154,8 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	d1Phi.push_back(GenPart_phi[daughters[1]]);
 	d1M.push_back(GenPart_mass[daughters[1]]);
 
-	d2Status.push_back(-99.9);
-	d2ID.push_back(-99.9);
+	d2Status.push_back(-99);
+	d2ID.push_back(-99);
 	d2Pt.push_back(-99.9);
 	d2Eta.push_back(-99.9);
 	d2Phi.push_back(-99.9);
@@ -174,7 +174,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	  b = daughters[0];
 	}
 
-	vector<unsigned int> W_daughters = get_daughters(W);
+	vector<unsigned int> W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
 	if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22) {
 	  std::cout << "W has a photon daughter" << std::endl;
 	}
@@ -208,7 +208,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
   RVec<float> fatjet_matchedPt;
 
   std::cout << "Investigating fatJets:" << std::endl;
-  for(unsigned int i = 0; i < gcFatJet_Pt.size(); i++){
+  for(unsigned int i = 0; i < gcFatJet_pt.size(); i++){
     TLorentzVector fatjet, truePart, d0, d1, d2;
     
     fatjet.SetPtEtaPhiM(gcFatJet_pt[i], gcFatJet_eta[i], gcFatJet_phi[i], gcFatJet_M[i]);
@@ -227,19 +227,21 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
       truePart.SetPtEtaPhiM(pPt[j], pEta[j], pPhi[j], pM[j]);
 
       if(fatjet.DeltaR(truePart) < minDR) {
+  cout << "fatjet DeltaR = " << fatjet.DeltaR(truePart) << endl;
 	minDR = fatjet.DeltaR(truePart);
 	matchedPt = pPt[j];
 	matchedID = abs(pID[j]);
 	d0.SetPtEtaPhiM(d0Pt[j], d0Eta[j], d0Phi[j], d0M[j]);
 	d1.SetPtEtaPhiM(d1Pt[j], d1Eta[j], d1Phi[j], d1M[j]);
 	d2.SetPtEtaPhiM(d2Pt[j], d2Eta[j], d2Phi[j], d2M[j]);
+  cout << "Succesfully initialized daughter TLorentz Vecs" << endl;
       }
     }
     
     bool WallDsInJet = false;
     bool TallDsInJet = false;
-    if(matchedID != 6 && fatjet[i].DeltaR(d0) < 0.8 && fatjet[i].DeltaR(d1) < 0.8) WallDsInJet = true;
-    if(matchedID == 6 && fatjet[i].DeltaR(d0) < 0.8 && fatjet[i].DeltaR(d1) < 0.8 && fatjet[i].DeltaR(d2) < 0.8) TallDsInJet = true;
+    if(matchedID != 6 && fatjet.DeltaR(d0) < 0.8 && fatjet.DeltaR(d1) < 0.8) WallDsInJet = true;
+    if(matchedID == 6 && fatjet.DeltaR(d0) < 0.8 && fatjet.DeltaR(d1) < 0.8 && fatjet.DeltaR(d2) < 0.8) TallDsInJet = true;
     if(minDR < 0.8 && matchedID == 24 && WallDsInJet) isWmatched = true;
     if(minDR < 0.8 && matchedID == 25 && WallDsInJet) isHmatched = true;
     if(minDR < 0.8 && matchedID == 23 && WallDsInJet) isZmatched = true;
@@ -258,6 +260,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
       int secondsub = gcFatJet_subj_idx2[i];
       
       if(firstsub > 0) {
+  cout << "Hadron Flavour is: "<< SubJet_hadronFlavour[firstsub] << "Type is: " << typeid(SubJet_hadronFlavour[firstsub]).name()<< endl;
 	if(SubJet_hadronFlavour[firstsub] == 5) isBmatched = true;}
       if(secondsub > 0) {
 	if(SubJet_hadronFlavour[secondsub] == 5) isBmatched = true;}
