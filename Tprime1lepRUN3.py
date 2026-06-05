@@ -224,12 +224,12 @@ def analyze(jesvar):
 
   print(f"year is ", year)
   print(f"deepjetL[year]    = ", deepjetL[year])
-  print(f"yrstr[year]       = ", yrstr[[year])
-  print(f"jecyr[year]       = ", jecyr[[year])
-  print(f"jeryr[year]       = ", jeryr[[year])
+  print(f"yrstr[year]       = ", yrstr[year])
+  print(f"jecyr[year]       = ", jecyr[year])
+  print(f"jeryr[year]       = ", jeryr[year])
   print(f"jecver[year]      = ", jecver[year])
   print(f"puname[year]      = ", puname[year])
-  print(f"jetvetomap[year]  = ", jetvetomap[year])
+  print(f"jetvetoname[year]  = ", jetvetoname[year])
   print(f"elecyr[year]      = ", elecyr[year])
   
   ROOT.gInterpreter.Declare("""
@@ -266,7 +266,8 @@ def analyze(jesvar):
 
     #print(ROOT.ak4corrset)
     print(jecyr[year]+"_"+jecver[year]+"_MC_L1FastJet_AK4PFPuppi")
-    
+    print("This is muotag: ", muotags[year])
+
     ROOT.gInterpreter.Declare("""
   float PNetL = """+str(PNetL[year])+""";
   string yrstr = \""""+yrstr[year]+"""\";
@@ -328,9 +329,6 @@ def analyze(jesvar):
     ROOT.gInterpreter.Declare("""
     auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/jet_jerc.json.gz"); 
     auto ak8corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/fatJet_jerc.json.gz"); 
-
-    print(ROOT.ak4corrset)
-    print(jecyr[year]+"_"+jecver[year]+"_MC_L1FastJet_AK4PFPuppi")
     """)
     
     ROOT.gInterpreter.Declare("""
@@ -429,7 +427,6 @@ def analyze(jesvar):
   
   if isMC:          #TODO fix dummy comments
     print("About to work on cleaning the jets")
-    print(GenJet_pt)
     jVars.Add("GenJet_P4","fVectorConstructor(GenJet_pt,GenJet_eta,GenJet_phi,GenJet_mass)")
     jVars.Add("cleanedJets", "cleanJetsMC(debug,year,jesvar,ak4corr,ak4corrL1,ak4corrUnc,ak4ptres,ak4jer,ak8corr,ak8corrUnc,Jet_P4,Jet_rawFactor,Jet_muonSubtrFactor,Jet_area,Jet_EmEF,Jet_jetId,GenJet_P4,Jet_genJetIdx,SMuon_P4,SMuon_jetIdx,SElectron_P4,SElectron_jetIdx,Rho_fixedGridRhoFastjetAll,DummyZero,DummyZero)") # muon and EM factors unused in this call
     jVars.Add("cleanMets", "cleanJetsMC(debug,year,jesvar,ak4corr,ak4corrL1,ak4corrUnc,ak4ptres,ak4jer,ak8corr,ak8corrUnc,Jet_P4,Jet_rawFactor,Jet_muonSubtrFactor,Jet_area,Jet_EmEF,Jet_jetId,GenJet_P4,Jet_genJetIdx,SMuon_P4,SMuon_jetIdx,SElectron_P4,SElectron_jetIdx,Rho_fixedGridRhoFastjetAll,RawMET_pt,RawMET_phi)") # lepton args are unused in this call
@@ -505,7 +502,7 @@ def analyze(jesvar):
   jVars.Add("gcFatJet_hadronFlavour", "reorder(FatJet_hadronFlavour[goodcleanFatJets == true], gcFatJet_ptargsort)")
   
   jVars.Add("gcFatJet_vetomap", "jetvetofunc(jetvetocorr, gcFatJet_eta, gcFatJet_phi)")
-  if isMc:
+  if isMC:
     jVars.Add("gcFatJet_matches", "fatjet_matching(region, nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status, GenPart_statusFlags, gcFatJet_pt, gcFatJet_eta, gcFatJet_phi, gcFatJet_mass, gcFatJet_subJetIdx1, gcFatJet_subJetIdx2, gcFatJet_hadronFlavour)")
   #WORK ON THIS MORE -- need to just be isolated from the 3 highest-pt fat jets, not any of them...
   #jVars.Add("Isolated_AK4","standalone_Jet(gcJet_eta, gcJet_phi, gcFatJet_eta, gcFatJet_phi)")
