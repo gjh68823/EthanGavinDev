@@ -185,23 +185,23 @@ def analyze(jesvar):
 
   PNetL = {'2022':0.047,'2022EE':0.0499,'2023':0.0358,'2023BPix':0.0359} #PN #Need to Update
   yrstr = {'2022':"Run3-22CDSep23-Summer22-NanoAODv12",'2022EE':"Run3-22EFGSep23-Summer22EE-NanoAODv12",'2023':"Run3-23CSep23-Summer23-NanoAODv12",'2023BPix':"Run3-23DSep23-Summer23BPix-NanoAODv12",'2024':"Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15",'2025':"Run3-25Prompt-Summer24-NanoAODv15"}
-  jmetags = {'2022':'2025-09-23','2022EE':'2025-10-07','2023':'2025-10-07','2023BPix':'2025-10-07'}
+  jmetags = {'2022':'2026-04-13','2022EE':'2026-04-13','2023':'2026-04-13','2023BPix':'2026-04-13','2024':'2025-12-02'}  #Need 2025
   btvtags = {'2022':'2025-08-20','2022EE':'2025-08-20','2023':'2025-08-20','2023BPix':'2025-08-20','2024':'2026-03-10','2025','2026-05-27'}
   egmtags = {'2022':'2025-12-15','2022EE':'2025-12-15','2023':'2025-12-15','2023BPix':'2025-12-15','2024':'2025-12-15','2025':'2026-05-06'}
-  muotags = {'2022':'2025-08-14','2022EE':'2025-08-14','2023':'2025-08-14','2023BPix':'2025-08-14'}
-  tautags = {'2022':'2025-12-25','2022EE':'2025-12-25','2023':'2025-12-25','2023BPix':'2025-12-25','2024':'2026-01-14'}
-  lumtags = {'2022':'2024-01-31','2022EE':'2024-01-31','2023':'2024-01-31','2023BPix':'2024-01-31'}      
+  muotags = {'2022':'2026-04-28','2022EE':'2026-04-28','2023':'2026-04-28','2023BPix':'2026-04-28','2024':'2026-04-28','2025':'2026-04-28'}
+  tautags = {'2022':'2025-12-25','2022EE':'2025-12-25','2023':'2025-12-25','2023BPix':'2025-12-25','2024':'2026-01-14'}  #Need 2025
+  lumtags = {'2022':'2024-01-31','2022EE':'2024-01-31','2023':'2024-01-31','2023BPix':'2024-01-31','2024':'2026-04-15','2025':'latest'}      
   jecyr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23"}   #Need to Update
   if not isMC:
       jecyr = {'2022':"Summer22_22Sep2023_RunCD",'2022EE':"Summer22EE_22Sep2023_Run"+jecera,'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23"}   #Need to Update
   jeryr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23_RunCv1234",'2023BPix':"Summer23BPixPrompt23_RunD"}  #Need to Update
   jecver = {'2022':"V3",'2022EE':"V3",'2023':"V2",'2023BPix':"V3"}   #Need to Update
-  puname = {'2022':"Collisions2022_355100_357900_eraBCD_GoldenJson",'2022EE':"Collisions2022_359022_362760_eraEFG_GoldenJson",'2023':"Collisions2023_366403_369802_eraBC_GoldenJson",'2023BPix':"Collisions2023_369803_370790_eraD_GoldenJson",'2024':"Collisions_B_goldenJSON"}
+  puname = {'2022':"Collisions2022_355100_357900_eraBCD_GoldenJson",'2022EE':"Collisions2022_359022_362760_eraEFG_GoldenJson",'2023':"Collisions2023_366403_369802_eraBC_GoldenJson",'2023BPix':"Collisions2023_369803_370790_eraD_GoldenJson",'2024':"Collisions_B_goldenJSON"}   #Need 2025
   jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1"}    #Need to Update
   elecyr = {'2022':"2022Re-recoBCD",'2022EE':"2022Re-recoE+PromptFG",'2023':"2023PromptC",'2023BPix':"2023PromptD",'2024':"2024Prompt",'2025':"2025Prompt"}
-  tauyr = {'2022':"2022_preEE",'2022EE':"2022_postEE",'2023':"2023_preBPix",'2023BPix':"2023_postBPix",'2024':"2024"} 
-  METyr = {'2022':"2022",'2022EE':"2022EE",'2023':"2023",'2023BPix':"2023BPix"} 
-  METsimpleyr = {'2022':"2022",'2022EE':"2022",'2023':"2023",'2023BPix':"2023"} 
+  tauyr = {'2022':"2022_preEE",'2022EE':"2022_postEE",'2023':"2023_preBPix",'2023BPix':"2023_postBPix",'2024':"2024"}  #Need 2025
+  METyr = {'2022':"2022",'2022EE':"2022EE",'2023':"2023",'2023BPix':"2023BPix",'2024':"2024",'2025':"2025"}                             #check this with Hogan
+  METsimpleyr = {'2022':"2022",'2022EE':"2022",'2023':"2023",'2023BPix':"2023",'2024':"2024",'2025':"2025"} 
   btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"deepJet_comb",'2023BPix':"deepJet_comb"}  #Need to Update
 
   print(jecyr[year]+"_"+jecver[year]+"_DATA_L1L2L3Res_AK4PFPuppi")
@@ -560,6 +560,7 @@ def analyze(jesvar):
     jVars.Add('btagWeights', 'btagshapefunc(year,jesvar,btagwpbccorr,btagwplcorr,btagptbins,btageffs,PNetL,gcJet_pt,gcJet_eta,gcJet_PNet,gcJet_hflav)')
 
   jCuts = CutGroup('JetCuts')  
+  jCuts.Add('Event has no vetoed jets', 'Sum(gcJet_vetomap) == 0')
   jCuts.Add('NgoodcleanJets >= 2', 'NgoodcleanJets >= 2')
   jCuts.Add('2 B Jets Pass (Loose)', 'NJets_PNetL >= 2')
 
