@@ -5,6 +5,7 @@ import ROOT
 from ROOT import TFile
 import sys, os
 import gc
+from rates import to_cpp_vec2d, pnet_loose
 
 gc.disable()
 
@@ -173,7 +174,7 @@ def analyze(jesvar):
   # ------------------ correctionsLib corrections ------------------
 
   mutrig = "OldMu100_or_TkMu100"
-  
+  deepjetL = {'2022':0.0583,'2022EE':0.0614,'2023':0.0479,'2023BPix':0.048}
   PNetL = {'2022':0.047,'2022EE':0.0499,'2023':0.0358,'2023BPix':0.0359} #PN
 #  yrstr = {'2022':"Run3-22CDSep23-Summer22-NanoAODv12",'2022EE':"Run3-22EFGSep23-Summer22EE-NanoAODv12",'2023':"Run3-23CSep23-Summer23-NanoAODv12",'2023BPix':"Run3-23DSep23-Summer23BPix-NanoAODv12"}
   yrstr = {'2022' : "2022_Summer22",'2022EE':"2022_Summer22EE",'2023':"2023_Summer23",'2023BPix':"2023_Summer23BPix"}
@@ -197,8 +198,9 @@ def analyze(jesvar):
   METsimpleyr = {'2022':"2022",'2022EE':"2022",'2023':"2023",'2023BPix':"2023"} 
   btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"deepJet_comb",'2023BPix':"deepJet_comb"}
 
-  #float deepjetL = """+str(deepjetL[year])+""";
+  
   ROOT.gInterpreter.Declare("""
+  float deepjetL = """+str(deepjetL[year])+""";
   string yrstr = \""""+yrstr[year]+"""\";
   string jecyr = \""""+jecyr[year]+"""\";
   string jeryr = \""""+jeryr[year]+"""\";
@@ -239,7 +241,7 @@ def analyze(jesvar):
     auto ak8corrset = correction::CorrectionSet::from_file("/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/JME/"+yrstr+"/fatJet_jerc.json.gz"); 
     """)
 
-    print(ROOT.ak4corrset)
+    #print(ROOT.ak4corrset)
     print(jecyr[year]+"_"+jecver[year]+"_MC_L1FastJet_AK4PFPuppi")
     
     ROOT.gInterpreter.Declare("""
