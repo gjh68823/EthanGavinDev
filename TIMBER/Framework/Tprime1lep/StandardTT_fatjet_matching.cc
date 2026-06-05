@@ -11,7 +11,7 @@ auto get_daughters(int id, unsigned int length, RVec<short> GenPart_genPartIdxMo
   return daughters;
 }
 
-RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, RVec<float> &GenPart_mass, RVec<float> &GenPart_pt, RVec<float> &GenPart_phi, RVec<float> &GenPart_eta, RVec<short> &GenPart_genPartIdxMother, RVec<int> &GenPart_status, RVec<unsigned short> &GenPart_statusFlags, RVec<float> &gcFatJet_pt, RVec<float> &gcFatJet_eta, RVec<float> &gcFatJet_phi, RVec<float> &gcFatJet_M, RVec<short> &gcFatJet_subj_idx1, RVec<short> &gcFatJet_subj_idx2, RVec<unsigned char> &SubJet_hadronFlavour)
+auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, RVec<float> &GenPart_mass, RVec<float> &GenPart_pt, RVec<float> &GenPart_phi, RVec<float> &GenPart_eta, RVec<short> &GenPart_genPartIdxMother, RVec<int> &GenPart_status, RVec<unsigned short> &GenPart_statusFlags, RVec<float> &gcFatJet_pt, RVec<float> &gcFatJet_eta, RVec<float> &gcFatJet_phi, RVec<float> &gcFatJet_M, RVec<short> &gcFatJet_subj_idx1, RVec<short> &gcFatJet_subj_idx2, RVec<unsigned char> &SubJet_hadronFlavour)
 {
   RVec<int> pID; //particle id of the parent
   RVec<int> pStatus; //where in the chain the parent particle is?
@@ -42,7 +42,8 @@ RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int
   RVec<float> d2M;
 
   std::cout << "Inside fatjet_matching. Will now beign matching:" << std::endl;
-
+  std::cout << "There are " << nGenPart << " particles in total."  << std::endl;
+  std::cout << "===================================" << std::endl;
   for(unsigned int i = 0; i < nGenPart; i++){
     int p = i; //initialize the parent idx
     int id = GenPart_pdgId[p];
@@ -130,6 +131,7 @@ RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int
       
       if(daughters.size() < 2) {
 	std::cout << daughters.size() << " daughters from " << GenPart_pdgId[p] << std::endl;
+	continue;
       }
 
       pStatus.push_back(GenPart_status[p]);
@@ -139,11 +141,11 @@ RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int
       pPhi.push_back(GenPart_phi[p]);
       pM.push_back(GenPart_mass[p]);
   
-      std::cout << "Pushed back all parent information" << std::endl;
+      std::cout << " \t Pushed back all parent information" << std::endl;
       
       if(abs(id) != 6) {
 
-        std::cout << "Particle is not a top, push back daughter info" << std::endl;
+        std::cout << "\t Particle is not a top, push back daughter info" << std::endl;
 
         d0Status.push_back(GenPart_status[daughters[0]]);
         d0ID.push_back(GenPart_pdgId[daughters[0]]);
@@ -166,10 +168,10 @@ RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int
         d2Phi.push_back(-99.9);
         d2M.push_back(-99.9);
 
-        std::cout << "push back success" << std::endl;
+        std::cout << "\t push back success" << std::endl;
 
       }else{ //if is t
-        std::cout << "Particle is a top, pushing back daughter info" << std::endl;
+        std::cout << "\t Particle is a top, pushing back daughter info" << std::endl;
 
   //Can mess around with value if needed
   unsigned int W = 1000;
@@ -183,11 +185,11 @@ RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int
 	  b = daughters[0];
 	}
 
-  std::cout << "W and b have been assigned" << std::endl;
+  std::cout << "\t \t W and b have been assigned" << std::endl;
 
 	vector<unsigned int> W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
 	if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22) {
-	  std::cout << "W has a photon daughter" << std::endl;
+	  std::cout << "\t \t \t W has a photon daughter" << std::endl;
 	}
 
 	d0Status.push_back(GenPart_status[b]);
@@ -211,7 +213,7 @@ RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int
 	d2Phi.push_back(GenPart_phi[W_daughters[1]]);
 	d2M.push_back(GenPart_mass[W_daughters[1]]);
 
-  std::cout << "push back success" << std::endl;
+  std::cout << "\t daughter push back success" << std::endl;
     
       }
     }
@@ -221,12 +223,13 @@ RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int
   RVec<float> fatjet_truth;
   RVec<float> fatjet_matchedPt;
 
-  std::cout << "Investigating fatJets:" << std::endl;
+
+  std::cout << "=====================Investigating " << gcFatJet_pt.size() << " fatJets ====================" << std::endl;
   for(unsigned int i = 0; i < gcFatJet_pt.size(); i++){
     TLorentzVector fatjet, truePart, d0, d1, d2;
     
     fatjet.SetPtEtaPhiM(gcFatJet_pt[i], gcFatJet_eta[i], gcFatJet_phi[i], gcFatJet_M[i]);
-  
+    std::cout << "fatjet " << i << std::endl;
     float minDR = 1000;
     float matchedPt= -99;
     int matchedID = 0;
@@ -241,14 +244,14 @@ RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int
       truePart.SetPtEtaPhiM(pPt[j], pEta[j], pPhi[j], pM[j]);
 
       if(fatjet.DeltaR(truePart) < minDR) {
-  cout << "fatjet DeltaR = " << fatjet.DeltaR(truePart) << endl;
+	std::cout << "\t fatjet DeltaR with truePart " << j << " = " << fatjet.DeltaR(truePart) << std::endl;
 	minDR = fatjet.DeltaR(truePart);
 	matchedPt = pPt[j];
 	matchedID = abs(pID[j]);
 	d0.SetPtEtaPhiM(d0Pt[j], d0Eta[j], d0Phi[j], d0M[j]);
 	d1.SetPtEtaPhiM(d1Pt[j], d1Eta[j], d1Phi[j], d1M[j]);
 	d2.SetPtEtaPhiM(d2Pt[j], d2Eta[j], d2Phi[j], d2M[j]);
-  cout << "Succesfully initialized daughter TLorentz Vecs" << endl;
+	std::cout << "\t Succesfully initialized daughter TLorentz Vecs" << std::endl;
       }
     }
     
@@ -274,16 +277,16 @@ RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int
       int secondsub = gcFatJet_subj_idx2[i];
       
       if(firstsub > 0) {
-  cout << "Hadron Flavour is: "<< SubJet_hadronFlavour[firstsub] << "Type is: " << typeid(SubJet_hadronFlavour[firstsub]).name()<< endl;
+  cout << "\t \t Hadron Flavour is: "<< SubJet_hadronFlavour[firstsub] << " Type is: " << typeid(SubJet_hadronFlavour[firstsub]).name() << endl;
 	if(SubJet_hadronFlavour[firstsub] == 5) isBmatched = true;}
       if(secondsub > 0) {
 	if(SubJet_hadronFlavour[secondsub] == 5) isBmatched = true;}
       
       if(not isBmatched) {
-	std::cout << "\t \t jet is light quarks." << std::endl;
+	std::cout << "\t \t \t jet is light quarks." << std::endl;
 	isJmatched = true;
       }else{
-	std::cout << "\t \t jet is b matched" << std::endl;
+	std::cout << "\t \t \t jet is b matched" << std::endl;
       }
     }
 
@@ -295,10 +298,13 @@ RVec<RVec<float>> fatjet_matching(string sample, unsigned int nGenPart, RVec<int
     if(isBmatched) fatjet_truth.push_back(5);
 
     fatjet_matchedPt.push_back(matchedPt);
+    std::cout << "\t fatjet " << i << " matchedPt has been pushed back" << std::endl;
     }
   }
-  RVec<RVec<float>> gcFatJetTruth = {fatjet_truth, fatjet_matchedPt};
-  return gcFatJetTruth;
+  std::cout << "=============== Done with FatJets =================" << std::endl;
+  //RVec<RVec<float>> gcFatJetTruth = {fatjet_truth, fatjet_matchedPt};
+  //return gcFatJetTruth;
+  return fatjet_truth;
 }
 
 
