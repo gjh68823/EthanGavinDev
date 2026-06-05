@@ -222,6 +222,15 @@ def analyze(jesvar):
   string elecyr = \""""+elecyr[year]+"""\";
   """)
 
+  print(f"year is ", year)
+  print(f"deepjetL[year]    = ", deepjetL[year])
+  print(f"yrstr[year]       = ", yrstr[[year])
+  print(f"jecyr[year]       = ", jecyr[[year])
+  print(f"jeryr[year]       = ", jeryr[[year])
+  print(f"jecver[year]      = ", jecver[year])
+  print(f"puname[year]      = ", puname[year])
+  print(f"jetvetomap[year]  = ", jetvetomap[year])
+  print(f"elecyr[year]      = ", elecyr[year])
   
   ROOT.gInterpreter.Declare("""
   auto pileupcorrset = correction::CorrectionSet::from_file("/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/LUM/"+yrstr+"/puWeights.json.gz");
