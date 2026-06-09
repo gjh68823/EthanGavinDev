@@ -1,10 +1,10 @@
 using namespace std;
 using namespace ROOT::VecOps;
 
-auto get_daughters(int id, unsigned int length, RVec<short> GenPart_genPartIdxMother) {
+auto get_daughters(int idx, unsigned int length, RVec<short> GenPart_genPartIdxMother) {
   vector<unsigned int> daughters;
-  for (unsigned int d = id; d < length; d++){
-	if (GenPart_genPartIdxMother[d]!=id){continue;}
+  for (unsigned int d = idx; d < length; d++){
+	if (GenPart_genPartIdxMother[d]!=idx){continue;}
 	daughters.push_back(d); //get a list of all the daughters of this particle
       }
 
@@ -44,7 +44,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
   std::cout << "Inside fatjet_matching. Will now beign matching:" << std::endl;
   std::cout << "There are " << nGenPart << " particles in total."  << std::endl;
   std::cout << "===================================" << std::endl;
-  for(unsigned int i = 0; i < nGenPart; i++){
+  for(unsigned int i = 0; i < 30; i++){ //Changed top of range from nGenPart to 30
     int p = i; //initialize the parent idx
     int id = GenPart_pdgId[p];
     std::cout << "Starting particle " << i << " it is a: " << abs(id) << std::endl;
@@ -54,24 +54,24 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 
     if(abs(id) == 23 || abs(id) == 24 || abs(id) == 25 || abs(id) == 6){
       std::cout << "\t particle is a " << abs(id) << ", will now check for leptons and radiation." << std::endl;
-      vector<unsigned int> daughters = get_daughters(id, nGenPart, GenPart_genPartIdxMother);
+      vector<unsigned int> daughters = get_daughters(p, nGenPart, GenPart_genPartIdxMother);
 
       //check for radiation and leptons
       for (unsigned int j = 0; j < daughters.size(); j++){
-	int dID = GenPart_pdgId[daughters[j]];
-	if(abs(dID) == abs(id)) {hasRadiation = true;} //check for radiation
-	else if(abs(dID) == 24 || abs(dID) == 23) { //check t->Wb->leptons and H->WW->leptons, check H->ZZ->leptons
-	  vector<unsigned int>granddaughters = get_daughters(daughters[j], nGenPart, GenPart_genPartIdxMother);
-	  if(abs(GenPart_pdgId[granddaughters[0]]) > 10 && abs(GenPart_pdgId[granddaughters[0]]) < 17) {hasLepton = true;}
-	  if(abs(GenPart_pdgId[granddaughters[1]]) > 10 && abs(GenPart_pdgId[granddaughters[1]]) < 17) {hasLepton = true;}
+	      int dID = GenPart_pdgId[daughters[j]];
+	      if(abs(dID) == abs(id)) {hasRadiation = true;} //check for radiation
+	      else if(abs(dID) == 24 || abs(dID) == 23) { //check t->Wb->leptons and H->WW->leptons, check H->ZZ->leptons
+	        vector<unsigned int>granddaughters = get_daughters(daughters[j], nGenPart, GenPart_genPartIdxMother);
+	        if(abs(GenPart_pdgId[granddaughters[0]]) > 10 && abs(GenPart_pdgId[granddaughters[0]]) < 17) {hasLepton = true;}
+	        if(abs(GenPart_pdgId[granddaughters[1]]) > 10 && abs(GenPart_pdgId[granddaughters[1]]) < 17) {hasLepton = true;}
 
-	}
-	else if(abs(dID) > 10 && abs(dID) < 17) {hasLepton = true;}
+	      }
+	      else if(abs(dID) > 10 && abs(dID) < 17) {hasLepton = true;}
       }
 
       if(hasRadiation || hasLepton || GenPart_pt[p] < 175) {
-	std::cout << "\t \t Particle either has radiation, a lepton, or is too soft. skip this one." << std::endl;
-	continue;
+	      std::cout << "\t \t Particle either has radiation, a lepton, or is too soft. skip this one." << std::endl;
+	      continue;
       }
       
       //skip this particle if...
@@ -181,16 +181,23 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	if(abs(GenPart_pdgId[daughters[0]]) == 24) {
 	  W = daughters[0];
 	  b = daughters[1];
-    std::cout << "\t \t W is 0th daughter: " << W << ", b is: " << b << std::endl;
+    std::cout << "\t \t W is 0th daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
 	}else{
 	  W = daughters[1];
 	  b = daughters[0];
-    std::cout << "\t \t W is 1st daughter: " << W << ", b is: " << b << std::endl;
+    std::cout << "\t \t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
 	}
 
   //std::cout << "\t \t W and b have been assigned: " << W << ", " << b << std::endl;
 
 	vector<unsigned int> W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
+
+  //std::cout << "Number of W daughters: " << W_daughters.size() << std::endl;
+  while(W_daughters.size() == 1) {
+    W = W_daughters[0];
+    W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
+    //std::cout << "PROBLEM: " << GenPart_pdgId[W_daughters[0]] << std::endl;
+  }
 	if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22) {
 	  std::cout << "\t \t \t W has a photon daughter" << std::endl;
 	}
