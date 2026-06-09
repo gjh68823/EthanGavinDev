@@ -47,6 +47,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
   for(unsigned int i = 0; i < nGenPart; i++){
     int p = i; //initialize the parent idx
     int id = GenPart_pdgId[p];
+    std::cout << "Starting particle " << i << " it is a: " << abs(id) << std::endl;
     
     bool hasRadiation = false;
     bool hasLepton = false;
@@ -180,12 +181,14 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	if(abs(GenPart_pdgId[daughters[0]]) == 24) {
 	  W = daughters[0];
 	  b = daughters[1];
+    std::cout << "\t \t W is 0th daughter: " << W << ", b is: " << b << std::endl;
 	}else{
 	  W = daughters[1];
 	  b = daughters[0];
+    std::cout << "\t \t W is 1st daughter: " << W << ", b is: " << b << std::endl;
 	}
 
-  std::cout << "\t \t W and b have been assigned" << std::endl;
+  //std::cout << "\t \t W and b have been assigned: " << W << ", " << b << std::endl;
 
 	vector<unsigned int> W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
 	if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22) {
@@ -198,6 +201,9 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	d0Eta.push_back(GenPart_eta[b]);
 	d0Phi.push_back(GenPart_phi[b]);
 	d0M.push_back(GenPart_mass[b]);
+
+  std::cout << "\t \t b has been assigned" << std::endl;
+  std::cout << "\t \t Now assigning W daughters: " << W_daughters[0] << ", " << W_daughters[1] << std::endl;
 
 	d1Status.push_back(GenPart_status[W_daughters[0]]);
 	d1ID.push_back(GenPart_pdgId[W_daughters[0]]);
@@ -301,7 +307,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
     std::cout << "\t fatjet " << i << " matchedPt has been pushed back" << std::endl;
     }
   }
-  std::cout << "=============== Done with FatJets =================" << std::endl;
+  std::cout << "=============== Done with FatJets =================" << std::endl << std::endl << std::endl << std::endl;
   //RVec<RVec<float>> gcFatJetTruth = {fatjet_truth, fatjet_matchedPt};
   //return gcFatJetTruth;
   return fatjet_truth;
