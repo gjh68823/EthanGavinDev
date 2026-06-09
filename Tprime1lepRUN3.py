@@ -424,8 +424,11 @@ def analyze(jesvar):
   jVars.Add("gcFatJet_hadronFlavour", "reorder(FatJet_hadronFlavour[goodcleanFatJets == true], gcFatJet_ptargsort)")
   
   jVars.Add("gcFatJet_vetomap", "jetvetofunc(jetvetocorr, gcFatJet_eta, gcFatJet_phi)")
+
+  cutVars = VarGroup("cutVars")
+
   if isMC:
-    jVars.Add("gcFatJet_matches", "fatjet_matching(region, nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status, GenPart_statusFlags, gcFatJet_pt, gcFatJet_eta, gcFatJet_phi, gcFatJet_mass, gcFatJet_subJetIdx1, gcFatJet_subJetIdx2, gcFatJet_hadronFlavour)")
+    cutVars.Add("gcFatJet_matches", "fatjet_matching(region, nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status, GenPart_statusFlags, gcFatJet_pt, gcFatJet_eta, gcFatJet_phi, gcFatJet_mass, gcFatJet_subJetIdx1, gcFatJet_subJetIdx2, gcFatJet_hadronFlavour)")
   
   #WORK ON THIS MORE -- need to just be isolated from the 3 highest-pt fat jets, not any of them...
   #jVars.Add("Isolated_AK4","standalone_Jet(gcJet_eta, gcJet_phi, gcFatJet_eta, gcFatJet_phi)")
@@ -471,7 +474,7 @@ def analyze(jesvar):
   newNode = a.ActiveNode.Apply(jVars)
   a.SetActiveNode(newNode)
   
-  a.Apply([jCuts, metVars, metCuts])  #, rframeVars
+  a.Apply([jCuts, metVars, metCuts, cutVars])  #, rframeVars
   
   allColumns = a.GetColumnNames()
   columns = [] #allColumns
