@@ -230,7 +230,7 @@ def analyze(jesvar):
 
   jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1",'2024',"Summer24Prompt24_RunBCDEFGHI_V1"}    #Need 2025
   
-  elecyr = {'2022':"2022Re-recoBCD",'2022EE':"2022Re-recoE+PromptFG",'2023':"2023PromptC",'2023BPix':"2023PromptD"} #Need to update
+  elecyr = {'2022':"2022Re-recoBCD",'2022EE':"2022Re-recoE+PromptFG",'2023':"2023PromptC",'2023BPix':"2023PromptD",'2024':"2024Prompt",'2025':"2025Prompt"}
 
   tauyr = {'2022':"2022_preEE",'2022EE':"2022_postEE",'2023':"2023_preBPix",'2023BPix':"2023_postBPix",'2024':"2024"}  #Need 2025
   
