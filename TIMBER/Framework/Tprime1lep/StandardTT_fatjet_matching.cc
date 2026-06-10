@@ -47,13 +47,13 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
   for(unsigned int i = 0; i < 30; i++){ //Changed top of range from nGenPart to 30
     int p = i; //initialize the parent idx
     int id = GenPart_pdgId[p];
-    std::cout << "Starting particle " << i << " it is a: " << abs(id) << std::endl;
+    std::cout << "Starting particle " << i << " it is a: " << id << " Mother is " << GenPart_genPartIdxMother[i] << std::endl;
     
     bool hasRadiation = false;
     bool hasLepton = false;
 
     if(abs(id) == 23 || abs(id) == 24 || abs(id) == 25 || abs(id) == 6){
-      std::cout << "\t particle is a " << abs(id) << ", will now check for leptons and radiation." << std::endl;
+      std::cout << "\t Now checking for leptons and radiation." << std::endl;
       vector<unsigned int> daughters = get_daughters(p, nGenPart, GenPart_genPartIdxMother);
 
       //check for radiation and leptons
@@ -69,15 +69,18 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	      else if(abs(dID) > 10 && abs(dID) < 17) {hasLepton = true;}
       }
 
-      if(hasRadiation || hasLepton || GenPart_pt[p] < 175) {
-	      std::cout << "\t \t Particle either has radiation, a lepton, or is too soft. skip this one." << std::endl;
-	      continue;
-      }
+      //if(hasRadiation || hasLepton || GenPart_pt[p] < 175) {
+      //	      std::cout << "\t \t Particle either has radiation, a lepton, or is too soft. skip this one." << std::endl;
+      //      continue;
+      //}
       
       //skip this particle if...
-      //if(hasRadiation) continue;
-      //if(hasLepton) continue;
-      //if(GenPart_pt[p] < 175) continue;
+      if(hasRadiation) {
+	std::cout << "Particle has radiation" << std::endl; continue;}
+      if(hasLepton) {
+	std::cout << "Particle has lepton" << std::endl; continue;}
+      if(GenPart_pt[p] < 175) {
+	std::cout << "Particle too soft, pt = " << GenPart_pt[p] << std::endl; continue;}
       
       vector<unsigned int> siblings = get_daughters(GenPart_genPartIdxMother[p], nGenPart, GenPart_genPartIdxMother);
       
@@ -142,12 +145,8 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
       pPhi.push_back(GenPart_phi[p]);
       pM.push_back(GenPart_mass[p]);
   
-      std::cout << " \t Pushed back all parent information" << std::endl;
-      
       if(abs(id) != 6) {
-
-        std::cout << "\t Particle is not a top, push back daughter info" << std::endl;
-
+	
         d0Status.push_back(GenPart_status[daughters[0]]);
         d0ID.push_back(GenPart_pdgId[daughters[0]]);
         d0Pt.push_back(GenPart_pt[daughters[0]]);
@@ -169,39 +168,31 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
         d2Phi.push_back(-99.9);
         d2M.push_back(-99.9);
 
-        std::cout << "\t push back success" << std::endl;
-
       }else{ //if is t
-        std::cout << "\t Particle is a top, pushing back daughter info" << std::endl;
-
-  //Can mess around with value if needed
-  unsigned int W = 1000;
-  unsigned int b = 1000;
-
+	//Can mess around with value if needed
+	unsigned int W = 1000;
+	unsigned int b = 1000;
+	
 	if(abs(GenPart_pdgId[daughters[0]]) == 24) {
 	  W = daughters[0];
 	  b = daughters[1];
-    std::cout << "\t \t W is 0th daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
+	  std::cout << "\t W is 0th daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
 	}else{
 	  W = daughters[1];
 	  b = daughters[0];
-    std::cout << "\t \t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
+	  std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
 	}
-
-  //std::cout << "\t \t W and b have been assigned: " << W << ", " << b << std::endl;
-
+	
 	vector<unsigned int> W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
-
-  //std::cout << "Number of W daughters: " << W_daughters.size() << std::endl;
-  while(W_daughters.size() == 1) {
-    W = W_daughters[0];
-    W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
-    //std::cout << "PROBLEM: " << GenPart_pdgId[W_daughters[0]] << std::endl;
-  }
-	if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22) {
-	  std::cout << "\t \t \t W has a photon daughter" << std::endl;
+	
+	while(W_daughters.size() == 1) {
+	  W = W_daughters[0];
+	  W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
 	}
-
+	if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22) {
+	  std::cout << "\t \t W has a photon daughter" << std::endl;
+	}
+	
 	d0Status.push_back(GenPart_status[b]);
 	d0ID.push_back(GenPart_pdgId[b]);
 	d0Pt.push_back(GenPart_pt[b]);
@@ -209,9 +200,9 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	d0Phi.push_back(GenPart_phi[b]);
 	d0M.push_back(GenPart_mass[b]);
 
-  std::cout << "\t \t b has been assigned" << std::endl;
-  std::cout << "\t \t Now assigning W daughters: " << W_daughters[0] << ", " << W_daughters[1] << std::endl;
-
+	//std::cout << "\t \t b has been assigned" << std::endl;
+	//std::cout << "\t \t Now assigning W daughters: " << W_daughters[0] << ", " << W_daughters[1] << std::endl;
+	
 	d1Status.push_back(GenPart_status[W_daughters[0]]);
 	d1ID.push_back(GenPart_pdgId[W_daughters[0]]);
 	d1Pt.push_back(GenPart_pt[W_daughters[0]]);
@@ -219,25 +210,24 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	d1Phi.push_back(GenPart_phi[W_daughters[0]]);
 	d1M.push_back(GenPart_mass[W_daughters[0]]);
 
-  d2Status.push_back(GenPart_status[W_daughters[1]]);
+	d2Status.push_back(GenPart_status[W_daughters[1]]);
 	d2ID.push_back(GenPart_pdgId[W_daughters[1]]);
 	d2Pt.push_back(GenPart_pt[W_daughters[1]]);
 	d2Eta.push_back(GenPart_eta[W_daughters[1]]);
 	d2Phi.push_back(GenPart_phi[W_daughters[1]]);
 	d2M.push_back(GenPart_mass[W_daughters[1]]);
-
-  std::cout << "\t daughter push back success" << std::endl;
-    
       }
     }
-  std::cout << "Finished particle " << i << " it is a: " << abs(id) << std::endl;
   }
 
   RVec<float> fatjet_truth;
-  RVec<float> fatjet_matchedPt;
+  RVec<float> fatjet_matchedPt;\
+
+  std::cout << "===================== True Particle Candidates ====================" << std::endl;
+  std::cout << pID << std::endl;
 
 
-  std::cout << "=====================Investigating " << gcFatJet_pt.size() << " fatJets ====================" << std::endl;
+  std::cout << "===================== Investigating " << gcFatJet_pt.size() << " fatJets ====================" << std::endl;
   for(unsigned int i = 0; i < gcFatJet_pt.size(); i++){
     TLorentzVector fatjet, truePart, d0, d1, d2;
     
@@ -285,14 +275,15 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
       fatjet_matchedPt.push_back(-99.9);
     
     if(not (isWmatched && matchedPt > 200) && not (isZmatched && matchedPt > 200) && not (isTmatched && matchedPt > 400) && not (isHmatched && matchedPt > 300)) {
-      std::cout << "\t match and matchedPt do not meet requirements. Investigating subjets." << std::endl;
+      std::cout << "\t matchedPt (" << matchedPt << ") does not meet requirements. Investigating subjets" << std::endl;
       int firstsub = gcFatJet_subj_idx1[i];
       int secondsub = gcFatJet_subj_idx2[i];
       
       if(firstsub > 0) {
-  cout << "\t \t Hadron Flavour is: "<< SubJet_hadronFlavour[firstsub] << " Type is: " << typeid(SubJet_hadronFlavour[firstsub]).name() << endl;
+	std::cout << "\t \t first subjet hadron flavour is: "<< SubJet_hadronFlavour[firstsub] << std::endl;
 	if(SubJet_hadronFlavour[firstsub] == 5) isBmatched = true;}
       if(secondsub > 0) {
+	std::cout << "\t \t second subjet hadron flavour is: "<< SubJet_hadronFlavour[secondsub] << std::endl;
 	if(SubJet_hadronFlavour[secondsub] == 5) isBmatched = true;}
       
       if(not isBmatched) {
@@ -311,10 +302,9 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
     if(isBmatched) fatjet_truth.push_back(5);
 
     fatjet_matchedPt.push_back(matchedPt);
-    std::cout << "\t fatjet " << i << " matchedPt has been pushed back" << std::endl;
     }
   }
-  std::cout << "=============== Done with FatJets =================" << std::endl << std::endl << std::endl << std::endl;
+  std::cout << "=============== Done with FatJets =================" << std::endl << std::endl << std::endl;
   //RVec<RVec<float>> gcFatJetTruth = {fatjet_truth, fatjet_matchedPt};
   //return gcFatJetTruth;
   return fatjet_truth;
