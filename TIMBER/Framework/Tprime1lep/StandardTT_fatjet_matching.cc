@@ -98,11 +98,11 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	  dR = (GenPart_eta[p], GenPart_eta[siblings[1]], GenPart_phi[p], GenPart_phi[siblings[1]]);
 	  std::cout << "dr to 1 is " << dr << std::endl;
 	  
-	  if(GenPart_pdgId[siblings[1]] == 24) {
+	  if(abs(GenPart_pdgId[siblings[1]]) == 24) {
 	    dR = DeltaR(GenPart_eta[p], GenPart_eta[siblings[0]], GenPart_phi[p], GenPart_phi[siblings[0]]);
 	    std::cout << "dr to 0 is " << dr << std::endl;
 	  }
-	  
+	
 	}else if(abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 25){ //dRWW
 	  std::cout << "W from H" << std::endl;
 	  if(GenPart_pdgId[p]*GenPart_pdgId[siblings[0]] > 0) {
@@ -125,7 +125,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	//find topmost mother of a repeating chain
 	while(GenPart_genPartIdxMother[p] != -1 && abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 23) {p = GenPart_genPartIdxMother[p];}
 	
-	if(GenPart_genPartIdxMother[p] == 25) {
+	if(abs(GenPart_genPartIdxMother[p]) == 25) {
 	  float dr = 1000;
 	  if(GenPart_pdgId[p]*GenPart_pdgId[siblings[0]] > 0) {
 	    dr = DeltaR(GenPart_eta[p], GenPart_eta[siblings[1]], GenPart_phi[p], GenPart_phi[siblings[1]]); 
