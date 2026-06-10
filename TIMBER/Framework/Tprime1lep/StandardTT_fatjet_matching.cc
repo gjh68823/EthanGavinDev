@@ -47,7 +47,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
   for(unsigned int i = 0; i < 30; i++){ //Changed top of range from nGenPart to 30
     int p = i; //initialize the parent idx
     int id = GenPart_pdgId[p];
-    std::cout << "Starting particle " << i << " it is a: " << id << " Mother is " << GenPart_genPartIdxMother[i] << std::endl;
+    std::cout << "Starting particle " << i << " it is a: " << id << " Mother is " << GenPart_genPartIdxMother[i] << " of type " << GenPart_pdgId[GenPart_genPartIdxMother[i]] << std::endl;
     
     bool hasRadiation = false;
     bool hasLepton = false;
@@ -219,7 +219,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	d0M.push_back(GenPart_mass[b]);
 
 	//std::cout << "\t \t b has been assigned" << std::endl;
-	//std::cout << "\t \t Now assigning W daughters: " << W_daughters[0] << ", " << W_daughters[1] << std::endl;
+	std::cout << "\t \t Now assigning W daughters: " << GenPart_pdgId[W_daughters[0]] << ", " << GenPart_pdgId[W_daughters[1]] << std::endl;
 	
 	d1Status.push_back(GenPart_status[W_daughters[0]]);
 	d1ID.push_back(GenPart_pdgId[W_daughters[0]]);
