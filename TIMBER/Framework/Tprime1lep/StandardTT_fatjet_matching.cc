@@ -197,10 +197,9 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 
 	while(W_daughters.size() == 1) W = W_daughters[0];
 	W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
-	if(GenPart_pdgId[W_daughters[1]] == 22) std::cout << "Weird W to photon decay happening..." << cout::endl;	
+	if(GenPart_pdgId[W_daughters[1]] == 22) std::cout << "Weird W to photon decay happening..." << std::endl;	
  
 	std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
-      }
 
        	d0Status.push_back(GenPart_status[b]);
 	d0ID.push_back(GenPart_pdgId[b]);
