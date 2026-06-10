@@ -297,12 +297,12 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
       int firstsub = gcFatJet_subj_idx1[i];
       int secondsub = gcFatJet_subj_idx2[i];
       
-      if(firstsub > 0) {
-	std::cout << "\t \t first subjet hadron flavour is: "<< SubJet_hadronFlavour[firstsub] << std::endl;
-	if(SubJet_hadronFlavour[firstsub] == 5) isBmatched = true;}
-      if(secondsub > 0) {
-	std::cout << "\t \t second subjet hadron flavour is: "<< SubJet_hadronFlavour[secondsub] << std::endl;
-	if(SubJet_hadronFlavour[secondsub] == 5) isBmatched = true;}
+      if(firstsub > -1) {
+	std::cout << "\t \t first subjet hadron flavour is: "<< int(SubJet_hadronFlavour[firstsub]) << std::endl;
+	if(int(SubJet_hadronFlavour[firstsub]) == 5) isBmatched = true;}
+      if(secondsub > -1) {
+	std::cout << "\t \t second subjet hadron flavour is: "<< int(SubJet_hadronFlavour[secondsub]) << std::endl;
+	if(int(SubJet_hadronFlavour[secondsub]) == 5) isBmatched = true;}
       
       if(not isBmatched) {
 	std::cout << "\t \t \t jet is light quarks." << std::endl;
