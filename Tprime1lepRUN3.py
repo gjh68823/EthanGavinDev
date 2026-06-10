@@ -51,7 +51,7 @@ sampleName = filelist[0]
 print(f"Sample Name: {sampleName}")
 
 # Parse the incoming file names to assign labels  
-isSig = ("Bprime" in sampleName)
+isSig = ("prime" in sampleName)
 isMadgraphBkg = (("QCD" in sampleName) or ("madgraphMLM" in sampleName))
 isTOP = (("Mtt" in sampleName) or ("ST" in sampleName) or ("ttZ" in sampleName) or ("ttW" in sampleName) or ("ttH" in sampleName) or ("TTTo" in sampleName))
 isTT = (("TT_Tune" in sampleName) or ("Mtt" in sampleName) or ("TTTo" in sampleName))
@@ -536,6 +536,7 @@ def analyze(jesvar):
   if jesvar == "Nominal":
     print("Cut statistics:")
     rep = a.DataFrame.Report()
+    print("DataFrame.Report exists")
     rep.Print()
 
   print("--------- Analysis End ---------")
