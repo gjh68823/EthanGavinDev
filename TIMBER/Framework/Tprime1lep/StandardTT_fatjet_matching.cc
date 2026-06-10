@@ -94,7 +94,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 
 	if(abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 6) { //dRWB
 	  //dr btwn current particle and its sibling
-	  dR = DeltaR(GenPart_eta[p], GenPart_eta[siblings[1]], GenPart_phi[p], GenPart_phi[siblings[1]]);
+	  dR = (GenPart_eta[p], GenPart_eta[siblings[1]], GenPart_phi[p], GenPart_phi[siblings[1]]);
 	  
 	  if(GenPart_pdgId[siblings[1]] == 24) {
 	    dR = DeltaR(GenPart_eta[p], GenPart_eta[siblings[0]], GenPart_phi[p], GenPart_phi[siblings[0]]);}
@@ -297,12 +297,12 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
       int firstsub = gcFatJet_subj_idx1[i];
       int secondsub = gcFatJet_subj_idx2[i];
       
-      if(firstsub > 0) {
-	std::cout << "\t \t first subjet hadron flavour is: "<< SubJet_hadronFlavour[firstsub] << std::endl;
-	if(SubJet_hadronFlavour[firstsub] == 5) isBmatched = true;}
-      if(secondsub > 0) {
-	std::cout << "\t \t second subjet hadron flavour is: "<< SubJet_hadronFlavour[secondsub] << std::endl;
-	if(SubJet_hadronFlavour[secondsub] == 5) isBmatched = true;}
+      if(firstsub > -1) {
+	std::cout << "\t \t first subjet hadron flavour is: "<< int(SubJet_hadronFlavour[firstsub]) << std::endl;
+	if(int(SubJet_hadronFlavour[firstsub]) == 5) isBmatched = true;}
+      if(secondsub > -1) {
+	std::cout << "\t \t second subjet hadron flavour is: "<< int(SubJet_hadronFlavour[secondsub]) << std::endl;
+	if(int(SubJet_hadronFlavour[secondsub]) == 5) isBmatched = true;}
       
       if(not isBmatched) {
 	std::cout << "\t \t \t jet is light quarks." << std::endl;
