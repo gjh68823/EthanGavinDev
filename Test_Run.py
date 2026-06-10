@@ -73,7 +73,7 @@ if not isMC:
 del tokens
 
 jecera = ''
-if not isMC:   #Need to update??
+if not isMC:   #Need to update
   jecera = era
   if year == '2022':
     jecera = 'CD'
@@ -226,9 +226,9 @@ def analyze(jesvar):
   jeryr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23_RunCv1234",'2023BPix':"Summer23BPixPrompt23_RunD",'2024':"Summer24Prompt24"}  #Need 2025
   jecver = {'2022':"V3",'2022EE':"V3",'2023':"V2",'2023BPix':"V3",'2024':"V3"}   #Need 2025
   
-  puname = {'2022':"Collisions2022_355100_357900_eraBCD_GoldenJson",'2022EE':"Collisions2022_359022_362760_eraEFG_GoldenJson",'2023':"Collisions2023_366403_369802_eraBC_GoldenJson",'2023BPix':"Collisions2023_369803_370790_eraD_GoldenJson",'2024':"Collisions_B_goldenJSON"}   #Need 2025
+  puname = {'2022':"Collisions2022_355100_357900_eraBCD_GoldenJson",'2022EE':"Collisions2022_359022_362760_eraEFG_GoldenJson",'2023':"Collisions2023_366403_369802_eraBC_GoldenJson",'2023BPix':"Collisions2023_369803_370790_eraD_GoldenJson",'2024':"Collisions24_B_goldenJSON",'2025':"Collisions25_goldenJSON"}
 
-  jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1"}    #Need to Update
+  jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1",'2024',"Summer24Prompt24_RunBCDEFGHI_V1"}    #Need 2025
   
   elecyr = {'2022':"2022Re-recoBCD",'2022EE':"2022Re-recoE+PromptFG",'2023':"2023PromptC",'2023BPix':"2023PromptD"} #Need to update
 
