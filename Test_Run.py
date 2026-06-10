@@ -224,7 +224,7 @@ def analyze(jesvar):
       #not updated
 
   jeryr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23_RunCv1234",'2023BPix':"Summer23BPixPrompt23_RunD",'2024':"Summer24Prompt24"}  #Need 2025
-  jecver = {'2022':"V3",'2022EE':"V3",'2023':"V2",'2023BPix':"V3",'2024':"V3"} #Need 2025
+  jecver = {'2022':"V3",'2022EE':"V3",'2023':"V2",'2023BPix':"V3",'2024':"V3"}   #Need 2025
   
   puname = {'2022':"Collisions2022_355100_357900_eraBCD_GoldenJson",'2022EE':"Collisions2022_359022_362760_eraEFG_GoldenJson",'2023':"Collisions2023_366403_369802_eraBC_GoldenJson",'2023BPix':"Collisions2023_369803_370790_eraD_GoldenJson",'2024':"Collisions_B_goldenJSON"}   #Need 2025
 
@@ -238,9 +238,9 @@ def analyze(jesvar):
 
   METsimpleyr = {'2022':"2022",'2022EE':"2022",'2023':"2023",'2023BPix':"2023",'2024':"2024",'2025':"2025"} 
 
-  btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"particleNet_comb",'2023BPix':"particleNet_comb",'2024':'UPartAK4_comb','2025':'UPartAK4_comb'}
+  btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"deepJet_comb",'2023BPix':"deepJet_comb",'2024':'UPartAK4_comb','2025':'UPartAK4_comb'}
 
-  lightname = {'2022':"particleNet_light",'2022EE':"particleNet_light",'2023':"particleNet_light",'2023BPix':"particleNet_light",'2024':"UParTAK4_light",'2025':"UParTAK4_light"}
+  lightname = {'2022':"particleNet_light",'2022EE':"particleNet_light",'2023':"particleNet_light",'2023BPix':"particleNet_light",'2024':"UParTAK4_light",'2025':"UParTAK4_light
 
   print(jecyr[year]+"_"+jecver[year]+"_DATA_L1L2L3Res_AK4PFPuppi")
  
@@ -262,6 +262,11 @@ def analyze(jesvar):
   string tauyr = \""""+tauyr[year]+"""\";
   string METyr = \""""+METyr[year]+"""\";
   string METsimpleyr = \""""+METsimpleyr[year]+"""\";
+  string jetvetoname = \""""+jetvetoname[year]+"""\";
+  string elecyr = \""""+elecyr[year]+"""\";
+  string tauyr = \""""+tauyr[year]+"""\";
+  string METyr = \""""+METyr[year]+"""\";
+  string METsimpleyr = \""""+METsimpleyr[year]+"""\";
   string btagname = \""""+btagname[year]+"""\";
   string lightname = \""""+lightname[year]+"""\";
 
@@ -276,7 +281,7 @@ def analyze(jesvar):
   auto jetvetocorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/jetvetomaps.json.gz");
   auto electroncorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/"+yrstr+"/"+egmtag+"/electron.json.gz");
   auto muoncorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/"+yrstr+"/"+muotag+"/muon_Z.json.gz");
-  auto taucorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/"+yrstr+"/"+tautag+"/tau_DeepTau2018v2p5_"+tauyr+".json.gz");
+  auto taucorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/"+yrstr+"/"+tautag+"/tau.json.gz");
   auto METcorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/met_xyCorrections_"+METsimpleyr+"_"+METyr+".json.gz");
 
   auto pileupcorr = pileupcorrset->at(puname);
@@ -722,12 +727,6 @@ def analyze(jesvar):
      if ("LHE" in col) and ("Weight" not in col) and (col != "LHE_HT") and (col != "LHE_Vpt") and (col != "gcHTCorr_WjetLHE"): continue
      if col.startswith("Muon") and ("_tightId" not in col) and ("_isPF" not in col) and ("tunep" not in col) and ("genPartFlav" not in col): continue
      if col.startswith("Electron") and ("genPartFlav" not in col): continue
-     if col.startswith("Jet") and ("rawFactor" not in col): continue
-     if col.startswith("FatJet") and ("rawFactor" not in col): continue
-     if col.startswith("PPS") or col.startswith("Proton") or col.startswith("L1_"): continue
-     if col.startswith("Gen") or col.startswith("Soft") or col.startswith("fixed"): continue
-     if col.startswith("Sub")  or col.startswith("Calo") or col.startswith("Chs"): continue
-     if col.startswith("Corr") or col.startswith("Fsr") or col.startswith("Iso") or col.startswith("Tau"): continue
      if col.startswith("SV") or col.startswith("Photon") or col.startswith("Low"): continue
      if col.startswith("HLT") or col.startswith("HT") or col.startswith("boosted") or col.startswith("Deep"): continue
      if col.startswith("Flag") or col == "Bprime_gen_info" or col == "t_gen_info" or col == "W_gen_info" or col == "metxyoutput": continue
