@@ -424,3 +424,13 @@ RVec<RVec<float>> cleanJetsData (const float run, const bool &debug, const strin
   return output;
 };
 
+RVec<RVec<float>> cleanJetsData (const float run, const bool &debug, const string &campaign,
+ correction::CompoundCorrection::Ref& ak4corr, correction::Correction::Ref& ak4corrL1,
+ correction::CompoundCorrection::Ref& ak8corr,
+ const RVec<TLorentzVector> &jt_p4, const RVec<float> &jt_rf, const RVec<float> &jt_murf, const RVec<float> &jt_area, const RVec<float> &jt_em, //jet_id is removed
+ const RVec<TLorentzVector> &genjt_p4, const RVec<int> &jt_genidx, const RVec<TLorentzVector> &mu_p4, const RVec<int> mu_jetid, 
+ const RVec<TLorentzVector> &el_p4, const RVec<int> &el_jetid, const float &rho, const float &met, const float &phi)
+ 
+ RVec<int> jet_id(jt_p4.size(),9);
+ return cleanJetsData(run, debug, campaign, ak4corr, ak4corrL1, ak8corr, jt_p4, jt_rf, jt_murf, jt_area, jt_em, jet_id, genjt_p4, jt_genidx, mu_p4, mu_jetidd, el_p4, el_jetid, rho, met, phi);
+//May not be fully implemented. Worth double checking.
