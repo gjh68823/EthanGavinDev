@@ -94,12 +94,17 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 
 	if(abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 6) { //dRWB
 	  //dr btwn current particle and its sibling
+	  std::cout << "W from top: sibling 1 = " << GenPart_pdgId[siblings[1]] << " and 0 is " << GenPart_pdgId[siblings[0]] << std::endl;
 	  dR = (GenPart_eta[p], GenPart_eta[siblings[1]], GenPart_phi[p], GenPart_phi[siblings[1]]);
+	  std::cout << "dr to 1 is " << dr << std::endl;
 	  
 	  if(GenPart_pdgId[siblings[1]] == 24) {
-	    dR = DeltaR(GenPart_eta[p], GenPart_eta[siblings[0]], GenPart_phi[p], GenPart_phi[siblings[0]]);}
+	    dR = DeltaR(GenPart_eta[p], GenPart_eta[siblings[0]], GenPart_phi[p], GenPart_phi[siblings[0]]);
+	    std::cout << "dr to 0 is " << dr << std::endl;
+	  }
 	  
 	}else if(abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 25){ //dRWW
+	  std::cout << "W from H" << std::endl;
 	  if(GenPart_pdgId[p]*GenPart_pdgId[siblings[0]] > 0) {
 	    dR = DeltaR(GenPart_eta[p], GenPart_eta[siblings[1]], GenPart_phi[p], GenPart_phi[siblings[1]]); 
 	  }else{
@@ -107,7 +112,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	  }
 	}
 
-	std::cout << "\t \t dR = " << dR << std::endl;
+	std::cout << "\t \t dR W from top or H = " << dR << std::endl;
 	
 	if(dR < 0.8) continue; 
       } //end of if W
