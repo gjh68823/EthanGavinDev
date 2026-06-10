@@ -185,15 +185,24 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	
 	vector<unsigned int> W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
 	
-	while(W_daughters.size() == 1) {
-	  W = W_daughters[0];
-	  W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
-	}
+	while(W_daughters.size() == 1) W = W_daughters[0];
+	W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
 	if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22) {
 	  std::cout << "\t \t W has a photon daughter" << std::endl;
 	}
-	
-	d0Status.push_back(GenPart_status[b]);
+
+	while(W_daughters.size() == 1) W = W_daughters[0];
+	W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
+	if(GenPart_pdgId[W_daughters[1]] == 22) W = W_daughters[0];
+
+	while(W_daughters.size() == 1) W = W_daughters[0];
+	W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
+	if(GenPart_pdgId[W_daughters[1]] == 22) std::cout << "Weird W to photon decay happening..." << cout::endl;	
+ 
+	std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
+      }
+
+       	d0Status.push_back(GenPart_status[b]);
 	d0ID.push_back(GenPart_pdgId[b]);
 	d0Pt.push_back(GenPart_pt[b]);
 	d0Eta.push_back(GenPart_eta[b]);
