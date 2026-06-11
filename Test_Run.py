@@ -15,6 +15,8 @@ correctionlib.register_pyroot_binding()
 sys.path.append('../../')
 sys.path.append('../../../')
 
+ROOT.gInterpreter.ProcessLine('#pragma GCC diagnostic ignored "-Wdeprecated-declarations"') #Command to ignore certain warning messages
+
 # ------------------ Command Line Arguments and Parsing -------------------
 inputFiles = sys.argv[1] #fileList
 testNum1 = sys.argv[2]   #first file in the list to use 
@@ -755,7 +757,12 @@ def analyze(jesvar):
     mode = 'UPDATE'
   #print('\n(1)\n') 
   #sys.setprofile(trace_calls)
-  columns = [c for c in columns if not c.startswith("Gen")]
+
+
+  branches_to_exclude = ["GenInfo", "GenList"]
+  columns = [c for c in columns if c not in branches_to_exclude]
+  
+
   a.Snapshot(columns, finalFile, "Events_"+jesvar, lazy=False, openOption=mode, saveRunChain=True)
   #print('\n(2)\n')
   if jesvar == "Nominal":
