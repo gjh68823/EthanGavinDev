@@ -19,6 +19,8 @@
 //	if(region == "Signal")
 //	{
 
+#include <fstream>
+
 int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_pdgId, ROOT::VecOps::RVec<float>& GenPart_mass, ROOT::VecOps::RVec<float>& GenPart_pt, ROOT::VecOps::RVec<float>& GenPart_phi, ROOT::VecOps::RVec<float>& GenPart_eta, ROOT::VecOps::RVec<short>& GenPart_genPartIdxMother, ROOT::VecOps::RVec<int>& GenPart_status)
 {
 	std::cout << "Entering decay mode selection" << std::endl;
@@ -55,6 +57,9 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 	quarks.clear();
 	bosons.clear();
 	
+	ofstream decayFile;
+	decayFile.open("decayOutput.txt", std::ios_base::app);
+
 	for(unsigned int p = 0; p < nGenPart; p++)
 	{
 		int id=GenPart_pdgId[p];
@@ -75,10 +80,10 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 		int mother_id = GenPart_pdgId[mother];
 		if(abs(id) == 6000006)
 		{
-			std::cout << "\t Found a T'!" << std::endl;
+			//std::cout << "\t Found a T'!" << std::endl;
 			if(abs(mother_id) == 6000006){
 				tPrimeID.push_back(GenPart_pdgId[mother]);
-			} // Cai: Shouldn't this be a while in case there are multiple radiations?
+			}
 			else{tPrimeID.push_back(GenPart_pdgId[p]);}
 		}
 		// if(abs(id) == 8000002)
@@ -86,18 +91,18 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 		// 	if(abs(mother_id) == 8000002){bPrimeID.push_back(GenPart_pdgId[mother]);}
 		// 	else{bPrimeID.push_back(GenPart_pdgId[p]);}
 		// }
-		std::cout << "\t \t Number of daughters is: " << daughters.size() << std::endl;
+		//std::cout << "\t \t Number of daughters is: " << daughters.size() << std::endl;
 		std::cout << "\t \t Daughters are: " << GenPart_pdgId[daughters.at(0)] << ", " << GenPart_pdgId[daughters.at(1)] << std::endl;
 		for(unsigned int j = 0; j < daughters.size(); j++)
 		{
-			std::cout << "\t Made it into the quark for loop" << std::endl;
+			//std::cout << "\t Made it into the quark for loop" << std::endl;
 			unsigned int d = daughters.at(j);
 			int dauId = GenPart_pdgId[d];
 			if(abs(dauId) == 5 || abs(dauId) == 6)
 			{
 				quarks.push_back(d);
 				listofQuarkIDs.push_back(dauId);
-				std::cout << "\t \t Quarks: Pushed back a: " << dauId << std::endl;
+				//std::cout << "\t \t Quarks: Pushed back a: " << dauId << std::endl;
 			}
 			else if(abs(dauId) > 22 && abs(dauId) < 26)
 			{
@@ -109,7 +114,7 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 		}
 	}
 	// std::cout << "Quark length, Boson length: " << quarks.size() << ", " << bosons.size() << std::endl;
-	if(tPrimeID.size() > 0) {std::cout << "Entering Swaps" << std::endl;}
+	//if(tPrimeID.size() > 0) {std::cout << "Entering Swaps" << std::endl;}
 	if(listofQuarkIDs.size() != 0 && listofQuarkIDs.size() != 2)
 	{
 		// std::cout << "More/less than 2 quarks stored: " << listofQuarkIDs.size() << std::endl;
@@ -236,6 +241,7 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 			decayMode = -1;
 		}
 		std::cout << decayMode << std::endl;
+		decayFile  << decayMode << "\n";
 	}
 	// BPrime Decay Mode Selector
 	if(bPrimeID.size() > 1 && tPrimeID.size() == 0)
@@ -323,6 +329,7 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 			decayMode = -1;
 		}
 	}
+	decayFile.close();
 	return decayMode;
 };
 
