@@ -63,7 +63,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
       for (unsigned int j = 0; j < daughters.size(); j++){
 	int dID = GenPart_pdgId[daughters[j]];
 	if(abs(dID) == abs(id)) { //radiation check
-	  std::cout << "\t particle has radiation" << std::endl;
+	  std::cout << "\t particle  has radiation to " << j << "daughter, at idx " << daughters[j] << std::endl;
 	  hasRadiation = true;
 	  
 	} else if(abs(dID) == 24 || abs(dID) == 23) { //check t->Wb->leptons and H->WW->leptons, check H->ZZ->leptons
@@ -71,7 +71,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 
 	  //print out granddaughters
 	  if(granddaughters.size() == 2) {
-	    std::cout << "\t We're looking at a " << dID << " which has 2 daughters: " << GenPart_pdgId[granddaughters.at(0)] << " and " << GenPart_pdgId[granddaughters.at(1)] <<  std::endl;
+	    std::cout << "\t We're looking at daughter " << j << " of type " << dID << " which has 2 daughters: " << GenPart_pdgId[granddaughters.at(0)] << " and " << GenPart_pdgId[granddaughters.at(1)] <<  std::endl;
 	  } else if(granddaughters.size() == 1) {
 	      std::cout << "\t We're looking at a " << dID << " which has 1 daughter: " << GenPart_pdgId[granddaughters.at(0)] <<  std::endl;
 	  } else if (granddaughters.size() > 2) {
@@ -81,7 +81,8 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	  }
 
 	  //check if granddaughters are leptons
-	  if(GenPart_pdgId[granddaughters[1]] == 22 || GenPart_pdgId[granddaughters[1]] == 21 )  granddaughters = get_daughters(granddaughters[0], nGenPart, GenPart_genPartIdxMother);
+	  
+	  while(GenPart_pdgId[granddaughters[1]] == 22 || GenPart_pdgId[granddaughters[1]] == 21 )  granddaughters = get_daughters(granddaughters[0], nGenPart, GenPart_genPartIdxMother);
 	  if(abs(GenPart_pdgId[granddaughters[0]]) > 10 && abs(GenPart_pdgId[granddaughters[0]]) < 17) {hasLepton = true;}
 	  if(abs(GenPart_pdgId[granddaughters[1]]) > 10 && abs(GenPart_pdgId[granddaughters[1]]) < 17) {hasLepton = true;}
 	  else if(abs(dID) > 10 && abs(dID) < 17) {hasLepton = true;}
