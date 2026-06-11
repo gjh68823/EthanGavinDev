@@ -204,33 +204,28 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	if(abs(GenPart_pdgId[daughters.at(0)]) == 24) {
 	  W = daughters.at(0);
 	  b = daughters.at(1);
-	  //std::cout << "\t W is 0th daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
+	  std::cout << "\t W is 0th daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
 	}else{
 	  W = daughters.at(1);
 	  b = daughters.at(0);
-	  //std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
+	  std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
 	}
 	
 	vector<unsigned int> W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
-	
-	while(W_daughters.size() == 1) {
-	  W = W_daughters.at(0);
-	  W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
-	  //std::cout << ".";
-	}
-	if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22 || GenPart_pdgId[W_daughters[0]] == 21 || GenPart_pdgId[W_daughters[1]] == 21) {
-	  std::cout << "\t \t W has a photon or gluon daughter" << std::endl;
-    W = W_daughters.at(0);
-	}
 
-	while(W_daughters.size() == 1) {
-	  W = W_daughters.at(0);
-	  W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
-	  //std::cout << ".";
+	for(int k = 0; k < 3; k++) {
+	  while(W_daughters.size() == 1) {
+	    W = W_daughters.at(0);
+	    W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
+	    std::cout << "\t \t W has only one daughter " << GenPart_pdgId[W] << ", we are jumping down the chain." << std::endl;
+	  }
+	  if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22 || GenPart_pdgId[W_daughters[0]] == 21 || GenPart_pdgId[W_daughters[1]] == 21) {
+	    std::cout << "\t \t W has a photon or gluon daughter: " << GenPart_pdgId[W_daughters[1]] << std::endl;
+	    W = W_daughters.at(0);
+	  }
 	}
-	if(GenPart_pdgId[W_daughters[1]] == 22 || GenPart_pdgId[W_daughters[1]] == 21) std::cout << "\t Weird W to photon or gluon decay happening..." << std::endl;	
- 
-	//std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
+	
+	//	std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
 
        	d0Status.push_back(GenPart_status[b]);
 	d0ID.push_back(GenPart_pdgId[b]);
@@ -240,7 +235,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	d0M.push_back(GenPart_mass[b]);
 
 	//std::cout << "\t \t b has been assigned" << std::endl;
-	std::cout << "\t \t Now assigning W daughters: " << GenPart_pdgId[W_daughters.at(0)] << ", " << GenPart_pdgId[W_daughters.at(1)] << std::endl;
+	std::cout << "\t Now pushing back W daughters 0 and 1: " << GenPart_pdgId[W_daughters.at(0)] << ", " << GenPart_pdgId[W_daughters.at(1)] << std::endl;
 	
 	d1Status.push_back(GenPart_status[W_daughters.at(0)]);
 	d1ID.push_back(GenPart_pdgId[W_daughters.at(0)]);
