@@ -44,7 +44,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
   std::cout << "Inside fatjet_matching. Will now beign matching:" << std::endl;
   std::cout << "There are " << nGenPart << " particles in total."  << std::endl;
   std::cout << "===================================" << std::endl;
-  for(unsigned int i = 0; i < 30; i++){ //Changed top of range from nGenPart to 30
+  for(unsigned int i = 0; i < 60; i++){ //Changed top of range from nGenPart to 60
     int p = i; //initialize the parent idx
     int id = GenPart_pdgId[p];
     std::cout << "Starting particle " << i << " it is a: " << id << " Mother is " << GenPart_genPartIdxMother[i] << " of type " << GenPart_pdgId[GenPart_genPartIdxMother[i]] << std::endl;
@@ -62,6 +62,8 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	      if(abs(dID) == abs(id)) {hasRadiation = true;} //check for radiation
 	      else if(abs(dID) == 24 || abs(dID) == 23) { //check t->Wb->leptons and H->WW->leptons, check H->ZZ->leptons
 	        vector<unsigned int>granddaughters = get_daughters(daughters[j], nGenPart, GenPart_genPartIdxMother);
+          std::cout << "We're looking at a " << dID << " which has N daughters: " << granddaughters.size() << ". daughters: " << GenPart_pdgId[granddaughters[0]] << " and " << GenPart_pdgId[granddaughters[1]] <<  std::endl;
+          if(GenPart_pdgId[granddaughters[1]] == 22 || GenPart_pdgId[granddaughters[1]] == 21 )  granddaughters = get_daughters(granddaughters[0], nGenPart, GenPart_genPartIdxMother);
 	        if(abs(GenPart_pdgId[granddaughters[0]]) > 10 && abs(GenPart_pdgId[granddaughters[0]]) < 17) {hasLepton = true;}
 	        if(abs(GenPart_pdgId[granddaughters[1]]) > 10 && abs(GenPart_pdgId[granddaughters[1]]) < 17) {hasLepton = true;}
 
@@ -82,7 +84,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
       if(GenPart_pt[p] < 175) {
 	std::cout << "Particle too soft, pt = " << GenPart_pt[p] << std::endl; continue;}
       
-      vector<unsigned int> siblings = get_daughters(GenPart_genPartIdxMother[p], nGenPart, GenPart_genPartIdxMother);
+      vector<unsigned int> siblings;
       
       if(abs(id) == 24) { //if W
 	std::cout << "\t particle is a W, will now investigate the dR." << std::endl;
@@ -91,6 +93,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 
 	//find topmost mother of a repeating chain
 	while(GenPart_genPartIdxMother[p] != -1 && abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 24) {p = GenPart_genPartIdxMother[p];}
+  siblings = get_daughters(GenPart_genPartIdxMother[p], nGenPart, GenPart_genPartIdxMother);
 
 	if(abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 6) { //dRWB
 	  //dr btwn current particle and its sibling
@@ -124,6 +127,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 
 	//find topmost mother of a repeating chain
 	while(GenPart_genPartIdxMother[p] != -1 && abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 23) {p = GenPart_genPartIdxMother[p];}
+  siblings = get_daughters(GenPart_genPartIdxMother[p], nGenPart, GenPart_genPartIdxMother);
 	
 	if(abs(GenPart_genPartIdxMother[p]) == 25) {
 	  float dr = 1000;
@@ -181,11 +185,11 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	if(abs(GenPart_pdgId[daughters[0]]) == 24) {
 	  W = daughters[0];
 	  b = daughters[1];
-	  std::cout << "\t W is 0th daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
+	  //std::cout << "\t W is 0th daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
 	}else{
 	  W = daughters[1];
 	  b = daughters[0];
-	  std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
+	  //std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
 	}
 	
 	vector<unsigned int> W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
@@ -195,26 +199,20 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	  W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
 	  std::cout << ".";
 	}
-	if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22) {
-	  std::cout << "\t \t W has a photon daughter" << std::endl;
+	if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22 || GenPart_pdgId[W_daughters[0]] == 21 || GenPart_pdgId[W_daughters[1]] == 21) {
+	  std::cout << "\t \t W has a photon or gluon daughter" << std::endl;
+    W = W_daughters[0];
 	}
-
-	while(W_daughters.size() == 1){
-	  W = W_daughters[0];
-	  W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
-	  std::cout << ".";
-	}
-	if(GenPart_pdgId[W_daughters[1]] == 22) W = W_daughters[0];
 
 	while(W_daughters.size() == 1) {
 	  W = W_daughters[0];
 	  W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
 	  std::cout << ".";
 	}
-	std::cout << std:: endl;
-	if(GenPart_pdgId[W_daughters[1]] == 22) std::cout << "Weird W to photon decay happening..." << std::endl;	
+	//std::cout << std:: endl;
+	if(GenPart_pdgId[W_daughters[1]] == 22 || GenPart_pdgId[W_daughters[1]] == 21) std::cout << "Weird W to photon or gluon decay happening..." << std::endl;	
  
-	std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
+	//std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
 
        	d0Status.push_back(GenPart_status[b]);
 	d0ID.push_back(GenPart_pdgId[b]);
@@ -298,7 +296,7 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
       fatjet_matchedPt.push_back(-99.9);
     
     if(not (isWmatched && matchedPt > 200) && not (isZmatched && matchedPt > 200) && not (isTmatched && matchedPt > 400) && not (isHmatched && matchedPt > 300)) {
-      std::cout << "\t matchedPt (" << matchedPt << ") does not meet requirements. Investigating subjets" << std::endl;
+      std::cout << "\t Unmatched or matchedPt (" << matchedPt << ") does not meet requirements. Investigating subjets" << std::endl;
       int firstsub = gcFatJet_subj_idx1[i];
       int secondsub = gcFatJet_subj_idx2[i];
       
