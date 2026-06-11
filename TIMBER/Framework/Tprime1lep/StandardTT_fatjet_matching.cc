@@ -358,6 +358,11 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
   return fatjet_truth;
 }
 
+auto jet_tagging(){
+
+  
+}
+
 
   
 

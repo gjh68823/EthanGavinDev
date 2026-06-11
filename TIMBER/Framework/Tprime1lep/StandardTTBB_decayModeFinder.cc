@@ -62,6 +62,9 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 
 	for(unsigned int p = 0; p < nGenPart; p++)
 	{
+		 if(GenPart_pdgId[GenPart_genPartIdxMother[p]] != GenPart_pdgId[p] && abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 6000006) {
+             std::cout << GenPart_pdgId[p] << ", ";
+                 }
 		int id=GenPart_pdgId[p];
 		//find T' and B' particles
 		if(abs(id) != 6000006 && abs(id) != 8000002){continue;}
@@ -92,7 +95,7 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 		// 	else{bPrimeID.push_back(GenPart_pdgId[p]);}
 		// }
 		//std::cout << "\t \t Number of daughters is: " << daughters.size() << std::endl;
-		std::cout << "\t \t Daughters are: " << GenPart_pdgId[daughters.at(0)] << ", " << GenPart_pdgId[daughters.at(1)] << std::endl;
+		//std::cout << "\t \t Daughters are: " << GenPart_pdgId[daughters.at(0)] << ", " << GenPart_pdgId[daughters.at(1)] << std::endl;
 		for(unsigned int j = 0; j < daughters.size(); j++)
 		{
 			//std::cout << "\t Made it into the quark for loop" << std::endl;
@@ -113,6 +116,7 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 			else{continue;}
 		}
 	}
+	std::cout << std::endl;
 	// std::cout << "Quark length, Boson length: " << quarks.size() << ", " << bosons.size() << std::endl;
 	//if(tPrimeID.size() > 0) {std::cout << "Entering Swaps" << std::endl;}
 	if(listofQuarkIDs.size() != 0 && listofQuarkIDs.size() != 2)
