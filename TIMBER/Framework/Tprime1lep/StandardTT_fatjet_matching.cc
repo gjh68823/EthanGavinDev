@@ -3,6 +3,9 @@ using namespace ROOT::VecOps;
 
 auto get_daughters(int idx, unsigned int length, RVec<short> GenPart_genPartIdxMother) {
   vector<unsigned int> daughters;
+  //  std::cout << daughters << std::endl;
+  daughters.clear();
+  // std::cout << daughters << std::endl;
   for (unsigned int d = idx; d < length; d++){
 	if (GenPart_genPartIdxMother[d]!=idx){continue;}
 	daughters.push_back(d); //get a list of all the daughters of this particle
@@ -53,36 +56,64 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
     bool hasLepton = false;
 
     if(abs(id) == 23 || abs(id) == 24 || abs(id) == 25 || abs(id) == 6){
-      std::cout << "\t Now checking for leptons and radiation." << std::endl;
+      std::cout << "\t Now checking for radiation and leptons." << std::endl;
       vector<unsigned int> daughters = get_daughters(p, nGenPart, GenPart_genPartIdxMother);
 
       //check for radiation and leptons
       for (unsigned int j = 0; j < daughters.size(); j++){
-	      int dID = GenPart_pdgId[daughters[j]];
-	      if(abs(dID) == abs(id)) {hasRadiation = true;} //check for radiation
-	      else if(abs(dID) == 24 || abs(dID) == 23) { //check t->Wb->leptons and H->WW->leptons, check H->ZZ->leptons
-	        vector<unsigned int>granddaughters = get_daughters(daughters[j], nGenPart, GenPart_genPartIdxMother);
-          std::cout << "We're looking at a " << dID << " which has N daughters: " << granddaughters.size() << ". daughters: " << GenPart_pdgId[granddaughters[0]] << " and " << GenPart_pdgId[granddaughters[1]] <<  std::endl;
-          if(GenPart_pdgId[granddaughters[1]] == 22 || GenPart_pdgId[granddaughters[1]] == 21 )  granddaughters = get_daughters(granddaughters[0], nGenPart, GenPart_genPartIdxMother);
-	        if(abs(GenPart_pdgId[granddaughters[0]]) > 10 && abs(GenPart_pdgId[granddaughters[0]]) < 17) {hasLepton = true;}
-	        if(abs(GenPart_pdgId[granddaughters[1]]) > 10 && abs(GenPart_pdgId[granddaughters[1]]) < 17) {hasLepton = true;}
+	int dID = GenPart_pdgId[daughters[j]];
+	if(abs(dID) == abs(id)) { //radiation check
+	  std::cout << "\t particle has radiation to " << j << " daughter, at idx " << daughters[j] << std::endl;
+	  hasRadiation = true;
+	  
+	}else if(abs(dID) == 24 || abs(dID) == 23) { //check t->Wb->leptons and H->WW->leptons, check H->ZZ->leptons
+	  vector<unsigned int>granddaughters = get_daughters(daughters.at(j), nGenPart, GenPart_genPartIdxMother);
 
-	      }
-	      else if(abs(dID) > 10 && abs(dID) < 17) {hasLepton = true;}
+	  //print out granddaughters
+	  if(granddaughters.size() == 2) {
+	    std::cout << "\t \t We're looking at daughter " << j << " of type " << dID << " which has 2 daughters: " << GenPart_pdgId[granddaughters.at(0)] << " and " << GenPart_pdgId[granddaughters.at(1)] <<  std::endl;
+	  } else if(granddaughters.size() == 1) {
+	      std::cout << "\t \t We're looking at a " << dID << " which has 1 daughter: " << GenPart_pdgId[granddaughters.at(0)] <<  std::endl;
+	  } else if (granddaughters.size() > 2) {
+	    std::cout << "\t \t We're looking at a " << dID << " which has more than 2 daughters???" << std::endl;
+	  } else {
+	    std::cout << "\t \t We're looking at a " << dID << " with no daughters" << std::endl;
+	  }
+
+	  //check if granddaughters are leptons
+	  while(granddaughters.size() == 1 || GenPart_pdgId[granddaughters[0]] == 22 || GenPart_pdgId[granddaughters[1]] == 22 || GenPart_pdgId[granddaughters[0]] == 21 || GenPart_pdgId[granddaughters[1]] == 21) {
+	    while(granddaughters.size() == 1) {
+	      std::cout << "\t \t W/Z at idx " << daughters[j] << " has only one daughter " << GenPart_pdgId[granddaughters[0]] << ", we are jumping down the chain to " << granddaughters[0] << std::endl;
+	      daughters[j] = granddaughters[0];
+	      granddaughters = get_daughters(daughters[j], nGenPart, GenPart_genPartIdxMother);
+	    }
+	    if(GenPart_pdgId[granddaughters[0]] == 22 || GenPart_pdgId[granddaughters[1]] == 22 || GenPart_pdgId[granddaughters[0]] == 21 || GenPart_pdgId[granddaughters[1]] == 21) {
+	      std::cout << "\t \t W/Z has a " << GenPart_pdgId[granddaughters[1]] << " daughter at " << granddaughters[1] << " we will jump down the chain to " << granddaughters[0] << std::endl;
+	      daughters[j] = granddaughters[0];
+	      granddaughters = get_daughters(daughters[0], nGenPart, GenPart_genPartIdxMother);
+	    }
+	  }
+
+	  if(abs(GenPart_pdgId[granddaughters[0]]) > 10 && abs(GenPart_pdgId[granddaughters[0]]) < 17) {hasLepton = true;}
+	  if(abs(GenPart_pdgId[granddaughters[1]]) > 10 && abs(GenPart_pdgId[granddaughters[1]]) < 17) {hasLepton = true;}
+	  else if(abs(dID) > 10 && abs(dID) < 17) {hasLepton = true;}
+	}
       }
-
-      //if(hasRadiation || hasLepton || GenPart_pt[p] < 175) {
+	//if(hasRadiation || hasLepton || GenPart_pt[p] < 175) {
       //	      std::cout << "\t \t Particle either has radiation, a lepton, or is too soft. skip this one." << std::endl;
       //      continue;
       //}
-      
+	
       //skip this particle if...
       if(hasRadiation) {
-	std::cout << "Particle has radiation" << std::endl; continue;}
+	std::cout << " \t skip due to radiation" << std::endl;
+	continue;}
       if(hasLepton) {
-	std::cout << "Particle has lepton" << std::endl; continue;}
+	std::cout << "\t skip due to lepton" << std::endl;
+	continue;}
       if(GenPart_pt[p] < 175) {
-	std::cout << "Particle too soft, pt = " << GenPart_pt[p] << std::endl; continue;}
+	std::cout << "Particle too soft, pt = " << GenPart_pt[p] << std::endl;
+	continue;}
       
       vector<unsigned int> siblings;
       
@@ -156,19 +187,19 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
   
       if(abs(id) != 6) {
 	
-        d0Status.push_back(GenPart_status[daughters[0]]);
-        d0ID.push_back(GenPart_pdgId[daughters[0]]);
-        d0Pt.push_back(GenPart_pt[daughters[0]]);
-        d0Eta.push_back(GenPart_eta[daughters[0]]);
-        d0Phi.push_back(GenPart_phi[daughters[0]]);
-        d0M.push_back(GenPart_mass[daughters[0]]);
+        d0Status.push_back(GenPart_status[daughters.at(0)]);
+        d0ID.push_back(GenPart_pdgId[daughters.at(0)]);
+        d0Pt.push_back(GenPart_pt[daughters.at(0)]);
+        d0Eta.push_back(GenPart_eta[daughters.at(0)]);
+        d0Phi.push_back(GenPart_phi[daughters.at(0)]);
+        d0M.push_back(GenPart_mass[daughters.at(0)]);
 
-        d1Status.push_back(GenPart_status[daughters[1]]);
-        d1ID.push_back(GenPart_pdgId[daughters[1]]);
-        d1Pt.push_back(GenPart_pt[daughters[1]]);
-        d1Eta.push_back(GenPart_eta[daughters[1]]);
-        d1Phi.push_back(GenPart_phi[daughters[1]]);
-        d1M.push_back(GenPart_mass[daughters[1]]);
+        d1Status.push_back(GenPart_status[daughters.at(1)]);
+        d1ID.push_back(GenPart_pdgId[daughters.at(1)]);
+        d1Pt.push_back(GenPart_pt[daughters.at(1)]);
+        d1Eta.push_back(GenPart_eta[daughters.at(1)]);
+        d1Phi.push_back(GenPart_phi[daughters.at(1)]);
+        d1M.push_back(GenPart_mass[daughters.at(1)]);
 
         d2Status.push_back(-99);
         d2ID.push_back(-99);
@@ -182,37 +213,33 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	unsigned int W = 1000;
 	unsigned int b = 1000;
 	
-	if(abs(GenPart_pdgId[daughters[0]]) == 24) {
-	  W = daughters[0];
-	  b = daughters[1];
-	  //std::cout << "\t W is 0th daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
+	if(abs(GenPart_pdgId[daughters.at(0)]) == 24) {
+	  W = daughters.at(0);
+	  b = daughters.at(1);
+	  std::cout << "\t W is 0th daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
 	}else{
-	  W = daughters[1];
-	  b = daughters[0];
-	  //std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
+	  W = daughters.at(1);
+	  b = daughters.at(0);
+	  std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
 	}
 	
 	vector<unsigned int> W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
-	
-	while(W_daughters.size() == 1) {
-	  W = W_daughters[0];
-	  W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
-	  std::cout << ".";
-	}
-	if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22 || GenPart_pdgId[W_daughters[0]] == 21 || GenPart_pdgId[W_daughters[1]] == 21) {
-	  std::cout << "\t \t W has a photon or gluon daughter" << std::endl;
-    W = W_daughters[0];
-	}
 
-	while(W_daughters.size() == 1) {
-	  W = W_daughters[0];
-	  W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
-	  std::cout << ".";
-	}
-	//std::cout << std:: endl;
-	if(GenPart_pdgId[W_daughters[1]] == 22 || GenPart_pdgId[W_daughters[1]] == 21) std::cout << "Weird W to photon or gluon decay happening..." << std::endl;	
- 
-	//std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
+	// while(W_daughters.size() == 1 || GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22 || GenPart_pdgId[W_daughters[0]] == 21 || GenPart_pdgId[W_daughters[1]] == 21) {
+	//   //for(int k = 0; k < 5; k++) {
+	//   while(W_daughters.size() == 1) {
+	//     std::cout << "\t \t W at idx " << W << " has only one daughter " << GenPart_pdgId[W_daughters[0]] << ", we are jumping down the chain to " << W_daughters[0] << std::endl;
+	//     W = W_daughters[0];
+	//     W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
+	//   }
+	//   if(GenPart_pdgId[W_daughters[0]] == 22 || GenPart_pdgId[W_daughters[1]] == 22 || GenPart_pdgId[W_daughters[0]] == 21 || GenPart_pdgId[W_daughters[1]] == 21) {
+	//     std::cout << "\t \t W has a " << GenPart_pdgId[W_daughters[1]] << " daughter at " << W_daughters[1] << " we will jump down the chain to " << W_daughters[0] << std::endl;
+	//     W = W_daughters[0];
+	//     W_daughters = get_daughters(W, nGenPart, GenPart_genPartIdxMother);
+	//   }
+	// }
+	
+	//	std::cout <<  "\t W is 1st daughter: " << GenPart_pdgId[W] << ", b is: " << GenPart_pdgId[b] << std::endl;
 
        	d0Status.push_back(GenPart_status[b]);
 	d0ID.push_back(GenPart_pdgId[b]);
@@ -222,21 +249,21 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 	d0M.push_back(GenPart_mass[b]);
 
 	//std::cout << "\t \t b has been assigned" << std::endl;
-	std::cout << "\t \t Now assigning W daughters: " << GenPart_pdgId[W_daughters[0]] << ", " << GenPart_pdgId[W_daughters[1]] << std::endl;
+	std::cout << "\t Now pushing back W daughters 0 and 1: " << GenPart_pdgId[W_daughters.at(0)] << ", " << GenPart_pdgId[W_daughters.at(1)] << std::endl;
 	
-	d1Status.push_back(GenPart_status[W_daughters[0]]);
-	d1ID.push_back(GenPart_pdgId[W_daughters[0]]);
-	d1Pt.push_back(GenPart_pt[W_daughters[0]]);
-	d1Eta.push_back(GenPart_eta[W_daughters[0]]);
-	d1Phi.push_back(GenPart_phi[W_daughters[0]]);
-	d1M.push_back(GenPart_mass[W_daughters[0]]);
+	d1Status.push_back(GenPart_status[W_daughters.at(0)]);
+	d1ID.push_back(GenPart_pdgId[W_daughters.at(0)]);
+	d1Pt.push_back(GenPart_pt[W_daughters.at(0)]);
+	d1Eta.push_back(GenPart_eta[W_daughters.at(0)]);
+	d1Phi.push_back(GenPart_phi[W_daughters.at(0)]);
+	d1M.push_back(GenPart_mass[W_daughters.at(0)]);
 
-	d2Status.push_back(GenPart_status[W_daughters[1]]);
-	d2ID.push_back(GenPart_pdgId[W_daughters[1]]);
-	d2Pt.push_back(GenPart_pt[W_daughters[1]]);
-	d2Eta.push_back(GenPart_eta[W_daughters[1]]);
-	d2Phi.push_back(GenPart_phi[W_daughters[1]]);
-	d2M.push_back(GenPart_mass[W_daughters[1]]);
+	d2Status.push_back(GenPart_status[W_daughters.at(1)]);
+	d2ID.push_back(GenPart_pdgId[W_daughters.at(1)]);
+	d2Pt.push_back(GenPart_pt[W_daughters.at(1)]);
+	d2Eta.push_back(GenPart_eta[W_daughters.at(1)]);
+	d2Phi.push_back(GenPart_phi[W_daughters.at(1)]);
+	d2M.push_back(GenPart_mass[W_daughters.at(1) ]);
       }
     }
   }
