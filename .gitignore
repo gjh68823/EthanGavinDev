@@ -16,3 +16,5 @@ root*
 .pytest_cache/
 TIMBER/data/Pileup/old/
 *output.txt
+.nfs*
+*.png
