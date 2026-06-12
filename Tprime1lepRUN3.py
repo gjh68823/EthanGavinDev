@@ -457,10 +457,10 @@ def analyze(jesvar):
 
   tagVars.Add("gcFatJet_tags", "jet_tagging(gcFatJet_PNWM_T, gcFatJet_PNWM_W, gcFatJet_PNWM_Z, gcFatJet_PNWM_H, gcFatJet_PNWM_QCD, gcFatJet_GPT_T, gcFatJet_GPT_W, gcFatJet_GPT_ZH, gcFatJet_GPT_QCD, gcFatJet_GPT_regressedMass, gcFatJet_GPT_subJetIdx1, gcFatJet_GPT_subJetIdx2, SubJet_btagUParTAK4B)")
 
-  if isMC:
+  #if isMC:
     #tagVars.Add("gcFatJet_matches", "fatjet_matching(region, nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status, GenPart_statusFlags, gcFatJet_pt, gcFatJet_eta, gcFatJet_phi, gcFatJet_mass, gcFatJet_subJetIdx1, gcFatJet_subJetIdx2, gcFatJet_hadronFlavour)")
     
-  if isSig:
+  #if isSig:
     #tagVars.Add("TTDecayFinds", "TTdecayModeSelection(nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status)")
 
   #WORK ON THIS MORE -- need to just be isolated from the 3 highest-pt fat jets, not any of them...
@@ -507,7 +507,7 @@ def analyze(jesvar):
   newNode = a.ActiveNode.Apply(jVars)
   a.SetActiveNode(newNode)
   
-  a.Apply([jCuts, metVars, metCuts, cutVars])  #, rframeVars
+  a.Apply([jCuts, metVars, metCuts, tagVars])  #, rframeVars
   
   allColumns = a.GetColumnNames()
   columns = [] #allColumns

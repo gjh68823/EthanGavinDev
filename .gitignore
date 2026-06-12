@@ -18,3 +18,4 @@ TIMBER/data/Pileup/old/
 *output.txt
 .nfs*
 *.png
+decayPlotter.py

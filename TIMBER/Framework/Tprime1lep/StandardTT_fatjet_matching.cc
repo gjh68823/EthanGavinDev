@@ -358,9 +358,57 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
   return fatjet_truth;
 }
 
-auto jet_tagging(){
+auto jet_tagging(RVec<float> gcFatJet_PNWM_T, RVec<float> gcFatJet_PNWM_W, RVec<float> gcFatJet_PNWM_Z, RVec<float> gcFatJet_PNWM_H, RVec<float> gcFatJet_PNWM_QCD, RVec<float> gcFatJet_GPT_T, RVec<float> gcFatJet_GPT_W, RVec<float> gcFatJet_GPT_ZH, RVec<float> gcFatJet_GPT_QCD, RVec<float> gcFatJet_GPT_regressedMass, RVec<float> gcFatJet_subJetIdx1, RVec<float> gcFatJet_subJetIdx2, RVec<float> SubJet_btagUParTAK4B) 
 
-  
+{
+  std::cout << "Entering jet_tagging" << std::endl;
+  RVec<int> PNWMtag;
+  RVec<int> GPTtag;
+
+  for(int i = 0; i < gcFatJet_PNWM_T.size(); i++)
+  {
+    std::vector<float> PNWMscores = {gcFatJet_PNWM_T[i], gcFatJet_PNWM_W[i], gcFatJet_PNWM_Z[i], gcFatJet_PNWM_H[i], gcFatJet_PNWM_QCD[i]};
+    auto max_addr = std::max_element(PNWMscores.begin(), PNWMscores.end());
+    int max_index = std::distance(PNWMscores.begin(), max_addr);
+
+    if(max_index == 0) PNWMtag.push_back(6);
+    if(max_index == 1) PNWMtag.push_back(24);
+    if(max_index == 2) PNWMtag.push_back(23);
+    if(max_index == 3) PNWMtag.push_back(25);
+    if(max_index == 4)
+    {
+      int subjetIdx1 = gcFatJet_subJetIdx1[i];
+      int subjetIdx2 = gcFatJet_subJetIdx2[i];
+      if((subjetIdx1 >= 0 &&  SubJet_btagUParTAK4B[subjetIdx1] >= 0.8) || (subjetIdx2 >= 0 &&  SubJet_btagUParTAK4B[subjetIdx2] >= 0.8)) //Ask Dr. Hogan how to find the medium score rather than just using 0.8
+      {
+        PNWMtag.push_back(5);
+      }else{PNWMtag.push_back(0);}
+    }
+
+    std::vector<float> GPTscores = {gcFatJet_GPT_T[i], gcFatJet_GPT_W[i], gcFatJet_GPT_ZH[i], gcFatJet_GPT_QCD[i]};
+    max_addr = std::max_element(GPTscores.begin(), GPTscores.end());
+    max_index = std::distance(GPTscores.begin(), max_addr);
+
+    if(max_index == 0) GPTtag.push_back(6);
+    if(max_index == 1) GPTtag.push_back(24);
+    if(max_index == 2)
+    {
+      if(gcFatJet_GPT_regressedMass[i] < 105) GPTtag.push_back(23);
+      if(gcFatJet_GPT_regressedMass[i] > 105) GPTtag.push_back(25);
+    }
+    if(max_index == 3)
+    {
+      int subjetIdx1 = gcFatJet_subJetIdx1[i];
+      int subjetIdx2 = gcFatJet_subJetIdx2[i];
+      if((subjetIdx1 >= 0 &&  SubJet_btagUParTAK4B[subjetIdx1] >= 0.8) || (subjetIdx2 >= 0 &&  SubJet_btagUParTAK4B[subjetIdx2] >= 0.8)) //Ask Dr. Hogan how to find the medium score rather than just using 0.8
+      {
+        GPTtag.push_back(5);
+      }else{GPTtag.push_back(0);}
+    }
+    std::cout << "PNWM, GPT = " << PNWMtag[i] << ", " << GPTtag[i] << std::endl;
+
+  }
+  return PNWMtag, GPTtag;
 }
 
 
