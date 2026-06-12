@@ -123,7 +123,8 @@ CompileCpp('TIMBER/Framework/Tprime1lep/selfDerived_corrs.cc')
 CompileCpp('TIMBER/Framework/Tprime1lep/corr_funcs.cc')
 CompileCpp('TIMBER/Framework/Tprime1lep/topographInput.cc') 
 CompileCpp('TIMBER/Framework/Tprime1lep/manualreco.cc') 
-CompileCpp('TIMBER/Framework/Tprime1lep/StandardTT_fatjet_matching.cc') 
+CompileCpp('TIMBER/Framework/Tprime1lep/StandardTT_fatjet_matching.cc')
+CompileCpp('TIMBER/Framework/Tprime1lep/StandardTTBB_decayModeFinder.cc')
 ROOT.gInterpreter.ProcessLine('#include "TString.h"')
 
 # Enable using 4 threads
@@ -440,8 +441,10 @@ def analyze(jesvar):
   cutVars = VarGroup("cutVars")
 
   if isMC:
-    cutVars.Add("gcFatJet_matches", "fatjet_matching(region, nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status, GenPart_statusFlags, gcFatJet_pt, gcFatJet_eta, gcFatJet_phi, gcFatJet_mass, gcFatJet_subJetIdx1, gcFatJet_subJetIdx2, gcFatJet_hadronFlavour)")
-  
+    #cutVars.Add("gcFatJet_matches", "fatjet_matching(region, nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status, GenPart_statusFlags, gcFatJet_pt, gcFatJet_eta, gcFatJet_phi, gcFatJet_mass, gcFatJet_subJetIdx1, gcFatJet_subJetIdx2, gcFatJet_hadronFlavour)")
+    cutVars.Add("TTDecayFinds", "correctdecayModeSelection(nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status)")
+    #cutVars.Add("TTDecayFinds", "TTdecayModeSelection(nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status)")
+
   #WORK ON THIS MORE -- need to just be isolated from the 3 highest-pt fat jets, not any of them...
   #jVars.Add("Isolated_AK4","standalone_Jet(gcJet_eta, gcJet_phi, gcFatJet_eta, gcFatJet_phi)")
 
