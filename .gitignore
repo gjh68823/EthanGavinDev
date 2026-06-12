@@ -12,5 +12,12 @@ experimental/
 examples/*.root
 bin/
 root*
+*.root
 .pytest_cache/
 TIMBER/data/Pileup/old/
+*output.txt
+.nfs*
+*.png
+.nfs*
+*.png
+decayPlotter.py
