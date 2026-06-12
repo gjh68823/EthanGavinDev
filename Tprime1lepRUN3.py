@@ -446,7 +446,7 @@ def analyze(jesvar):
   tagVars.Add("gcFatJet_PNWM_H4q", "reorder(((FatJet_particleNetWithMass_H4qvsQCD * FatJet_particleNetWithMass_QCD) / (1.0 - FatJet_particleNetWithMass_H4qvsQCD))[goodcleanFatJets == true], gcFatJet_ptargsort)")
   tagVars.Add("gcFatJet_PNWM_Hbb", "reorder(((FatJet_particleNetWithMass_HbbvsQCD * FatJet_particleNetWithMass_QCD) / (1.0 - FatJet_particleNetWithMass_HbbvsQCD))[goodcleanFatJets == true], gcFatJet_ptargsort)")
   tagVars.Add("gcFatJet_PNWM_Hcc", "reorder(((FatJet_particleNetWithMass_HccvsQCD * FatJet_particleNetWithMass_QCD) / (1.0 - FatJet_particleNetWithMass_HccvsQCD))[goodcleanFatJets == true], gcFatJet_ptargsort)")
-  tagVars.Add("gcFatJet_PNWM_H", "gc_FatJet_PNWM_Hcc + gc_FatJet_PNWM_Hbb + gc_FatJet_PNWM_H4q")
+  tagVars.Add("gcFatJet_PNWM_H", "gcFatJet_PNWM_Hcc + gcFatJet_PNWM_Hbb + gcFatJet_PNWM_H4q")
   tagVars.Add("gcFatJet_PNWM_QCD", "reorder(FatJet_particleNetWithMass_QCD[goodcleanFatJets == true], gcFatJet_ptargsort)")
 
   tagVars.Add("gcFatJet_GPT_T", "reorder((FatJet_globalParT3_TopbWqq + FatJet_globalParT3_TopbWtauhv)[goodcleanFatJets == true], gcFatJet_ptargsort)")
@@ -455,11 +455,11 @@ def analyze(jesvar):
   tagVars.Add("gcFatJet_GPT_QCD", "reorder(FatJet_globalParT3_QCD[goodcleanFatJets == true], gcFatJet_ptargsort)")
   tagVars.Add("gcFatJet_GPT_regressedMass", "reorder((FatJet_globalParT3_massCorrX2p * FatJet_mass * (1 - FatJet_rawFactor))[goodcleanFatJets == true], gcFatJet_ptargsort)")
 
-  tagVars.Add("gcFatJet_tags", "jet_tagging(gcFatJet_PNWM_T, gcFatJet_PNWM_W, gcFatJet_PNWM_Z, gcFatJet_PNWM_H, gcFatJet_PNWM_QCD, gcFatJet_GPT_T, gcFatJet_GPT_W, gcFatJet_GPT_ZH, gcFatJet_GPT_QCD, gcFatJet_GPT_regressedMass, gcFatJet_GPT_subJetIdx1, gcFatJet_GPT_subJetIdx2, SubJet_btagUParTAK4B)")
+  if isMC:
+    tagVars.Add("gcFatJet_truth", "fatjet_matching(region, nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status, GenPart_statusFlags, gcFatJet_pt, gcFatJet_eta, gcFatJet_phi, gcFatJet_mass, gcFatJet_subJetIdx1, gcFatJet_subJetIdx2, gcFatJet_hadronFlavour)")
+  
+  tagVars.Add("gcFatJet_tags", "jet_tagging(gcFatJet_PNWM_T, gcFatJet_PNWM_W, gcFatJet_PNWM_Z, gcFatJet_PNWM_H, gcFatJet_PNWM_QCD, gcFatJet_GPT_T, gcFatJet_GPT_W, gcFatJet_GPT_ZH, gcFatJet_GPT_QCD, gcFatJet_GPT_regressedMass, gcFatJet_subJetIdx1, gcFatJet_subJetIdx2, SubJet_btagUParTAK4B, gcFatJet_truth)")
 
-  #if isMC:
-    #tagVars.Add("gcFatJet_matches", "fatjet_matching(region, nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status, GenPart_statusFlags, gcFatJet_pt, gcFatJet_eta, gcFatJet_phi, gcFatJet_mass, gcFatJet_subJetIdx1, gcFatJet_subJetIdx2, gcFatJet_hadronFlavour)")
-    
   #if isSig:
     #tagVars.Add("TTDecayFinds", "TTdecayModeSelection(nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status)")
 
