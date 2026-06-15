@@ -63,7 +63,7 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 	{
 		int id=GenPart_pdgId[p];
 		//find T' and B' particles
-		if(abs(id) != 6000006 && abs(id) != 8000002){continue;}
+		if(abs(id) != 6000006 && abs(id) != 6000007){continue;}
 		bool hasTdaughter = false;
 		vector<unsigned int> daughters;
 		daughters.clear();
@@ -72,7 +72,7 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 			if(GenPart_genPartIdxMother[dau]!=p){continue;}
 			daughters.push_back(dau);
 			if(abs(id) == 6000006 && abs(GenPart_pdgId[dau]) == 6000006){hasTdaughter = true;}
-			//if(abs(id) == 8000002 && abs(GenPart_pdgId[dau]) == 8000002){hasTdaughter = true;}
+			if(abs(id) == 6000007 && abs(GenPart_pdgId[dau]) == 6000007){hasTdaughter = true;}
 		}
 		if(hasTdaughter){continue;}
 		int mother = GenPart_genPartIdxMother[p];
@@ -85,11 +85,11 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 			}
 			else{tPrimeID.push_back(GenPart_pdgId[p]);}
 		}
-		// if(abs(id) == 8000002)
-		// {
-		// 	if(abs(mother_id) == 8000002){bPrimeID.push_back(GenPart_pdgId[mother]);}
-		// 	else{bPrimeID.push_back(GenPart_pdgId[p]);}
-		// }
+		if(abs(id) == 6000007)
+		{
+			if(abs(mother_id) == 6000007){bPrimeID.push_back(GenPart_pdgId[mother]);}
+			else{bPrimeID.push_back(GenPart_pdgId[p]);}
+		}
 		//std::cout << "\t \t Number of daughters is: " << daughters.size() << std::endl;
 		//std::cout << "\t \t Daughters are: " << GenPart_pdgId[daughters.at(0)] << ", " << GenPart_pdgId[daughters.at(1)] << std::endl;
 		for(unsigned int j = 0; j < daughters.size(); j++)
