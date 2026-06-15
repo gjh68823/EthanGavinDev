@@ -341,7 +341,7 @@ RVec<double> hltfunc(correction::Correction::Ref& muonhltcorr, vector<float> &el
  }; 
 
 // WORK ON THIS JULIE
-RVec<float> btagshapefunc(string year, string jesvar, correction::Correction::Ref& btagwpbccorr, correction::Correction::Ref& btagwplcorr, std::vector<int> btagpts, std::vector<std::vector<float>> btageffs, float deepjetL, const RVec<float> &pt, const RVec<float> &eta, const RVec<float> &disc, const RVec<unsigned char> &flav) {
+RVec<float> btagshapefunc(string WP, string year, string jesvar, correction::Correction::Ref& btagwpbccorr, correction::Correction::Ref& btagwplcorr, std::vector<int> btagpts, std::vector<std::vector<float>> btageffs, float deepjetL, const RVec<float> &pt, const RVec<float> &eta, const RVec<float> &disc, const RVec<unsigned char> &flav) {
 
    std::string nominal = "central";
    if(jesvar == "JECup") nominal = "up_jes";
@@ -361,34 +361,34 @@ RVec<float> btagshapefunc(string year, string jesvar, correction::Correction::Re
        else{wpcorr = btagwpbccorr; eff = btageffs[0][ptbin];}
 
        if(disc.at(ijet) > deepjetL){
-		weights[0] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}); // seemed like P(Data)/P(MC) reduces to SF
- 		weights[1+shift[0]] *= wpcorr->evaluate({upcorrelated,"L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}); 
- 		weights[2+shift[0]] *= wpcorr->evaluate({downcorrelated,"L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+		weights[0] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}); // seemed like P(Data)/P(MC) reduces to SF
+ 		weights[1+shift[0]] *= wpcorr->evaluate({upcorrelated,WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}); 
+ 		weights[2+shift[0]] *= wpcorr->evaluate({downcorrelated,WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
  		
 		if(year == "2023" or year == "2023BPix"){
- 	  		weights[3+shift[0]] *= wpcorr->evaluate({"up_uncorrelated","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
- 	  		weights[4+shift[0]] *= wpcorr->evaluate({"down_uncorrelated","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 	  		weights[3+shift[0]] *= wpcorr->evaluate({"up_uncorrelated",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 	  		weights[4+shift[0]] *= wpcorr->evaluate({"down_uncorrelated",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
  		}
 		
- 		weights[1+shift[1]] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
- 		weights[2+shift[1]] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
- 		weights[3+shift[1]] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
- 		weights[4+shift[1]] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 		weights[1+shift[1]] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 		weights[2+shift[1]] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 		weights[3+shift[1]] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 		weights[4+shift[1]] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
        
        }else{
- 		weights[0] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 		weights[1+shift[0]] *= (1.0-eff*wpcorr->evaluate({upcorrelated,"L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
-		weights[2+shift[0]] *= (1.0-eff*wpcorr->evaluate({downcorrelated,"L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[0] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[1+shift[0]] *= (1.0-eff*wpcorr->evaluate({upcorrelated,WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+		weights[2+shift[0]] *= (1.0-eff*wpcorr->evaluate({downcorrelated,WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
  		
 		if(year == "2023" or year == "2023BPix"){
- 	  		weights[3+shift[0]] *= (1.0-eff*wpcorr->evaluate({"up_uncorrelated","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 	  		weights[4+shift[0]] *= (1.0-eff*wpcorr->evaluate({"down_uncorrelated","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 	  		weights[3+shift[0]] *= (1.0-eff*wpcorr->evaluate({"up_uncorrelated",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 	  		weights[4+shift[0]] *= (1.0-eff*wpcorr->evaluate({"down_uncorrelated",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
  		}
  	
-		weights[1+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 		weights[2+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 		weights[3+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 		weights[4+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+		weights[1+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[2+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[3+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[4+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
       }
    }
      
