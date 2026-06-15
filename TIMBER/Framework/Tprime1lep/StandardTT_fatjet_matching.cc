@@ -336,16 +336,16 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 
     fatjet_matchedPt.push_back(matchedPt);
   
-    std::cout << "Truth is: " << fatjet_truth[i] << std::endl;
-    std::cout << "=============== Done with FatJets =================" << std::endl << std::endl << std::endl;
+    // std::cout << "Truth is: " << fatjet_truth[i] << std::endl;
+    // std::cout << "=============== Done with FatJets =================" << std::endl << std::endl << std::endl;
   }
   return fatjet_truth;
 }
 
-auto jet_tagging(RVec<float> gcFatJet_PNWM_T, RVec<float> gcFatJet_PNWM_W, RVec<float> gcFatJet_PNWM_Z, RVec<float> gcFatJet_PNWM_H, RVec<float> gcFatJet_PNWM_QCD, RVec<float> gcFatJet_GPT_T, RVec<float> gcFatJet_GPT_W, RVec<float> gcFatJet_GPT_ZH, RVec<float> gcFatJet_GPT_QCD, RVec<float> gcFatJet_GPT_regressedMass, RVec<float> gcFatJet_subJetIdx1, RVec<float> gcFatJet_subJetIdx2, RVec<float> SubJet_btagUParTAK4B, RVec<float> gcFatJet_truth) 
+auto jet_tagging(RVec<float> gcFatJet_PNWM_T, RVec<float> gcFatJet_PNWM_W, RVec<float> gcFatJet_PNWM_Z, RVec<float> gcFatJet_PNWM_H, RVec<float> gcFatJet_PNWM_QCD, RVec<float> gcFatJet_GPT_T, RVec<float> gcFatJet_GPT_W, RVec<float> gcFatJet_GPT_ZH, RVec<float> gcFatJet_GPT_QCD, RVec<float> gcFatJet_GPT_regressedMass, RVec<float> gcFatJet_subJetIdx1, RVec<float> gcFatJet_subJetIdx2, RVec<float> SubJet_btagUParTAK4B, RVec<float> gcFatJet_truth, float UparTMedium) 
 
 {
-  std::cout << "Entering jet_tagging" << std::endl;
+  //std::cout << "Entering jet_tagging" << std::endl;
   RVec<int> PNWMtag;
   RVec<int> GPTtag;
 
@@ -387,7 +387,7 @@ auto jet_tagging(RVec<float> gcFatJet_PNWM_T, RVec<float> gcFatJet_PNWM_W, RVec<
         GPTtag.push_back(5);
       }else{GPTtag.push_back(0);}
     }
-    std::cout << "PNWM, GPT, Truth = " << PNWMtag[i] << ", " << GPTtag[i] << ", " << gcFatJet_truth[i] << std::endl;
+    //std::cout << "PNWM, GPT, Truth = " << PNWMtag[i] << ", " << GPTtag[i] << ", " << gcFatJet_truth[i] << std::endl;
 
   }
   std::pair<RVec<float>, RVec<float>> taggerResults = {PNWMtag, GPTtag};
