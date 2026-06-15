@@ -21,6 +21,7 @@
 
 int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_pdgId, ROOT::VecOps::RVec<float>& GenPart_mass, ROOT::VecOps::RVec<float>& GenPart_pt, ROOT::VecOps::RVec<float>& GenPart_phi, ROOT::VecOps::RVec<float>& GenPart_eta, ROOT::VecOps::RVec<int>& GenPart_genPartIdxMother, ROOT::VecOps::RVec<int>& GenPart_status)
 {
+  // RUN THIS ONLY INSIDE an "if isSig" STATEMENT:
 //	int returnVar = 0;
 //	if(region == "Signal")
 //	{
@@ -47,17 +48,10 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 	
 	int decayMode = 0;
 	
-	tPrimeID.clear();
-	bPrimeID.clear();
-	listofQuarkIDs.clear();
-	listofBosonIDs.clear();
-	quarks.clear();
-	bosons.clear();
-	
 	for(unsigned int p = 0; p < nGenPart; p++)
 	{
 		int id=GenPart_pdgId[p];
-		// find T' and B' particles
+		// find T' and B' particles -- UPDATE ME THESE WILL BE WRONG
 		if(abs(id) != 8000001 && abs(id) != 8000002){continue;}
 		bool hasTdaughter = false;
 		vector<unsigned int> daughters;
@@ -96,7 +90,7 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 				bosons.push_back(d);
 				listofBosonIDs.push_back(dauId);
 			}
-			else{continue;}
+			else{std::cout << "SOMETHING WEIRD HAS HAPPENED IN FINDING DECAY PRODUCTS" << std::endl; continue;}
 		}
 	}
 	
