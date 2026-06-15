@@ -57,17 +57,6 @@ RVec<float> assign_leps(bool isMu, bool isEl, RVec<int> &TPassMu, RVec<int> &TPa
 RVec<RVec<float>> cleanJetsMC (const bool &debug, const string &campaign, const string &jesvar, 
  correction::CompoundCorrection::Ref& ak4corr, correction::Correction::Ref& ak4corrL1, correction::Correction::Ref& ak4corrUnc, correction::Correction::Ref& ak4ptres, correction::Correction::Ref& ak4jer,
  correction::CompoundCorrection::Ref& ak8corr, correction::Correction::Ref& ak8corrUnc, 
- const RVec<TLorentzVector> &jt_p4, const RVec<float> &jt_rf, const RVec<float> &jt_murf, const RVec<float> &jt_area, const RVec<float> &jt_em, 
- const RVec<TLorentzVector> &genjt_p4, const RVec<int> &jt_genidx, const RVec<TLorentzVector> &mu_p4, const RVec<int> mu_jetid, 
- const RVec<TLorentzVector> &el_p4, const RVec<int> &el_jetid, const float &rho, const float &met, const float &phi) 
-{
-	RVec<int> jet_id(jt_p4.size(),9); // jetid isn't in 2024 NanoAOD, we assume all jets should pass so assign a value > 2
-	return cleanJetsMC(debug,campaign,jesvar,ak4corr,ak4corrL1,ak4corrUnc,ak4ptres,ak4jer,ak8corr,ak8corrUnc,jt_p4,jt_rf,jt_murf,jt_area,jt_em,jet_id,genjt_p4,jt_genidx,mu_p4,mu_jetid,el_p4,el_jetid,rho,met,phi);
-}
-
-RVec<RVec<float>> cleanJetsMC (const bool &debug, const string &campaign, const string &jesvar, 
- correction::CompoundCorrection::Ref& ak4corr, correction::Correction::Ref& ak4corrL1, correction::Correction::Ref& ak4corrUnc, correction::Correction::Ref& ak4ptres, correction::Correction::Ref& ak4jer,
- correction::CompoundCorrection::Ref& ak8corr, correction::Correction::Ref& ak8corrUnc, 
  const RVec<TLorentzVector> &jt_p4, const RVec<float> &jt_rf, const RVec<float> &jt_murf, const RVec<float> &jt_area, const RVec<float> &jt_em, const RVec<int> &jt_id, 
  const RVec<TLorentzVector> &genjt_p4, const RVec<int> &jt_genidx, const RVec<TLorentzVector> &mu_p4, const RVec<int> mu_jetid, 
  const RVec<TLorentzVector> &el_p4, const RVec<int> &el_jetid, const float &rho, const float &met, const float &phi) 
@@ -266,6 +255,17 @@ RVec<RVec<float>> cleanJetsMC (const bool &debug, const string &campaign, const 
   
   return output;
 };
+
+RVec<RVec<float>> cleanJetsMC (const bool &debug, const string &campaign, const string &jesvar, 
+ correction::CompoundCorrection::Ref& ak4corr, correction::Correction::Ref& ak4corrL1, correction::Correction::Ref& ak4corrUnc, correction::Correction::Ref& ak4ptres, correction::Correction::Ref& ak4jer,
+ correction::CompoundCorrection::Ref& ak8corr, correction::Correction::Ref& ak8corrUnc, 
+ const RVec<TLorentzVector> &jt_p4, const RVec<float> &jt_rf, const RVec<float> &jt_murf, const RVec<float> &jt_area, const RVec<float> &jt_em, 
+ const RVec<TLorentzVector> &genjt_p4, const RVec<int> &jt_genidx, const RVec<TLorentzVector> &mu_p4, const RVec<int> mu_jetid, 
+			       const RVec<TLorentzVector> &el_p4, const RVec<int> &el_jetid, const float &rho, const float &met, const float &phi) 
+{
+	RVec<int> jet_id(jt_p4.size(),9); // jetid isn't in 2024 NanoAOD, we assume all jets should pass so assign a value > 2
+	return cleanJetsMC(debug,campaign,jesvar,ak4corr,ak4corrL1,ak4corrUnc,ak4ptres,ak4jer,ak8corr,ak8corrUnc,jt_p4,jt_rf,jt_murf,jt_area,jt_em,jet_id,genjt_p4,jt_genidx,mu_p4,mu_jetid,el_p4,el_jetid,rho,met,phi);
+}
 
 // Clean Jets Data Function
 RVec<RVec<float>> cleanJetsData (const float run, const bool &debug, const string &campaign,
@@ -424,3 +424,14 @@ RVec<RVec<float>> cleanJetsData (const float run, const bool &debug, const strin
   return output;
 };
 
+RVec<RVec<float>> cleanJetsData (const float run, const bool &debug, const string &campaign,
+ correction::CompoundCorrection::Ref& ak4corr, correction::Correction::Ref& ak4corrL1,
+ correction::CompoundCorrection::Ref& ak8corr,
+ const RVec<TLorentzVector> &jt_p4, const RVec<float> &jt_rf, const RVec<float> &jt_murf, const RVec<float> &jt_area, const RVec<float> &jt_em, //jet_id is removed
+ const RVec<TLorentzVector> &genjt_p4, const RVec<int> &jt_genidx, const RVec<TLorentzVector> &mu_p4, const RVec<int> mu_jetid, 
+ const RVec<TLorentzVector> &el_p4, const RVec<int> &el_jetid, const float &rho, const float &met, const float &phi) {
+ 
+  RVec<int> jet_id(jt_p4.size(),9);
+  return cleanJetsData(run, debug, campaign, ak4corr, ak4corrL1, ak8corr, jt_p4, jt_rf, jt_murf, jt_area, jt_em, jet_id, genjt_p4, jt_genidx, mu_p4, mu_jetid, el_p4, el_jetid, rho, met, phi);
+ }
+//May not be fully implemented. Worth double checking.

@@ -1,5 +1,5 @@
 // Methods in this file:  		There are several corrlib functions and some non corrlib functions.
-// goldenjson() pufunc() recofunc() idfunc() isofunc() metfunc() hltfunc() jetvetofunc() 
+// goldenjson() pufunc() jetidfunc() fatjetidfunc recofunc() idfunc() isofunc() metfunc() hltfunc() jetvetofunc() 
 // additionally, elrecofunc(), elidfunc(), muidfunc(), muisofunc(), tauefunc(), taumufunc(), taujetfunc(), btagshapefunc(), METptfunc(), METphifunc()
 
 using namespace ROOT::VecOps;
@@ -14,11 +14,67 @@ bool goldenjson(lumiMask myLumiMask, const unsigned int &run, const unsigned int
 // ------------ the order is nom/f, up, down for the scale factors--------------
 
 // Pile Up Function
-RVec<double> pufunc(correction::Correction::Ref& pileupcorr, const float &numTrueInt) 
-{
+RVec<double> pufunc(correction::Correction::Ref& pileupcorr, const float &numTrueInt) {
   RVec<double> pu = {pileupcorr->evaluate({numTrueInt, "nominal"}), pileupcorr->evaluate({numTrueInt, "up"}), pileupcorr->evaluate({numTrueInt, "down"})};
   return pu;
 };
+
+//JetID Function
+RVec<float> jetidfunc(correction::Correction::Ref& tightcorr,correction::Correction::Ref& tightlepcorr,const RVec<float>& eta,const RVec<float>& chHEF,const RVec<float>& neHEF,const RVec<float>& chEmEF,const RVec<float>& neEmEF,const RVec<float>& muEF,const RVec<unsigned char>& chMultiplicity,const RVec<unsigned char>& neMultiplicity){
+  std::cout << "inside jetidfunc" << std::endl;
+  RVec<float> jetidtight;
+  RVec<float> jetidtightlep;
+
+  float dummyfloat = 0.634;
+  int dummyint = 5;
+
+  for(unsigned int ijet = 0; ijet < eta.size(); ijet++){
+    std::cout << "inside for loop of size " << eta.size() << std::endl;
+    int mult = abs(int(chMultiplicity.at(ijet))) + abs(int(neMultiplicity.at(ijet)));
+    std::cout << "abs(eta)) "            << abs(eta)<< std::endl; 
+    std::cout << "chHEF "                << chHEF   << std::endl; 
+    std::cout << "neHEF "                << neHEF   << std::endl; 
+    std::cout << "chEmEF "               << chEmEF  << std::endl; 
+    std::cout << "neEmEF "               << neEmEF  << std::endl; 
+    std::cout << "muEF "                 << muEF    << std::endl; 
+    std::cout << "(chMultiplicity) "  << chMultiplicity << std::endl;
+    std::cout << "(neMultiplicity) "  << neMultiplicity << std::endl;
+    std::cout << "mult "                          << mult                         << std::endl;
+
+    float jetidT = tightcorr->evaluate({dummyfloat,dummyfloat,dummyfloat,dummyfloat,dummyfloat,dummyfloat,dummyint,dummyint,dummyint});
+    //float jetidT = tightcorr->evaluate({abs(eta.at(ijet)),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult});
+    //float jetidTL = tightlepcorr->evaluate({eta.at(ijet),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult});
+
+    jetidtight.push_back(1);
+    jetidtightlep.push_back(1);
+    std::cout << jetidT << std::endl;
+    std::cout << "end of for loop" << std::endl;
+  }
+  
+  std::cout << "============================================" << std::endl;
+  std::cout << jetidtight << std::endl;
+  std::cout << jetidtightlep << std::endl;
+  std::cout << "============================================" << std::endl;
+
+  return jetidtight;
+};
+
+//FatJetID Function
+RVec<double> fatjetidfunc(correction::Correction::Ref& tightcorr,correction::Correction::Ref& tightlepcorr,RVec<float>& eta, RVec<float>& chHEF,RVec<float>& neHEF,RVec<float>& chEmEF,RVec<float>& neEmEF,RVec<float>& muEF,RVec<short>& chMultiplicity,RVec<short>& neMultiplicity){
+  RVec<double> jetidtight;
+  RVec<double> jetidtightlep;
+  for(unsigned int ijet = 0; ijet < eta.size(); ijet++){
+    int mult = abs(int(chMultiplicity.at(ijet))) + abs(int(neMultiplicity.at(ijet)));
+    jetidtight.push_back(tightcorr->evaluate({eta.at(ijet),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult}));
+    jetidtightlep.push_back(tightlepcorr->evaluate({eta.at(ijet),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult}));
+  }
+  std::cout << "============================================" << std::endl;
+  std::cout << jetidtight[0] << std::endl;
+  std::cout << jetidtightlep[0] << std::endl;
+  std::cout << "============================================" << std::endl;
+  
+  return jetidtight;
+}
 
 //MET pt function
 RVec<float> METptfunc(correction::Correction::Ref& METcorr, string METyr, bool isMC, const float pt, const float phi, float npv) {
