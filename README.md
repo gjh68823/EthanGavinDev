@@ -26,7 +26,7 @@ cd ../..
 
 Boost library path (the boost version as well!) may change depending on the CMSSW version so this may need to be modified by hand.
 
-Copy the whole multi-line string to the environment activation script
+Copy the whole multi-line string to the environment activation script by copying this cell and executing it on the command line. NOTE: it will NOT WORK to copy and paste these contents into your activate script using a text editor!
 
 ```
 cat <<EOT >> timber-env/bin/activate
