@@ -115,7 +115,7 @@ RVec<RVec<float>> cleanJetsMC (const bool &debug, const string &campaign, const 
     if (met > 0) jet *= (1 - jt_murf[ijet]);                                       // further correct raw to muon-substracted raw for T1.
     float rawpt = jet.Pt();
     
-    if (campaign == "2023BPix") {
+    if (campaign == "2023BPix" || campaign == "2024" || campaign == "2025") {
       jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),jet.Phi(),rawpt,rho}); // Data & MC get jes for 2023BPix
     }
     else {
@@ -205,7 +205,7 @@ RVec<RVec<float>> cleanJetsMC (const bool &debug, const string &campaign, const 
     if (met > 0) jet *= (1 - jt_murf[ijet]);                                       // further correct raw to muon-substracted raw for T1.
     float rawpt = jet.Pt();
     
-    if (campaign == "2023BPix") {
+    if (campaign == "2023BPix" || campaign == "2024" || campaign == "2025") {
       jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),jet.Phi(),rawpt,rho}); // Data & MC get jes for 2023BPix
     }
     else {
@@ -322,7 +322,7 @@ RVec<RVec<float>> cleanJetsData (const float run, const bool &debug, const strin
     if (met > 0) jet *= (1 - jt_murf[ijet]);                                       // further correct raw to muon-substracted raw for T1.
     float rawpt = jet.Pt();
 
-    if (campaign == "2023BPix") {
+    if (campaign == "2023BPix" || campaign == "2024" || campaign == "2025") {
 	 jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),jet.Phi(),rawpt,rho,run}); // Data & MC get jes for 2023BPix
     }
     else if (campaign == "2023") {
@@ -387,7 +387,7 @@ RVec<RVec<float>> cleanJetsData (const float run, const bool &debug, const strin
     if (met > 0 && jt_em[ijet] > 0.9) continue;                                    // not these jets for MET 
     if (met > 0) jet *= (1 - jt_murf[ijet]);                                       // further correct raw to muon-substracted raw for T1.
     float rawpt = jet.Pt();
-    if (campaign == "2023BPix") {
+    if (campaign == "2023BPix" || campaign == "2024" || campaign == "2025") {
 	 jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),jet.Phi(),rawpt,rho,run}); // Data & MC get jes for 2023BPix
     }
     else if (campaign == "2023") {

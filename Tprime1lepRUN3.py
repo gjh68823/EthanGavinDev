@@ -241,13 +241,13 @@ def analyze(jesvar):
   std::vector<std::vector<float>> btageffs = """ + to_cpp_vec2d(pnet_loose[year_hack]) + """;
   """)
 
-  print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/{yrstr[year]}/{lumtags[year]}/{puweights[year]}.json.gz  ->  {puname[year]}")
-  print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/{yrstr[year]}/{btvtags[year]}/btagging.json.gz   ->  {btagname[year]}  and  {lightwps[year]}")   
-  print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/{yrstr[year]}/{jmetags[year]}/jetvetomaps.json.gz   ->  {jetvetoname[year]}")
-  print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/{yrstr[year]}/{egmtags[year]}/electron.json.gz   ->  Electron-ID-SF")
-  print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/{yrstr[year]}/{muotags[year]}/muon_Z.json.gz   ->  NUM_MediumID_DEN_TrackerMuons and NUM_LoosePFIso_DEN_MediumID") 
-  print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/{yrstr[year]}/{jmetags[year]}/jetid.json.gz   -> AK4PUPPI_Tight and AK4PUPPI_TightLeptonVeto")      
-  print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/{yrstr[year]}/{jmetags[year]}/jetid.json.gz   -> AK8PUPPI_Tight and AK8PUPPI_TightLeptonVeto") 
+  # print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/{yrstr[year]}/{lumtags[year]}/{puweights[year]}.json.gz  ->  {puname[year]}")
+  # print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/{yrstr[year]}/{btvtags[year]}/btagging.json.gz   ->  {btagname[year]}  and  {lightwps[year]}")   
+  # print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/{yrstr[year]}/{jmetags[year]}/jetvetomaps.json.gz   ->  {jetvetoname[year]}")
+  # print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/{yrstr[year]}/{egmtags[year]}/electron.json.gz   ->  Electron-ID-SF")
+  # print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/{yrstr[year]}/{muotags[year]}/muon_Z.json.gz   ->  NUM_MediumID_DEN_TrackerMuons and NUM_LoosePFIso_DEN_MediumID") 
+  # print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/{yrstr[year]}/{jmetags[year]}/jetid.json.gz   -> AK4PUPPI_Tight and AK4PUPPI_TightLeptonVeto")      
+  # print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/{yrstr[year]}/{jmetags[year]}/jetid.json.gz   -> AK8PUPPI_Tight and AK8PUPPI_TightLeptonVeto") 
   
   #PULLED OUT OF BELOW DECLARE
   #auto METcorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/met_xyCorrections_"+METsimpleyr+"_"+METyr+".json.gz");
@@ -259,26 +259,12 @@ def analyze(jesvar):
   auto electroncorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/"+yrstr+"/"+egmtag+"/electron.json.gz");
   auto muoncorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/"+yrstr+"/"+muotag+"/muon_Z.json.gz");
   auto jetidcorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/jetid.json.gz");
-  """)
 
-  print("made it past corrsets")
-
-  ROOT.gInterpreter.Declare("""
   auto pileupcorr = pileupcorrset->at(puname);
-  """)
-
-  print("made it past pucorrs")
-
-  ROOT.gInterpreter.Declare("""
   auto jetidAK4Tcorr = jetidcorrset->at("AK4PUPPI_Tight");
   auto jetidAK4TLcorr = jetidcorrset->at("AK4PUPPI_TightLeptonVeto");
   auto jetidAK8Tcorr = jetidcorrset->at("AK8PUPPI_Tight");
   auto jetidAK8TLcorr = jetidcorrset->at("AK8PUPPI_TightLeptonVeto");
-  """)
-
-  print("Made it past jetidcorrs")
-
-  ROOT.gInterpreter.Declare("""
   auto btagwpbccorr = btagcorrset->at(btagname);
   auto btagwplcorr = btagcorrset->at(lightwp);
   auto jetvetocorr = jetvetocorrset->at(jetvetoname);
@@ -306,13 +292,12 @@ def analyze(jesvar):
         """)
     
   else:
-    print(f"accessing /cvmfs/cms-griddata.cern.ch/cat/metadata/JME/{yrstr[year]}/{jmetags[year]}/jet_jerc.json.gz")
-    print(f"get {jecyr[year]}_{jecver[year]}_MC_L1L2L3Res_AK4PFPuppi")
-    print(f"get {jecyr[year]}_{jecver[year]}_MC_L1FastJet_AK4PFPuppi")
-    print(f"get {jecyr[year]}_{jecver[year]}_MC_Total_AK4PFPuppi")
-    print(f"get {jecyr[year]}_JRV1_MC_PtResolution_AK4PFPuppi")
-    print(f"get {jecyr[year]}_JRV1_MC_ScaleFactor_AK4PFPuppi")
-
+    # print(f"accessing /cvmfs/cms-griddata.cern.ch/cat/metadata/JME/{yrstr[year]}/{jmetags[year]}/jet_jerc.json.gz")
+    # print(f"get {jecyr[year]}_{jecver[year]}_MC_L1L2L3Res_AK4PFPuppi")
+    # print(f"get {jecyr[year]}_{jecver[year]}_MC_L1FastJet_AK4PFPuppi")
+    # print(f"get {jecyr[year]}_{jecver[year]}_MC_Total_AK4PFPuppi")
+    # print(f"get {jecyr[year]}_JRV1_MC_PtResolution_AK4PFPuppi")
+    # print(f"get {jecyr[year]}_JRV1_MC_ScaleFactor_AK4PFPuppi")
     
     ROOT.gInterpreter.Declare("""
     auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/jet_jerc.json.gz"); 
@@ -499,7 +484,6 @@ def analyze(jesvar):
 
   if isSig:
     tagVars.Add("decayFinds", "decayModeSelection(nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status)")
-
   #WORK ON THIS MORE -- need to just be isolated from the 3 highest-pt fat jets, not any of them...
   #jVars.Add("Isolated_AK4","standalone_Jet(gcJet_eta, gcJet_phi, gcFatJet_eta, gcFatJet_phi)")
 
