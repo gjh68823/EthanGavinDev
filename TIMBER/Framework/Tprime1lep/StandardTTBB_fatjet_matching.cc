@@ -577,6 +577,7 @@ auto FatJet_matching(string sample, RVec<float> &gcFatJet_eta, RVec<float> &gcFa
   
   if (ntD != 0)
     {
+      // THIS IS A MORE SUCCINCT WAY TO SKIP OVER ANY DUPLICATES AS YOU GO UP A CHAIN
       for (unsigned int i = 0; i < ntD; i++)
 	{
 	  int igen = t_bkg_idx[i];

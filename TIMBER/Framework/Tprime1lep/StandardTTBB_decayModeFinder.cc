@@ -109,7 +109,7 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 				listofBosonIDs.push_back(dauId);
 				//std::cout << "\t \t Bosons: Pushed back a: "<< dauId << std::endl;
 			}
-			else{continue;}
+			else{std::cout << "SOMETHING WEIRD HAS HAPPENED IN FINDING DECAY PRODUCTS" << std::endl; continue;}
 		}
 	}
 	// std::cout << "Quark length, Boson length: " << quarks.size() << ", " << bosons.size() << std::endl;
