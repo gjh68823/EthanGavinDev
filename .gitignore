@@ -18,6 +18,6 @@ TIMBER/data/Pileup/old/
 *output.txt
 .nfs*
 *.png
-.nfs*
-*.png
+*.pdf
 decayPlotter.py
+*NanoList.txt

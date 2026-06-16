@@ -13,6 +13,7 @@ cd nobackup/BBto2b4tau/
 cmsrel CMSSW_13_2_10
 cd CMSSW_13_2_10
 cmsenv
+pip3 install --user --no-binary=correctionlib --upgrade correctionlib
 cd ..
 python3 -m virtualenv timber-env #If this step fails, you might need to do `python3 -m pip install --user virtualenv`
 git clone git@github.com:jmhogan/TIMBER.git # this requires an "SSH key" for cmslpc-el9. If you don't have it, use the https:// clone method
@@ -44,6 +45,8 @@ if [[ ":\$LD_LIBRARY_PATH:" != *":\$BOOSTPATH:"* ]]; then
 else
   echo "BOOSTPATH already on LD_LIBRARY_PATH"
 fi
+
+pip3 install --no-binary=correctionlib --upgrade correctionlib --quiet
 EOT
 ```
 
