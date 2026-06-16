@@ -158,6 +158,26 @@ RVec<float> elidfunc(correction::Correction::Ref& electroncorr, string elecyr, R
 	
 	return el;	
 }
+RVec<float> elidfuncNoIso(correction::Correction::Ref& electroncorr, string elecyr, RVec<float> &pt, RVec<float> &eta, RVec<float> &phi, RVec<int> &ID) {
+	RVec<float> el = {1.0, 1.0, 1.0};
+	for(int i = 0; i < pt.size(); i++) {
+		if (ID[i] != 11) {continue;} //skip muons and taus
+		if (i > 3) {continue;} //skip leptons past the first 4 for mass reco
+		
+		if (elecyr == "2022Re-recoBCD" || elecyr == "2022Re-recoE+PromptFG") {
+			el[0] *= electroncorr->evaluate({elecyr, "sf", "wp80noiso", eta[i], pt[i]}); 
+			el[1] *= electroncorr->evaluate({elecyr, "sfup", "wp80noiso", eta[i], pt[i]}); 
+			el[2] *= electroncorr->evaluate({elecyr, "sfdown", "wp80noiso", eta[i], pt[i]});
+		}
+		else {
+			el[0] *= electroncorr->evaluate({elecyr, "sf", "wp80noiso", eta[i], pt[i], phi[i]}); 
+			el[1] *= electroncorr->evaluate({elecyr, "sfup", "wp80noiso", eta[i], pt[i], phi[i]}); 
+			el[2] *= electroncorr->evaluate({elecyr, "sfdown", "wp80noiso", eta[i], pt[i], phi[i]});
+		}
+	}		
+	
+	return el;	
+}
 
 
 //Muon Id Function 

@@ -284,7 +284,7 @@ def analyze(jesvar):
   auto jetvetocorr = jetvetocorrset->at(jetvetoname);
   auto electroncorr = electroncorrset->at("Electron-ID-SF");
   auto muonidcorr = muoncorrset->at("NUM_MediumID_DEN_TrackerMuons");
-  auto muonisocorr = muoncorrset->at("NUM_LoosePFIso_DEN_MediumID"); 
+  auto muonisocorr = muoncorrset->at("NUM_TightMiniIso_DEN_MediumID"); 
   """)
 
   if not isMC:
@@ -354,9 +354,10 @@ def analyze(jesvar):
   # ------------------ LEPTON Definitions ------------------
   lVars = VarGroup('LeptonVars')
   
-  lVars.Add("Electron_cutBasedIdNoIso_tight", "Electron_cutBasedIdNoIso_tight(nElectron, Electron_vidNestedWPBitmap)")
+  #lVars.Add("Electron_cutBasedIdNoIso_tight", "Electron_cutBasedIdNoIso_tight(nElectron, Electron_vidNestedWPBitmap)")
+  lVars.Add("Electron_passIP", "elIP(Electron_dz, Electron_dxy, Electron_eta)")
   lVars.Add("TPassMu", "abs(Muon_eta)<2.4 && Muon_mediumId==1 && Muon_miniIsoId>=3 && abs(Muon_dz) < 0.5 && Muon_dxy < 0.2")
-  lVars.Add("TPassEl", "(abs(Electron_eta)<1.442 || (abs(Electron_eta)>1.566 && abs(Electron_eta)<2.5)) && Electron_cutBasedIdNoIso_tight==1 && Electron_miniPFRelIso_all<0.1")
+  lVars.Add("TPassEl", "(abs(Electron_eta)<1.442 || (abs(Electron_eta)>1.566 && abs(Electron_eta)<2.5)) && Electron_mvaNoIso_WP80 == 1 && Electron_miniPFRelIso_all<0.1 && Electron_passIP == 1")
   lVars.Add("VetoMu", "TPassMu && (Muon_pt>25)")
   lVars.Add("VetoEl", "TPassEl && (Electron_pt>25)")
   lVars.Add("SignalIsoMu", "TPassMu && (Muon_pt>=55)")
@@ -383,8 +384,8 @@ def analyze(jesvar):
 
   # ------------------ LEPTON SELECTION ------------------
 
-  lVars.Add("isMu", "(nMuon>0) && (HLT_Mu50 || HLT_HighPtTkMu100) && (nSignalIsoMu==1) && (nVetoIsoLep==0) && (nElectron == 0 || nSignalIsoEl == 0)")
-  lVars.Add("isEl", "(nElectron>0) && (HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165 || HLT_Photon200) && (nSignalIsoEl==1) && (nVetoIsoLep==0) && (nMuon == 0 || nSignalIsoMu == 0)")
+  lVars.Add("isMu", "(nMuon>0) && (HLT_Mu50 || HLT_HighPtTkMu100 || HLT_Mu15_IsoVVVL_PFHT450) && (nSignalIsoMu==1) && (nVetoIsoLep==0) && (nElectron == 0 || nSignalIsoEl == 0)")
+  lVars.Add("isEl", "(nElectron>0) && (HLT_Ele15_IsoVVVL_PFHT450 || HLT_Ele115_CaloIdVT_GsfTrkIdT || HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165 || HLT_Photon200) && (nSignalIsoEl==1) && (nVetoIsoLep==0) && (nMuon == 0 || nSignalIsoMu == 0)")
 
   lCuts = CutGroup('LeptonCuts')
   lCuts.Add("Event is either muon or electron", "isMu || isEl")
