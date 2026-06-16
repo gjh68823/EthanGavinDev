@@ -20,7 +20,7 @@ sys.path.append('../../../')
 inputFiles = sys.argv[1] #fileList
 testNum1 = sys.argv[2]   #first file in the list to use 
 testNum2 = sys.argv[3]   #last file in the list to use
-year = sys.argv[4]       #2022, 2022EE, 2023, 2023BPix
+year = sys.argv[4]       #2022, 2022EE, 2023, 2023BPix, 2024, 2025
 
 # Make the New .txt file from line testNum1 to testNum2 because TIMBER can handle .txt of .root's files   
 print(f"Input File Path: {inputFiles}")
@@ -32,7 +32,7 @@ end = int(testNum2)
 
 print(f"TestNum 1: {start} and TestNum 2: {end}")
 
-print("Adding files to trimmed_input.txt")
+#print("Adding files to trimmed_input.txt")
 #file_name = 'trimmed_input_'+inputFiles.replace('.txt','')+'_'+str(testNum1)+'.txt'
 #listFiles = open(file_name, 'w')
   #if (listFiles.is_open())
@@ -89,7 +89,7 @@ if not isMC:
       jecera = 'Cv123'
     else:
       jecera = 'Cv4'
-    
+     
 if isMC:
   if (("_ext1" in sampleName)): era = "ext1"
   if (("_ext2" in sampleName)): era = "ext2"
@@ -165,6 +165,10 @@ def analyze(jesvar):
     jsonfile = jsonfile + "Cert_Collisions2022_355100_362760_Golden.json"
   elif '2023' in year:
     jsonfile = jsonfile + "Cert_Collisions2023_366442_370790_Golden.json"
+  elif '2024' in year:
+      jsonfile = jsonfile + "Cert_Collisions2024_378981_386951_Golden.json"
+  elif '2025' in year:
+      jsonfile = jsonfile + "Cert_Collisions2025_391658_398903_Golden.json"
   else:
     print(f'ERROR: Can\'t parse the year to assign a golden json file. Expected 2022(EE) or 2023(BPix). Got: {year}\n')
     
@@ -185,31 +189,37 @@ def analyze(jesvar):
 
   mutrig = "OldMu100_or_TkMu100"
   #deepjetL = {'2022':0.0583,'2022EE':0.0614,'2023':0.0479,'2023BPix':0.048}
-  PNetL = {'2022':0.047,'2022EE':0.0499,'2023':0.0358,'2023BPix':0.0359} #PN
-  jmetags = {'2022':'2025-09-23','2022EE':'2025-10-07','2023':'2025-10-07','2023BPix':'2025-10-07', '2024':"2026-06-05"}
-  btvtags = {'2022':'2025-08-20','2022EE':'2025-08-20','2023':'2025-08-20','2023BPix':'2025-08-20'}
-  egmtags = {'2022':'2025-10-22','2022EE':'2025-10-22','2023':'2025-10-22','2023BPix':'2025-10-22'}
-  muotags = {'2022':'2025-08-14','2022EE':'2025-08-14','2023':'2025-08-14','2023BPix':'2025-08-14'}
-  lumtags = {'2022':'2024-01-31','2022EE':'2024-01-31','2023':'2024-01-31','2023BPix':'2024-01-31'}
-  METyr = {'2022':"2022",'2022EE':"2022EE",'2023':"2023",'2023BPix':"2023BPix"} 
-  METsimpleyr = {'2022':"2022",'2022EE':"2022",'2023':"2023",'2023BPix':"2023"} 
-  btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"deepJet_comb",'2023BPix':"deepJet_comb"}
-  yrShortStr = {'2022':"2022_Summer22",'2022EE':"2022_Summer22EE",'2023':"2023_Summer23",'2023BPix':"2023_Summer23BPix"}
-  yrstr = {'2022':"Run3-22CDSep23-Summer22-NanoAODv12",'2022EE':"Run3-22EFGSep23-Summer22EE-NanoAODv12",'2023':"Run3-23CSep23-Summer23-NanoAODv12",'2023BPix':"Run3-23DSep23-Summer23BPix-NanoAODv12"}
-  jecyr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23"}
-  jeryr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23_RunCv1234",'2023BPix':"Summer23BPixPrompt23_RunD"}
-  jecver = {'2022':"V3",'2022EE':"V3",'2023':"V2",'2023BPix':"V3"}
-  puname = {'2022':"Collisions2022_355100_357900_eraBCD_GoldenJson",'2022EE':"Collisions2022_359022_362760_eraEFG_GoldenJson",'2023':"Collisions2023_366403_369802_eraBC_GoldenJson",'2023BPix':"Collisions2023_369803_370790_eraD_GoldenJson"}
-  jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1"}
-  elecyr = {'2022':"2022Re-recoBCD",'2023EE':"2022Re-recoE+PromptFG",'2023':"2023PromptC",'2023BPix':"2023PromptD"}
+  #PNetL = {'2022':0.047,'2022EE':0.0499,'2023':0.0358,'2023BPix':0.0359} #PN
+  PNetM = {'2022':0.245,'2022EE':0.2605,'2023':0.1917,'2023BPix':0.1919, '2024':0.1272, '2025':0.1272} #PNet for 22-23BPix, UParT for 2025
+  yrstr = {'2022':"Run3-22CDSep23-Summer22-NanoAODv12",'2022EE':"Run3-22EFGSep23-Summer22EE-NanoAODv12",'2023':"Run3-23CSep23-Summer23-NanoAODv12",'2023BPix':"Run3-23DSep23-Summer23BPix-NanoAODv12",'2024':"Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15",'2025':"Run3-25Prompt-Summer24-NanoAODv15"}
+  jmetags = {'2022':'2026-04-13','2022EE':'2026-04-13','2023':'2026-04-13','2023BPix':'2026-04-13','2024':'2026-06-05', '2025':'2026-06-05'} 
+  btvtags = {'2022':'2025-08-20','2022EE':'2025-08-20','2023':'2025-08-20','2023BPix':'2025-08-20','2024':'2026-03-10','2025':'2026-05-27'}
+  egmtags = {'2022':'2025-12-15','2022EE':'2025-12-15','2023':'2025-12-15','2023BPix':'2025-12-15','2024':'2025-12-15','2025':'2026-05-06'}
+  muotags = {'2022':'2026-04-28','2022EE':'2026-04-28','2023':'2026-04-28','2023BPix':'2026-04-28','2024':'2026-04-28','2025':'2026-04-28'}
+  lumtags = {'2022':'2024-01-31','2022EE':'2024-01-31','2023':'2024-01-31','2023BPix':'2024-01-31','2024':'2026-04-15','2025':'latest'}      
 
-  print("jecyr and jecver below")
-  print(jecyr[year]+"_"+jecver[year]+"_DATA_L1L2L3Res_AK4PFPuppi")
-
+  
+  jecyr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23",'2024':"Summer24Prompt24", '2025':"Summer24Prompt24"}
+  jeryr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23_RunCv1234",'2023BPix':"Summer23BPixPrompt23_RunD",'2024':"Summer24Prompt24",'2025':"Summer24Prompt24"}
+  jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1",'2024':"Summer24Prompt24_RunBCDEFGHI_V1",'2025':"Summer24Prompt24_RunBCDEFGHI_V1"}      
+  if not isMC: #is DATA
+      jecyr = {'2022':"Summer22_22Sep2023_RunCD",'2022EE':"Summer22EE_22Sep2023_Run"+jecera,'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23",'2024':"Summer24Prompt24", '2025':"Winter25Prompt25"}
+      jeryr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23_RunCv1234",'2023BPix':"Summer23BPixPrompt23_RunD",'2024':"Summer24Prompt24",'2025':"Winter25Prompt25"}
+      jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1",'2024':"Summer24Prompt24_RunBCDEFGHI_V1",'2025':"Winter25Prompt25_RunCDEFG_V1"}    
+  
+  jecver = {'2022':"V3",'2022EE':"V3",'2023':"V3",'2023BPix':"V3",'2024':"V3",'2025':"V3"}   
+  puname = {'2022':"Collisions2022_355100_357900_eraBCD_GoldenJson",'2022EE':"Collisions2022_359022_362760_eraEFG_GoldenJson",'2023':"Collisions2023_366403_369802_eraBC_GoldenJson",'2023BPix':"Collisions2023_369803_370790_eraD_GoldenJson",'2024':"Collisions24_BCDEFGHI_goldenJSON ",'2025':"Collisions25_goldenJSON"}  
+  elecyr = {'2022':"2022Re-recoBCD",'2022EE':"2022Re-recoE+PromptFG",'2023':"2023PromptC",'2023BPix':"2023PromptD",'2024':"2024Prompt",'2025':"2025Prompt"}
+  METyr = {'2022':"2022",'2022EE':"2022EE",'2023':"2023",'2023BPix':"2023BPix",'2024':"2024",'2025':"2025"}                            
+  METsimpleyr = {'2022':"2022",'2022EE':"2022",'2023':"2023",'2023BPix':"2023",'2024':"2024",'2025':"2025"} 
+  btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"deepJet_comb",'2023BPix':"deepJet_comb",'2024':"UParTAK4_comb",'2025':"UParTAK4_comb"}
+  puweights = {'2022':"puWeights",'2022EE':'puWeights','2023':'puWeights','2023BPix':'puWeights','2024':"puWeights_BCDEFGHI",'2025':"puWeights_2025pp_Golden_Summer24_25ns_69200ub"}
+  lightwps = {'2022':"particleNet_light", '2022EE':"particleNet_light",'2023':"particleNet_light",'2023BPix':"particleNet_light",'2024':"UParTAK4_light"} #Needs 2025
+  
+  year_hack='2023'
   ROOT.gInterpreter.Declare("""
-  float PNetL = """+str(PNetL[year])+""";
+  float PNetM = """+str(PNetM[year])+""";
   string yrstr = \""""+yrstr[year]+"""\";
-  string yrShortStr = \""""+yrShortStr[year]+"""\";
   string jecyr = \""""+jecyr[year]+"""\";
   string jeryr = \""""+jeryr[year]+"""\";
   string jecver = \""""+jecver[year]+"""\";
@@ -221,63 +231,88 @@ def analyze(jesvar):
   string puname = \""""+puname[year]+"""\";
   string jetvetoname = \""""+jetvetoname[year]+"""\";
   string elecyr = \""""+elecyr[year]+"""\";
-  string METyr = \""""+METyr[year]+"""\";
-  string METsimpleyr = \""""+METsimpleyr[year]+"""\";
+  string METyr = \""""+METyr[year_hack]+"""\";
+  string METsimpleyr = \""""+METsimpleyr[year_hack]+"""\";
   string btagname = \""""+btagname[year]+"""\";
+  string puweight = \""""+puweights[year]+"""\";
+  string lightwp = \""""+lightwps[year]+"""\";
   
   std::vector<int> btagptbins = {15,20,30,50,70,100,150,200,300,400,500,600,800,1000,1200,1500};
-  std::vector<std::vector<float>> btageffs = """ + to_cpp_vec2d(pnet_loose[year]) + """;
+  std::vector<std::vector<float>> btageffs = """ + to_cpp_vec2d(pnet_loose[year_hack]) + """;
   """)
 
-  #WAS IN WHITESPACE IN ROOT.gIntepreter.Declare BELOW
-  # std::cout << "Available keys in pileupcorrset:" << std::endl;
-  # for (const auto& pair : *pileupcorrset) {
-  #   std::cout << "  " << pair.first << std::endl;
-  # }
-
+  print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/{yrstr[year]}/{lumtags[year]}/{puweights[year]}.json.gz  ->  {puname[year]}")
+  print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/{yrstr[year]}/{btvtags[year]}/btagging.json.gz   ->  {btagname[year]}  and  {lightwps[year]}")   
+  print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/{yrstr[year]}/{jmetags[year]}/jetvetomaps.json.gz   ->  {jetvetoname[year]}")
+  print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/{yrstr[year]}/{egmtags[year]}/electron.json.gz   ->  Electron-ID-SF")
+  print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/{yrstr[year]}/{muotags[year]}/muon_Z.json.gz   ->  NUM_MediumID_DEN_TrackerMuons and NUM_LoosePFIso_DEN_MediumID") 
+  print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/{yrstr[year]}/{jmetags[year]}/jetid.json.gz   -> AK4PUPPI_Tight and AK4PUPPI_TightLeptonVeto")      
+  print(f"/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/{yrstr[year]}/{jmetags[year]}/jetid.json.gz   -> AK8PUPPI_Tight and AK8PUPPI_TightLeptonVeto") 
+  
+  #PULLED OUT OF BELOW DECLARE
+  #auto METcorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/met_xyCorrections_"+METsimpleyr+"_"+METyr+".json.gz");
+  #auto METcorr = METcorrset->at("met_xy_corrections");
   ROOT.gInterpreter.Declare("""
-  auto pileupcorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/"+yrstr+"/"+lumtag+"/puWeights.json.gz");
+  auto pileupcorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/LUM/"+yrstr+"/"+lumtag+"/"+puweight+".json.gz");
   auto btagcorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/BTV/"+yrstr+"/"+btvtag+"/btagging.json.gz");
   auto jetvetocorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/jetvetomaps.json.gz");
   auto electroncorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/EGM/"+yrstr+"/"+egmtag+"/electron.json.gz");
   auto muoncorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/"+yrstr+"/"+muotag+"/muon_Z.json.gz");
-  auto METcorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/met_xyCorrections_"+METsimpleyr+"_"+METyr+".json.gz");
   auto jetidcorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/jetid.json.gz");
+  """)
 
+  print("made it past corrsets")
+
+  ROOT.gInterpreter.Declare("""
   auto pileupcorr = pileupcorrset->at(puname);
   auto jetidAK4Tcorr = jetidcorrset->at("AK4PUPPI_Tight");
   auto jetidAK4TLcorr = jetidcorrset->at("AK4PUPPI_TightLeptonVeto");
   auto jetidAK8Tcorr = jetidcorrset->at("AK8PUPPI_Tight");
   auto jetidAK8TLcorr = jetidcorrset->at("AK8PUPPI_TightLeptonVeto");
+  """)
+
+  print("Made it past jetidcorrs")
+
+  ROOT.gInterpreter.Declare("""
   auto btagwpbccorr = btagcorrset->at(btagname);
-  auto btagwplcorr = btagcorrset->at("particleNet_light");
+  auto btagwplcorr = btagcorrset->at(lightwp);
   auto jetvetocorr = jetvetocorrset->at(jetvetoname);
   auto electroncorr = electroncorrset->at("Electron-ID-SF");
   auto muonidcorr = muoncorrset->at("NUM_MediumID_DEN_TrackerMuons");
   auto muonisocorr = muoncorrset->at("NUM_LoosePFIso_DEN_MediumID"); 
-  auto METcorr = METcorrset->at("met_xy_corrections");
   """)
 
   if not isMC:
     ROOT.gInterpreter.Declare("""
-    auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/JME/"+yrShortStr+"/jet_jerc.json.gz"); 
-    auto ak8corrset = correction::CorrectionSet::from_file("/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/JME/"+yrShortStr+"/fatJet_jerc.json.gz"); 
-
-    auto ak4corr = ak4corrset->compound().at(jecyr+"_Run"+jecera+"_"+jecver+"_DATA_L1L2L3Res_AK4PFPuppi");
-    auto ak4corrL1 = ak4corrset->at(jecyr+"_Run"+jecera+"_"+jecver+"_DATA_L1FastJet_AK4PFPuppi");
-    auto ak8corr = ak8corrset->compound().at(jecyr+"_Run"+jecera+"_"+jecver+"_DATA_L1L2L3Res_AK8PFPuppi");
+    auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/jet_jerc.json.gz"); 
+    auto ak8corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/fatJet_jerc.json.gz"); 
     """)
+    if '2023' in year or '2022' in year:
+        ROOT.gInterpreter.Declare("""
+        auto ak4corr = ak4corrset->compound().at(jecyr+"_Run"+jecera+"_"+jecver+"_DATA_L1L2L3Res_AK4PFPuppi");
+        auto ak4corrL1 = ak4corrset->at(jecyr+"_Run"+jecera+"_"+jecver+"_DATA_L1FastJet_AK4PFPuppi");
+        auto ak8corr = ak8corrset->compound().at(jecyr+"_Run"+jecera+"_"+jecver+"_DATA_L1L2L3Res_AK8PFPuppi");
+        """)
+    else:
+      ROOT.gInterpreter.Declare("""
+        auto ak4corr = ak4corrset->compound().at(jecyr+"_"+jecver+"_DATA_L1L2L3Res_AK4PFPuppi");
+        auto ak4corrL1 = ak4corrset->at(jecyr+"_"+jecver+"_DATA_L1FastJet_AK4PFPuppi");
+        auto ak8corr = ak8corrset->compound().at(jecyr+"_"+jecver+"_DATA_L1L2L3Res_AK8PFPuppi");
+        """)
+    
   else:
-    print(yrstr[year])
-    print("/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/JME/"+yrstr[year]+"/jet_jerc.json.gz")
-    ROOT.gInterpreter.Declare("""
-    auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/JME/"+yrShortStr+"/jet_jerc.json.gz");
-    auto ak8corrset = correction::CorrectionSet::from_file("/cvmfs/cms.cern.ch/rsync/cms-nanoAOD/jsonpog-integration/POG/JME/"+yrShortStr+"/fatJet_jerc.json.gz"); 
-    """)
+    print(f"accessing /cvmfs/cms-griddata.cern.ch/cat/metadata/JME/{yrstr[year]}/{jmetags[year]}/jet_jerc.json.gz")
+    print(f"get {jecyr[year]}_{jecver[year]}_MC_L1L2L3Res_AK4PFPuppi")
+    print(f"get {jecyr[year]}_{jecver[year]}_MC_L1FastJet_AK4PFPuppi")
+    print(f"get {jecyr[year]}_{jecver[year]}_MC_Total_AK4PFPuppi")
+    print(f"get {jecyr[year]}_JRV1_MC_PtResolution_AK4PFPuppi")
+    print(f"get {jecyr[year]}_JRV1_MC_ScaleFactor_AK4PFPuppi")
 
-    print(jecyr[year]+"_"+jecver[year]+"_MC_L1FastJet_AK4PFPuppi")
     
     ROOT.gInterpreter.Declare("""
+    auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/jet_jerc.json.gz"); 
+    auto ak8corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/fatJet_jerc.json.gz"); 
+
     auto ak4corr = ak4corrset->compound().at(jecyr+"_"+jecver+"_MC_L1L2L3Res_AK4PFPuppi");
     auto ak4corrL1 = ak4corrset->at(jecyr+"_"+jecver+"_MC_L1FastJet_AK4PFPuppi");
     auto ak4corrUnc = ak4corrset->at(jecyr+"_"+jecver+"_MC_Total_AK4PFPuppi");
@@ -463,12 +498,18 @@ def analyze(jesvar):
   #jVars.Add("Isolated_AK4","standalone_Jet(gcJet_eta, gcJet_phi, gcFatJet_eta, gcFatJet_phi)")
 
   # ------------------ Add scale factors and MC jet-based calcs ------------------
-  #if isMC:
+  if isMC:
     #jVars.Add("leptonRecoSF", "recofunc(electroncorr, muonidcorr, yrstr, lepton_pt, lepton_eta, isEl)") ## this is not right, but we'll figure out what corrections we need later
     #jVars.Add("leptonIDSF", "idfunc(muonidcorr,elid_pts,elid_etas,elecidsfs,elecidsfuncs,yrstr, lepton_pt, lepton_eta, isEl)") #at(0) 
     #jVars.Add("leptonIsoSF", "isofunc(muiso_pts,muiso_etas,muonisosfs,muonisosfunc,elid_pts,elid_etas,elecisosfs,elecisosfunc, lepton_pt, lepton_eta, isEl)")
     #jVars.Add("leptonHLTSF", "hltfunc(muonhltcorr,elhlt_pts,elhlt_etas,elechltsfs,elechltuncs,yrstr, lepton_pt, lepton_eta, isEl)")
-    #jVars.Add("btagWeights","btagshapefunc(gcJet_pt,gcJet_eta,gcJet_DeepFlav,gcJet_hflav)")
+
+    jVars.Add("gcJet_PNet", "reorder(Jet_btagPNetB[goodcleanJets == true],gcJet_ptargsort)")
+    jVars.Add("gcJet_PNetM", "gcJet_PNet > PNetM") 
+    jVars.Add("NJets_PNetM", "Sum(gcJet_PNetM)")
+  
+    jVars.Add("gcJet_hflav", "reorder(Jet_hadronFlavour[goodcleanJets == true],gcJet_ptargsort)")
+    jVars.Add("btagWeights",'btagshapefunc("M",year,jesvar,btagwpbccorr,btagwplcorr,btagptbins,btageffs,PNetM,gcJet_pt,gcJet_eta,gcJet_PNet,gcJet_hflav)')
     #### WORK ON THESE! Ethan can compute the efficiencies we need.
 
 
