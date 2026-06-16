@@ -21,7 +21,7 @@
 
 #include <fstream>
 
-int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_pdgId, ROOT::VecOps::RVec<float>& GenPart_mass, ROOT::VecOps::RVec<float>& GenPart_pt, ROOT::VecOps::RVec<float>& GenPart_phi, ROOT::VecOps::RVec<float>& GenPart_eta, ROOT::VecOps::RVec<short>& GenPart_genPartIdxMother, ROOT::VecOps::RVec<int>& GenPart_status)
+int decayModeSelection(unsigned int& nGenPart, ROOT::VecOps::RVec<int>& GenPart_pdgId, ROOT::VecOps::RVec<float>& GenPart_mass, ROOT::VecOps::RVec<float>& GenPart_pt, ROOT::VecOps::RVec<float>& GenPart_phi, ROOT::VecOps::RVec<float>& GenPart_eta, ROOT::VecOps::RVec<short>& GenPart_genPartIdxMother, ROOT::VecOps::RVec<int>& GenPart_status)
 {
 //	int returnVar = 0;
 //	if(region == "Signal")
@@ -132,7 +132,6 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 			test = listofQuarkIDs.at(0)*listofQuarkIDs.at(1);
 			sign = -1;
 			if(test > 0){sign = 1;}
-			if(sign < 0){continue}
 		}
 		if(listofQuarkIDs.size() > 3 && abs(listofQuarkIDs.at(3)) == 6)
 		{
