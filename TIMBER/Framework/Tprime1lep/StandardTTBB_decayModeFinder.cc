@@ -132,7 +132,6 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 			test = listofQuarkIDs.at(0)*listofQuarkIDs.at(1);
 			sign = -1;
 			if(test > 0){sign = 1;}
-			if(sign < 0){continue}
 		}
 		if(listofQuarkIDs.size() > 3 && abs(listofQuarkIDs.at(3)) == 6)
 		{

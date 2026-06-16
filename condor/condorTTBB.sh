@@ -42,7 +42,7 @@ cd TIMBER/
 
 # Run analyzer_RDF files through two C files
 echo "Running TIMBER:"
-python3 Tprim1lepRUN3.py ${infilename} ${testnum1} ${testnum2} ${year}
+python3 Tprime1lepRUN3.py ${infilename} ${testnum1} ${testnum2} ${year}
 
 # Viewing ROOT Files
 echo "ROOT Files:"
