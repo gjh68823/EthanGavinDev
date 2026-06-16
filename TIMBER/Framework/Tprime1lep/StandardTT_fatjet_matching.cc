@@ -1,7 +1,8 @@
 using namespace std;
 using namespace ROOT::VecOps;
 
-auto get_daughters(int idx, unsigned int length, RVec<short> GenPart_genPartIdxMother) {
+auto get_daughters(int idx, unsigned int length, RVec<short> GenPart_genPartIdxMother) 
+{
   vector<unsigned int> daughters;
   //  std::cout << daughters << std::endl;
   daughters.clear();
@@ -336,16 +337,15 @@ auto fatjet_matching(string sample, unsigned int nGenPart, RVec<int> &GenPart_pd
 
     fatjet_matchedPt.push_back(matchedPt);
   
-    std::cout << "Truth is: " << fatjet_truth[i] << std::endl;
-    std::cout << "=============== Done with FatJets =================" << std::endl << std::endl << std::endl;
+    // std::cout << "Truth is: " << fatjet_truth[i] << std::endl;
+    // std::cout << "=============== Done with FatJets =================" << std::endl << std::endl << std::endl;
   }
   return fatjet_truth;
 }
 
-auto jet_tagging(RVec<float> gcFatJet_PNWM_T, RVec<float> gcFatJet_PNWM_W, RVec<float> gcFatJet_PNWM_Z, RVec<float> gcFatJet_PNWM_H, RVec<float> gcFatJet_PNWM_QCD, RVec<float> gcFatJet_GPT_T, RVec<float> gcFatJet_GPT_W, RVec<float> gcFatJet_GPT_ZH, RVec<float> gcFatJet_GPT_QCD, RVec<float> gcFatJet_GPT_regressedMass, RVec<float> gcFatJet_subJetIdx1, RVec<float> gcFatJet_subJetIdx2, RVec<float> SubJet_btagUParTAK4B, RVec<float> gcFatJet_truth) 
-
+auto jet_tagging(RVec<float> gcFatJet_PNWM_T, RVec<float> gcFatJet_PNWM_W, RVec<float> gcFatJet_PNWM_Z, RVec<float> gcFatJet_PNWM_H, RVec<float> gcFatJet_PNWM_QCD, RVec<float> gcFatJet_GPT_T, RVec<float> gcFatJet_GPT_W, RVec<float> gcFatJet_GPT_ZH, RVec<float> gcFatJet_GPT_QCD, RVec<float> gcFatJet_GPT_regressedMass, RVec<float> gcFatJet_subJetIdx1, RVec<float> gcFatJet_subJetIdx2, RVec<float> SubJet_btagUParTAK4B, RVec<float> gcFatJet_truth, float UparTmed) 
 {
-  std::cout << "Entering jet_tagging" << std::endl;
+  //std::cout << "Entering jet_tagging" << std::endl;
   RVec<int> PNWMtag;
   RVec<int> GPTtag;
 
@@ -363,7 +363,7 @@ auto jet_tagging(RVec<float> gcFatJet_PNWM_T, RVec<float> gcFatJet_PNWM_W, RVec<
     {
       int subjetIdx1 = gcFatJet_subJetIdx1[i];
       int subjetIdx2 = gcFatJet_subJetIdx2[i];
-      if((subjetIdx1 >= 0 &&  SubJet_btagUParTAK4B[subjetIdx1] >= 0.8) || (subjetIdx2 >= 0 &&  SubJet_btagUParTAK4B[subjetIdx2] >= 0.8)) //Ask Dr. Hogan how to find the medium score rather than just using 0.8
+      if((subjetIdx1 >= 0 &&  SubJet_btagUParTAK4B[subjetIdx1] >= 0.8) || (subjetIdx2 >= 0 &&  SubJet_btagUParTAK4B[subjetIdx2] >= UparTmed))
       {
         PNWMtag.push_back(5);
       }else{PNWMtag.push_back(0);}
@@ -382,12 +382,12 @@ auto jet_tagging(RVec<float> gcFatJet_PNWM_T, RVec<float> gcFatJet_PNWM_W, RVec<
     if(max_index == 3){
       int subjetIdx1 = gcFatJet_subJetIdx1[i];
       int subjetIdx2 = gcFatJet_subJetIdx2[i];
-      if((subjetIdx1 >= 0 &&  SubJet_btagUParTAK4B[subjetIdx1] >= 0.8) || (subjetIdx2 >= 0 &&  SubJet_btagUParTAK4B[subjetIdx2] >= 0.8)) //Ask Dr. Hogan how to find the medium score rather than just using 0.8
+      if((subjetIdx1 >= 0 &&  SubJet_btagUParTAK4B[subjetIdx1] >= 0.8) || (subjetIdx2 >= 0 &&  SubJet_btagUParTAK4B[subjetIdx2] >= UparTmed)) 
       {
         GPTtag.push_back(5);
       }else{GPTtag.push_back(0);}
     }
-    std::cout << "PNWM, GPT, Truth = " << PNWMtag[i] << ", " << GPTtag[i] << ", " << gcFatJet_truth[i] << std::endl;
+    //std::cout << "PNWM, GPT, Truth = " << PNWMtag[i] << ", " << GPTtag[i] << ", " << gcFatJet_truth[i] << std::endl;
 
   }
   std::pair<RVec<float>, RVec<float>> taggerResults = {PNWMtag, GPTtag};

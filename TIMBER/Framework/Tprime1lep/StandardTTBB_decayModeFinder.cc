@@ -21,9 +21,8 @@
 
 #include <fstream>
 
-int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_pdgId, ROOT::VecOps::RVec<float>& GenPart_mass, ROOT::VecOps::RVec<float>& GenPart_pt, ROOT::VecOps::RVec<float>& GenPart_phi, ROOT::VecOps::RVec<float>& GenPart_eta, ROOT::VecOps::RVec<short>& GenPart_genPartIdxMother, ROOT::VecOps::RVec<int>& GenPart_status)
+int decayModeSelection(unsigned int nGenPart,ROOT::VecOps::RVec<int>& GenPart_pdgId, ROOT::VecOps::RVec<float>& GenPart_mass, ROOT::VecOps::RVec<float>& GenPart_pt, ROOT::VecOps::RVec<float>& GenPart_phi, ROOT::VecOps::RVec<float>& GenPart_eta, ROOT::VecOps::RVec<short>& GenPart_genPartIdxMother, ROOT::VecOps::RVec<int>& GenPart_status)
 {
-	std::cout << "Entering decay mode selection" << std::endl;
 //	int returnVar = 0;
 //	if(region == "Signal")
 //	{
@@ -57,17 +56,14 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 	quarks.clear();
 	bosons.clear();
 	
-	ofstream decayFile;
-	decayFile.open("decayOutput.txt", std::ios_base::app);
+	// ofstream decayFile;
+	// decayFile.open("decayOutput.txt", std::ios_base::app);
 
 	for(unsigned int p = 0; p < nGenPart; p++)
 	{
-		 if(GenPart_pdgId[GenPart_genPartIdxMother[p]] != GenPart_pdgId[p] && abs(GenPart_pdgId[GenPart_genPartIdxMother[p]]) == 6000006) {
-             std::cout << GenPart_pdgId[p] << ", ";
-                 }
 		int id=GenPart_pdgId[p];
 		//find T' and B' particles
-		if(abs(id) != 6000006 && abs(id) != 8000002){continue;}
+		if(abs(id) != 6000006 && abs(id) != 6000007){continue;}
 		bool hasTdaughter = false;
 		vector<unsigned int> daughters;
 		daughters.clear();
@@ -76,7 +72,7 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 			if(GenPart_genPartIdxMother[dau]!=p){continue;}
 			daughters.push_back(dau);
 			if(abs(id) == 6000006 && abs(GenPart_pdgId[dau]) == 6000006){hasTdaughter = true;}
-			//if(abs(id) == 8000002 && abs(GenPart_pdgId[dau]) == 8000002){hasTdaughter = true;}
+			if(abs(id) == 6000007 && abs(GenPart_pdgId[dau]) == 6000007){hasTdaughter = true;}
 		}
 		if(hasTdaughter){continue;}
 		int mother = GenPart_genPartIdxMother[p];
@@ -89,11 +85,11 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 			}
 			else{tPrimeID.push_back(GenPart_pdgId[p]);}
 		}
-		// if(abs(id) == 8000002)
-		// {
-		// 	if(abs(mother_id) == 8000002){bPrimeID.push_back(GenPart_pdgId[mother]);}
-		// 	else{bPrimeID.push_back(GenPart_pdgId[p]);}
-		// }
+		if(abs(id) == 6000007)
+		{
+			if(abs(mother_id) == 6000007){bPrimeID.push_back(GenPart_pdgId[mother]);}
+			else{bPrimeID.push_back(GenPart_pdgId[p]);}
+		}
 		//std::cout << "\t \t Number of daughters is: " << daughters.size() << std::endl;
 		//std::cout << "\t \t Daughters are: " << GenPart_pdgId[daughters.at(0)] << ", " << GenPart_pdgId[daughters.at(1)] << std::endl;
 		for(unsigned int j = 0; j < daughters.size(); j++)
@@ -116,13 +112,11 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 			else{std::cout << "SOMETHING WEIRD HAS HAPPENED IN FINDING DECAY PRODUCTS" << std::endl; continue;}
 		}
 	}
-	std::cout << std::endl;
 	// std::cout << "Quark length, Boson length: " << quarks.size() << ", " << bosons.size() << std::endl;
 	//if(tPrimeID.size() > 0) {std::cout << "Entering Swaps" << std::endl;}
 	if(listofQuarkIDs.size() != 0 && listofQuarkIDs.size() != 2)
 	{
 		// std::cout << "More/less than 2 quarks stored: " << listofQuarkIDs.size() << std::endl;
-		for(unsigned int i = 0; i < listofQuarkIDs.size(); i++){std::cout << "quark " << i << " = " << listofQuarkIDs.at(i) << std::endl;}
 		int test = listofQuarkIDs.at(0)*listofQuarkIDs.at(1);
 		int sign = -1;
 		if(test > 0){sign = 1;} // Cai: Why do we bother with sign? just see if test > 0
@@ -138,7 +132,6 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 			test = listofQuarkIDs.at(0)*listofQuarkIDs.at(1);
 			sign = -1;
 			if(test > 0){sign = 1;}
-			if(sign < 0){std::cout << "Signs are fixed!" << std::endl;}
 		}
 		if(listofQuarkIDs.size() > 3 && abs(listofQuarkIDs.at(3)) == 6)
 		{
@@ -195,10 +188,6 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 				isTZTH = true;
 				decayMode = 4; // TZTH ID!
 			}
-			else
-			{
-				std::cout << "2 t daughters didn't match tZtZ, tHtH, or tZtH" << listofBosonIDs.at(0) << ", " << listofBosonIDs.at(1) << std::endl;
-			}
 		}
 		// t-b pairs, check for correlating bosons in the right spots
 		else if(abs(listofQuarkIDs.at(0)) == 6 && abs(listofQuarkIDs.at(1)) == 5)
@@ -213,7 +202,6 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 				isTHBW = true;
 				decayMode = 6; // THBW ID!
 			}
-			else{std::cout<< "t - b pair didn't match Z/H - W pair" << listofBosonIDs.at(0)<<", "<<listofBosonIDs.at(1) << std::endl;}
 		}
 		// b-t pairs, check for correlating bosons in the right spots
 		else if(abs(listofQuarkIDs.at(1)) == 6 && abs(listofQuarkIDs.at(0)) == 5)
@@ -228,24 +216,14 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 				isTHBW = true;
 				decayMode = 6; //THBW ID!
 			}
-			else{std::cout<< "b - t pair didn't match W - Z/H pair" << listofBosonIDs.at(0)<<", "<<listofBosonIDs.at(1) << std::endl;}
 		}
 		// error messages if we found something else entirely
 		else
 		{
-			std::cout << "T' daughters didn't match a recognized pattern" << std::endl;
-			for(size_t i = 0; i < listofQuarkIDs.size(); i++)
-			{
-				std::cout << "quark " << i << " = " << listofQuarkIDs.at(i) << std::endl;
-			}
-			for(size_t i = 0; i < listofBosonIDs.size(); i++)
-			{
-				std::cout << "boson " << i << " = " << listofBosonIDs.at(i) << std::endl;
-			}
 			decayMode = -1;
 		}
-		std::cout << decayMode << std::endl;
-		decayFile  << decayMode << "\n";
+		// std::cout << decayMode << std::endl;
+		// decayFile  << decayMode << "\n";
 	}
 	// BPrime Decay Mode Selector
 	if(bPrimeID.size() > 1 && tPrimeID.size() == 0)
@@ -258,7 +236,6 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 				isTWTW = true;
 				decayMode = 1; // TWTW ID!
 			}
-			else{std::cout<< "2 t daughters didn't match tWtW: " <<listofBosonIDs.at(0)<<", "<<listofBosonIDs.at(1) << std::endl;}
 		}
 		// 2 b quarks, check for Z's and H's
 		else if(abs(listofQuarkIDs.at(0)) == 5 && abs(listofQuarkIDs.at(1)) == 5)
@@ -283,10 +260,6 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 				isBZBH = true;
 				decayMode = 4; //BZBH ID!
 			}
-			else
-			{
-				std::cout << "2 b daughters didn't match bZbZ, bHbH, or bZbH" << listofBosonIDs.at(0) << ", " << listofBosonIDs.at(1) << std::endl;
-			}
 		}
 		// b-t pairs, check for correlating bosons in the right spots
 		else if(abs(listofQuarkIDs.at(0)) == 5 && abs(listofQuarkIDs.at(1)) == 6)
@@ -301,7 +274,6 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 				isBHTW = true;
 				decayMode = 6; // BHTW ID!
 			}
-			else{std::cout<< "b - t pair didn't match Z/H - W pair" << listofBosonIDs.at(0)<<", "<<listofBosonIDs.at(1) << std::endl;}
 		}
 		// t-b pairs, check for correlating bosons in the right spots
 		else if(abs(listofQuarkIDs.at(1)) == 5 && abs(listofQuarkIDs.at(0)) == 6)
@@ -316,24 +288,14 @@ int decayModeSelection(unsigned int nGenPart, ROOT::VecOps::RVec<int>& GenPart_p
 				isBHTW = true;
 				decayMode = 6; // BHTW ID!
 			}
-			else{std::cout<< "t - b pair didn't match W - Z/H pair" << listofBosonIDs.at(0)<<", "<<listofBosonIDs.at(1) << std::endl;}
 		}
 		// error messages if we found something else entirely
 		else
 		{
-			std::cout << "B' daughters didn't match a recognized pattern" << std::endl;
-			for(size_t i = 0; i < listofQuarkIDs.size(); i++)
-			{
-				std::cout << "quark " << i << " = " << listofQuarkIDs.at(i) << std::endl;
-			}
-			for(size_t i = 0; i < listofBosonIDs.size(); i++)
-			{
-				std::cout << "boson " << i << " = " << listofBosonIDs.at(i) << std::endl;
-			}
 			decayMode = -1;
 		}
 	}
-	decayFile.close();
+	//decayFile.close();
 	return decayMode;
 };
 
