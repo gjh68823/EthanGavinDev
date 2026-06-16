@@ -1005,6 +1005,7 @@ samples_mc_standard = {
     "TTZM502023BPixext": TTZM502023BPixext,
 
     #tz + qb
+<<<<<<< HEAD
     # "
     # "
     # "
@@ -1025,5 +1026,15 @@ samples_mc_standard = {
     # "
     # "
     # " 
+=======
+    "TZQB2022"      : TZQB2022,
+    "TZQB2022EE"    : TZQB2022EE,
+    "TZQB2023"      : TZQB2023,
+    "TZQB2023BPix"  : TZQB2023BPix,
+    "TZQB2024"      : TZQB2024 
+}           
+>>>>>>> 944def3cc9b711d09975b43d3bd4fa7d5c1700f0
 
-}                    
+samples_mc_test = {
+    "BpBp_M1200_2024": BpBp_M1200_2024
+}
