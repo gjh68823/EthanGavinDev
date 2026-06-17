@@ -19,33 +19,57 @@ RVec<double> pufunc(correction::Correction::Ref& pileupcorr, const float &numTru
   return pu;
 };
 
-//JetID Function
+//JetID Function 0: ~T ~TL, 2: T ~TL, 6: T TL
 RVec<float> jetidfunc(correction::Correction::Ref& tightcorr,correction::Correction::Ref& tightlepcorr,const RVec<float>& eta,const RVec<float>& chHEF,const RVec<float>& neHEF,const RVec<float>& chEmEF,const RVec<float>& neEmEF,const RVec<float>& muEF,const RVec<unsigned char>& chMultiplicity,const RVec<unsigned char>& neMultiplicity){
-  RVec<float> jetid;
+  RVec<float> TorTLvec;
+
   for(unsigned int ijet = 0; ijet < eta.size(); ijet++){
-    int mult = abs(int(chMultiplicity.at(ijet))) + abs(int(neMultiplicity.at(ijet)));
-    float id = 6.0*tightlepcorr->evaluate({eta.at(ijet),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult});
-    if(id < 6){
-      id = 2.0*tightcorr->evaluate({abs(eta.at(ijet)),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult});
+    float TorTL = -1.0;
+    int mult = int(chMultiplicity.at(ijet)) + int(neMultiplicity.at(ijet));
+
+    float jetidTL = tightlepcorr->evaluate({eta.at(ijet),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult});
+
+    if(jetidTL == 1) {
+      TorTL = 6;
+    }else{
+      float jetidT = tightcorr->evaluate({abs(eta.at(ijet)),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult});
+      if(jetidT == 1){
+	TorTL = 2;
+      }else{
+	TorTL = 0;
+      }
     }
-    jetid.push_back(id);
+    TorTLvec.push_back(TorTL);
   }
-  return jetid;
+
+  return TorTLvec;
 };
 
-//FatJetID Function
+//FatJetID Function 0: ~T ~TL, 2: T ~TL, 6: T TL
 RVec<double> fatjetidfunc(correction::Correction::Ref& tightcorr,correction::Correction::Ref& tightlepcorr,RVec<float>& eta, RVec<float>& chHEF,RVec<float>& neHEF,RVec<float>& chEmEF,RVec<float>& neEmEF,RVec<float>& muEF,RVec<short>& chMultiplicity,RVec<short>& neMultiplicity){
-  RVec<float> jetid;
+  RVec<float> TorTLvec;
+  
   for(unsigned int ijet = 0; ijet < eta.size(); ijet++){
-    int mult = abs(int(chMultiplicity.at(ijet))) + abs(int(neMultiplicity.at(ijet)));
-    float id = 6.0*tightlepcorr->evaluate({eta.at(ijet),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult});
-    if(id < 6){
-      id = 2.0*tightcorr->evaluate({abs(eta.at(ijet)),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult});
+    float TorTL = -1.0;
+    int mult = int(chMultiplicity.at(ijet)) + int(neMultiplicity.at(ijet));
+    
+    float jetidTL = tightlepcorr->evaluate({eta.at(ijet),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult});
+
+    if(jetidTL == 1) {
+      TorTL = 6;
+    }else{
+      float jetidT = tightcorr->evaluate({abs(eta.at(ijet)),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult});
+      if(jetidT == 1){
+	TorTL = 2;
+      }else{
+	TorTL = 0;
+      }
     }
-    jetid.push_back(id);
+    TorTLvec.push_back(TorTL);
   }
-  return jetid;
-}
+
+  return TorTLvec;
+};
 
 //MET pt function
 RVec<float> METptfunc(correction::Correction::Ref& METcorr, string METyr, bool isMC, const float pt, const float phi, float npv) {
@@ -337,7 +361,7 @@ RVec<double> hltfunc(correction::Correction::Ref& muonhltcorr, vector<float> &el
  }; 
 
 // WORK ON THIS JULIE
-RVec<float> btagshapefunc(string year, string jesvar, correction::Correction::Ref& btagwpbccorr, correction::Correction::Ref& btagwplcorr, std::vector<int> btagpts, std::vector<std::vector<float>> btageffs, float deepjetL, const RVec<float> &pt, const RVec<float> &eta, const RVec<float> &disc, const RVec<unsigned char> &flav) {
+RVec<float> btagshapefunc(string WP, string year, string jesvar, correction::Correction::Ref& btagwpbccorr, correction::Correction::Ref& btagwplcorr, std::vector<int> btagpts, std::vector<std::vector<float>> btageffs, float deepjetL, const RVec<float> &pt, const RVec<float> &eta, const RVec<float> &disc, const RVec<unsigned char> &flav) {
 
    std::string nominal = "central";
    if(jesvar == "JECup") nominal = "up_jes";
@@ -357,34 +381,34 @@ RVec<float> btagshapefunc(string year, string jesvar, correction::Correction::Re
        else{wpcorr = btagwpbccorr; eff = btageffs[0][ptbin];}
 
        if(disc.at(ijet) > deepjetL){
-		weights[0] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}); // seemed like P(Data)/P(MC) reduces to SF
- 		weights[1+shift[0]] *= wpcorr->evaluate({upcorrelated,"L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}); 
- 		weights[2+shift[0]] *= wpcorr->evaluate({downcorrelated,"L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+		weights[0] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}); // seemed like P(Data)/P(MC) reduces to SF
+ 		weights[1+shift[0]] *= wpcorr->evaluate({upcorrelated,WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}); 
+ 		weights[2+shift[0]] *= wpcorr->evaluate({downcorrelated,WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
  		
 		if(year == "2023" or year == "2023BPix"){
- 	  		weights[3+shift[0]] *= wpcorr->evaluate({"up_uncorrelated","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
- 	  		weights[4+shift[0]] *= wpcorr->evaluate({"down_uncorrelated","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 	  		weights[3+shift[0]] *= wpcorr->evaluate({"up_uncorrelated",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 	  		weights[4+shift[0]] *= wpcorr->evaluate({"down_uncorrelated",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
  		}
 		
- 		weights[1+shift[1]] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
- 		weights[2+shift[1]] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
- 		weights[3+shift[1]] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
- 		weights[4+shift[1]] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 		weights[1+shift[1]] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 		weights[2+shift[1]] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 		weights[3+shift[1]] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 		weights[4+shift[1]] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
        
        }else{
- 		weights[0] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 		weights[1+shift[0]] *= (1.0-eff*wpcorr->evaluate({upcorrelated,"L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
-		weights[2+shift[0]] *= (1.0-eff*wpcorr->evaluate({downcorrelated,"L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[0] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[1+shift[0]] *= (1.0-eff*wpcorr->evaluate({upcorrelated,WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+		weights[2+shift[0]] *= (1.0-eff*wpcorr->evaluate({downcorrelated,WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
  		
 		if(year == "2023" or year == "2023BPix"){
- 	  		weights[3+shift[0]] *= (1.0-eff*wpcorr->evaluate({"up_uncorrelated","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 	  		weights[4+shift[0]] *= (1.0-eff*wpcorr->evaluate({"down_uncorrelated","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 	  		weights[3+shift[0]] *= (1.0-eff*wpcorr->evaluate({"up_uncorrelated",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 	  		weights[4+shift[0]] *= (1.0-eff*wpcorr->evaluate({"down_uncorrelated",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
  		}
  	
-		weights[1+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 		weights[2+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 		weights[3+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 		weights[4+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+		weights[1+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[2+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[3+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[4+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
       }
    }
      

@@ -973,23 +973,56 @@ samples_mc = {
 
 samples_mc_standard = {
     "BpBp_M1200_2024": BpBp_M1200_2024 ,
-    # "BpBp_M1400_2024": BpBp_M1400_2024 ,
-    # "BpBp_M1500_2024": BpBp_M1500_2024 ,
-    # "BpBp_M1600_2024": BpBp_M1600_2024 ,
-    # "BpBp_M1700_2024": BpBp_M1700_2024 ,
-    # "BpBp_M1800_2024": BpBp_M1800_2024 ,
-    # "BpBp_M1900_2024": BpBp_M1900_2024 ,
-    # "BpBp_M2000_2024": BpBp_M2000_2024 ,
-    # "BpBp_M2100_2024": BpBp_M2100_2024 ,
-    # "BpBp_M2200_2024": BpBp_M2200_2024 ,
-    # "TpTp_M1200_2024": TpTp_M1200_2024 ,
-    # "TpTp_M1300_2024": TpTp_M1300_2024 ,
-    # "TpTp_M1400_2024": TpTp_M1400_2024 ,
-    # "TpTp_M1600_2024": TpTp_M1600_2024 ,
-    # "TpTp_M1700_2024": TpTp_M1700_2024 ,
-    # "TpTp_M1800_2024": TpTp_M1800_2024 ,
-    # "TpTp_M1900_2024": TpTp_M1900_2024 ,
-    # "TpTp_M2000_2024": TpTp_M2000_2024 ,
-    # "TpTp_M2100_2024": TpTp_M2100_2024 ,
-    # "TpTp_M2200_2024": TpTp_M2200_2024 
-}                    
+    "BpBp_M1400_2024": BpBp_M1400_2024 ,
+    "BpBp_M1500_2024": BpBp_M1500_2024 ,
+    "BpBp_M1600_2024": BpBp_M1600_2024 ,
+    "BpBp_M1700_2024": BpBp_M1700_2024 ,
+    "BpBp_M1800_2024": BpBp_M1800_2024 ,
+    "BpBp_M1900_2024": BpBp_M1900_2024 ,
+    "BpBp_M2000_2024": BpBp_M2000_2024 ,
+    "BpBp_M2100_2024": BpBp_M2100_2024 ,
+    "BpBp_M2200_2024": BpBp_M2200_2024 ,
+    "TpTp_M1200_2024": TpTp_M1200_2024 ,
+    "TpTp_M1300_2024": TpTp_M1300_2024 ,
+    "TpTp_M1400_2024": TpTp_M1400_2024 ,
+    "TpTp_M1600_2024": TpTp_M1600_2024 ,
+    "TpTp_M1700_2024": TpTp_M1700_2024 ,
+    "TpTp_M1800_2024": TpTp_M1800_2024 ,
+    "TpTp_M1900_2024": TpTp_M1900_2024 ,
+    "TpTp_M2000_2024": TpTp_M2000_2024 ,
+    "TpTp_M2100_2024": TpTp_M2100_2024 ,
+    "TpTp_M2200_2024": TpTp_M2200_2024 ,
+
+    #tt+X
+    "TTHnonB2022"      : TTHnonB2022, 
+    "TTHnonB2022EE"    : TTHnonB2022EE,
+    "TTHnonB2023"      : TTHnonB2023,
+    "TTHnonB2023BPix"  : TTHnonB2023BPix,
+    "TTWl2022"         : TTWl2022,
+    "TTWl2022EE"       : TTWl2022EE,
+    "TTWl2023"         : TTWl2023,
+    "TTWl2023BPix"     : TTWl2023BPix,
+    "TTZM42022"        : TTZM42022,
+    "TTZM42022EE"      : TTZM42022EE,
+    "TTZM42023"        : TTZM42023,
+    "TTZM42023BPix"    : TTZM42023BPix,
+    "TTZM502022"       : TTZM502022,
+    "TTZM502022EE"     : TTZM502022EE,
+    "TTZM502023"       : TTZM502023,
+    "TTZM502023BPix"   : TTZM502023BPix,
+    "TTZM502022ext"    : TTZM502022ext,
+    "TTZM502022EEext"  : TTZM502022EEext,
+    "TTZM502023ext"    : TTZM502023ext,
+    "TTZM502023BPixext": TTZM502023BPixext,
+
+    #tz + qb
+    "TZQB2022"      : TZQB2022,
+    "TZQB2022EE"    : TZQB2022EE,
+    "TZQB2023"      : TZQB2023,
+    "TZQB2023BPix"  : TZQB2023BPix,
+    "TZQB2024"      : TZQB2024 
+}           
+
+samples_mc_test = {
+    "BpBp_M1200_2024": BpBp_M1200_2024
+}
