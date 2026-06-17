@@ -330,10 +330,10 @@ RVec<RVec<float>> cleanJetsData (const float run, const bool &debug, const strin
     if (campaign == "2023BPix" || campaign == "2024" || campaign == "2025") {
 	 jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),jet.Phi(),rawpt,rho,run}); // Data & MC get jes for 2023BPix
     }
-    else if (campaign == "2023") {
+    else{ // if (campaign == "2023") {
          jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),rawpt,rho,run}); // Data & MC get jes for other campaigns
-    } else {
-         jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),rawpt,rho}); // Data & MC get jes for other campaigns
+	 //    } else {
+         //jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),rawpt,rho}); // Data & MC get jes for other campaigns
     }
 
     if (met > 0) jesL1 = ak4corrL1->evaluate({jt_area[ijet],jet.Eta(),rawpt,rho}); // L1-only jes for MET T1
@@ -395,10 +395,10 @@ RVec<RVec<float>> cleanJetsData (const float run, const bool &debug, const strin
     if (campaign == "2023BPix" || campaign == "2024" || campaign == "2025") {
 	 jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),jet.Phi(),rawpt,rho,run}); // Data & MC get jes for 2023BPix
     }
-    else if (campaign == "2023") {
+    else{ // if (campaign == "2023") {
          jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),rawpt,rho,run}); // Data & MC get jes for other campaigns
-    } else {
-         jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),rawpt,rho}); // Data & MC get jes for other campaigns
+	 //    } else {
+         //jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),rawpt,rho}); // Data & MC get jes for other campaigns
     }
 
     if (met > 0) {
