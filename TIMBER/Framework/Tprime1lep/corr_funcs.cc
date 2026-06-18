@@ -1,5 +1,5 @@
 // Methods in this file:  		There are several corrlib functions and some non corrlib functions.
-// goldenjson() pufunc() recofunc() idfunc() isofunc() metfunc() hltfunc() jetvetofunc() 
+// goldenjson() pufunc() jetidfunc() fatjetidfunc recofunc() idfunc() isofunc() metfunc() hltfunc() jetvetofunc() 
 // additionally, elrecofunc(), elidfunc(), muidfunc(), muisofunc(), tauefunc(), taumufunc(), taujetfunc(), btagshapefunc(), METptfunc(), METphifunc()
 
 using namespace ROOT::VecOps;
@@ -14,10 +14,61 @@ bool goldenjson(lumiMask myLumiMask, const unsigned int &run, const unsigned int
 // ------------ the order is nom/f, up, down for the scale factors--------------
 
 // Pile Up Function
-RVec<double> pufunc(correction::Correction::Ref& pileupcorr, const float &numTrueInt) 
-{
+RVec<double> pufunc(correction::Correction::Ref& pileupcorr, const float &numTrueInt) {
   RVec<double> pu = {pileupcorr->evaluate({numTrueInt, "nominal"}), pileupcorr->evaluate({numTrueInt, "up"}), pileupcorr->evaluate({numTrueInt, "down"})};
   return pu;
+};
+
+//JetID Function 0: ~T ~TL, 2: T ~TL, 6: T TL
+RVec<float> jetidfunc(correction::Correction::Ref& tightcorr,correction::Correction::Ref& tightlepcorr,const RVec<float>& eta,const RVec<float>& chHEF,const RVec<float>& neHEF,const RVec<float>& chEmEF,const RVec<float>& neEmEF,const RVec<float>& muEF,const RVec<unsigned char>& chMultiplicity,const RVec<unsigned char>& neMultiplicity){
+  RVec<float> TorTLvec;
+
+  for(unsigned int ijet = 0; ijet < eta.size(); ijet++){
+    float TorTL = -1.0;
+    int mult = int(chMultiplicity.at(ijet)) + int(neMultiplicity.at(ijet));
+
+    float jetidTL = tightlepcorr->evaluate({eta.at(ijet),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult});
+
+    if(jetidTL == 1) {
+      TorTL = 6;
+    }else{
+      float jetidT = tightcorr->evaluate({abs(eta.at(ijet)),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult});
+      if(jetidT == 1){
+	TorTL = 2;
+      }else{
+	TorTL = 0;
+      }
+    }
+    TorTLvec.push_back(TorTL);
+  }
+
+  return TorTLvec;
+};
+
+//FatJetID Function 0: ~T ~TL, 2: T ~TL, 6: T TL
+RVec<double> fatjetidfunc(correction::Correction::Ref& tightcorr,correction::Correction::Ref& tightlepcorr,RVec<float>& eta, RVec<float>& chHEF,RVec<float>& neHEF,RVec<float>& chEmEF,RVec<float>& neEmEF,RVec<float>& muEF,RVec<short>& chMultiplicity,RVec<short>& neMultiplicity){
+  RVec<float> TorTLvec;
+  
+  for(unsigned int ijet = 0; ijet < eta.size(); ijet++){
+    float TorTL = -1.0;
+    int mult = int(chMultiplicity.at(ijet)) + int(neMultiplicity.at(ijet));
+    
+    float jetidTL = tightlepcorr->evaluate({eta.at(ijet),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult});
+
+    if(jetidTL == 1) {
+      TorTL = 6;
+    }else{
+      float jetidT = tightcorr->evaluate({abs(eta.at(ijet)),chHEF.at(ijet),neHEF.at(ijet),chEmEF.at(ijet),neEmEF.at(ijet),muEF.at(ijet),int(chMultiplicity.at(ijet)),int(neMultiplicity.at(ijet)),mult});
+      if(jetidT == 1){
+	TorTL = 2;
+      }else{
+	TorTL = 0;
+      }
+    }
+    TorTLvec.push_back(TorTL);
+  }
+
+  return TorTLvec;
 };
 
 //MET pt function
@@ -102,6 +153,26 @@ RVec<float> elidfunc(correction::Correction::Ref& electroncorr, string elecyr, R
 			el[0] *= electroncorr->evaluate({elecyr, "sf", "wp80iso", eta[i], pt[i], phi[i]}); 
 			el[1] *= electroncorr->evaluate({elecyr, "sfup", "wp80iso", eta[i], pt[i], phi[i]}); 
 			el[2] *= electroncorr->evaluate({elecyr, "sfdown", "wp80iso", eta[i], pt[i], phi[i]});
+		}
+	}		
+	
+	return el;	
+}
+RVec<float> elidfuncNoIso(correction::Correction::Ref& electroncorr, string elecyr, RVec<float> &pt, RVec<float> &eta, RVec<float> &phi, RVec<int> &ID) {
+	RVec<float> el = {1.0, 1.0, 1.0};
+	for(int i = 0; i < pt.size(); i++) {
+		if (ID[i] != 11) {continue;} //skip muons and taus
+		if (i > 3) {continue;} //skip leptons past the first 4 for mass reco
+		
+		if (elecyr == "2022Re-recoBCD" || elecyr == "2022Re-recoE+PromptFG") {
+			el[0] *= electroncorr->evaluate({elecyr, "sf", "wp80noiso", eta[i], pt[i]}); 
+			el[1] *= electroncorr->evaluate({elecyr, "sfup", "wp80noiso", eta[i], pt[i]}); 
+			el[2] *= electroncorr->evaluate({elecyr, "sfdown", "wp80noiso", eta[i], pt[i]});
+		}
+		else {
+			el[0] *= electroncorr->evaluate({elecyr, "sf", "wp80noiso", eta[i], pt[i], phi[i]}); 
+			el[1] *= electroncorr->evaluate({elecyr, "sfup", "wp80noiso", eta[i], pt[i], phi[i]}); 
+			el[2] *= electroncorr->evaluate({elecyr, "sfdown", "wp80noiso", eta[i], pt[i], phi[i]});
 		}
 	}		
 	
@@ -290,7 +361,7 @@ RVec<double> hltfunc(correction::Correction::Ref& muonhltcorr, vector<float> &el
  }; 
 
 // WORK ON THIS JULIE
-RVec<float> btagshapefunc(string year, string jesvar, correction::Correction::Ref& btagwpbccorr, correction::Correction::Ref& btagwplcorr, std::vector<int> btagpts, std::vector<std::vector<float>> btageffs, float deepjetL, const RVec<float> &pt, const RVec<float> &eta, const RVec<float> &disc, const RVec<unsigned char> &flav) {
+RVec<float> btagshapefunc(string WP, string year, string jesvar, correction::Correction::Ref& btagwpbccorr, correction::Correction::Ref& btagwplcorr, std::vector<int> btagpts, std::vector<std::vector<float>> btageffs, float deepjetL, const RVec<float> &pt, const RVec<float> &eta, const RVec<float> &disc, const RVec<unsigned char> &flav) {
 
    std::string nominal = "central";
    if(jesvar == "JECup") nominal = "up_jes";
@@ -310,34 +381,34 @@ RVec<float> btagshapefunc(string year, string jesvar, correction::Correction::Re
        else{wpcorr = btagwpbccorr; eff = btageffs[0][ptbin];}
 
        if(disc.at(ijet) > deepjetL){
-		weights[0] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}); // seemed like P(Data)/P(MC) reduces to SF
- 		weights[1+shift[0]] *= wpcorr->evaluate({upcorrelated,"L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}); 
- 		weights[2+shift[0]] *= wpcorr->evaluate({downcorrelated,"L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+		weights[0] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}); // seemed like P(Data)/P(MC) reduces to SF
+ 		weights[1+shift[0]] *= wpcorr->evaluate({upcorrelated,WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}); 
+ 		weights[2+shift[0]] *= wpcorr->evaluate({downcorrelated,WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
  		
 		if(year == "2023" or year == "2023BPix"){
- 	  		weights[3+shift[0]] *= wpcorr->evaluate({"up_uncorrelated","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
- 	  		weights[4+shift[0]] *= wpcorr->evaluate({"down_uncorrelated","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 	  		weights[3+shift[0]] *= wpcorr->evaluate({"up_uncorrelated",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 	  		weights[4+shift[0]] *= wpcorr->evaluate({"down_uncorrelated",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
  		}
 		
- 		weights[1+shift[1]] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
- 		weights[2+shift[1]] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
- 		weights[3+shift[1]] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
- 		weights[4+shift[1]] *= wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 		weights[1+shift[1]] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 		weights[2+shift[1]] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 		weights[3+shift[1]] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
+ 		weights[4+shift[1]] *= wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)});
        
        }else{
- 		weights[0] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 		weights[1+shift[0]] *= (1.0-eff*wpcorr->evaluate({upcorrelated,"L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
-		weights[2+shift[0]] *= (1.0-eff*wpcorr->evaluate({downcorrelated,"L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[0] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[1+shift[0]] *= (1.0-eff*wpcorr->evaluate({upcorrelated,WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+		weights[2+shift[0]] *= (1.0-eff*wpcorr->evaluate({downcorrelated,WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
  		
 		if(year == "2023" or year == "2023BPix"){
- 	  		weights[3+shift[0]] *= (1.0-eff*wpcorr->evaluate({"up_uncorrelated","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 	  		weights[4+shift[0]] *= (1.0-eff*wpcorr->evaluate({"down_uncorrelated","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 	  		weights[3+shift[0]] *= (1.0-eff*wpcorr->evaluate({"up_uncorrelated",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 	  		weights[4+shift[0]] *= (1.0-eff*wpcorr->evaluate({"down_uncorrelated",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
  		}
  	
-		weights[1+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 		weights[2+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 		weights[3+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
- 		weights[4+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central","L",flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+		weights[1+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[2+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[3+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
+ 		weights[4+shift[1]] *= (1.0-eff*wpcorr->evaluate({"central",WP,flav.at(ijet),abs(eta.at(ijet)), pt.at(ijet)}))/(1.0-eff);
       }
    }
      

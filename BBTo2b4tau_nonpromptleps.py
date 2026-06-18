@@ -340,12 +340,13 @@ def analyze(jesvar):
   lVars.Add("Loose4Lepton_ID", "NlooseLeptons >= 4 ? ROOT::VecOps::Take(LooseLepton_ID, 4) : ROOT::VecOps::Take(LooseLepton_ID, 3)")
   lVars.Add("Loose4Lepton_isTight", "NlooseLeptons >= 4 ? ROOT::VecOps::Take(LooseLepton_isTight, 4) : ROOT::VecOps::Take(LooseLepton_isTight, 3)")
 
-  lVars.Add("hasBosonishMass", "hasBosonishMfunc(Loose4Lepton_pt, Loose4Lepton_eta, Loose4Lepton_phi, Loose4Lepton_mass, Loose4Lepton_ID, Loose4Lepton_charge)")
+  lVars.Add("hasQuarkonia", "hasQuarkoniafunc(Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_phi, Good4Lepton_mass, Good4Lepton_ID, Good4Lepton_charge)")
+  lVars.Add("Good4Lepton_fromZ", "hasZfunc(Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_phi, Good4Lepton_mass, Good4Lepton_ID, Good4Lepton_charge)")
+  lVars.Add("hasZ", "Sum(Good4Lepton_fromZ) > 0")
 
   lCuts = CutGroup('Lepton Cuts')
-  lCuts.Add('NlooseLeptons >= 3', 'NlooseLeptons >= 3')
-  lCuts.Add('hasBosonishMass == 0', 'hasBosonishMass == 0')
- 
+  lCuts.Add('NgoodLeptons >= 3', 'NgoodLeptons >= 3')
+  lCuts.Add('hasQuarkonia == 0', 'hasQuarkonia == 0') 
 
   # ------------------ JET Cleaning and JERC ------------------
   jVars = VarGroup('JetCleaningVars')
@@ -527,9 +528,9 @@ def analyze(jesvar):
      if col.startswith("SV") or col.startswith("Photon") or col.startswith("Low"): continue
      if col.startswith("HLT") or col.startswith("HT") or col.startswith("boosted") or col.startswith("Deep"): continue
      if col.startswith("Flag") or col == "Bprime_gen_info" or col == "t_gen_info" or col == "W_gen_info" or col == "metxyoutput": continue
-     if col == "assignleps" or col == "pnetoutput" or col == "t_output" or col == "Bprime_output" or col.startswith("Other"): continue
+     if col == "assignleps" or col == "pnetoutput" or col == "t_output" or col == "Bprime_output" or col == "hasZoutput": continue
      if col.startswith("PS") or col.startswith("Tk") or col.startswith("Trig"): continue
-     if col.startswith("nCorr") or col.startswith("nFsr"): continue
+     if col.startswith("nCorr") or col.startswith("nFsr") or col.startswith("Other"): continue
      if col.startswith("nGen") or col.startswith("nIso") or col.startswith("nLow"): continue
      if col.startswith("nOther") or col.startswith("nPS") or col.startswith("nPhoton"): continue
      if col.startswith("nSV") or col.startswith("nSub") or col.startswith("nTau") or col.startswith("nTrig"): continue

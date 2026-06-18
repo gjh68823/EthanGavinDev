@@ -54,17 +54,30 @@ auto Electron_cutBasedIdNoIso_tight(unsigned int nElectron, RVec<int> &Electron_
     for (unsigned int i = 0; i < nElectron; i++)
     {
         list<int> vars{0, 1, 2, 3, 4, 5, 6, 8, 9}; // checking this
+	noIso_tight[i] = 1;
         for (int x : vars)
         {
-            if (((Electron_vidNestedWPBitmap[i] >> (x * 3)) & 0x7) >= 4)
+            if (((Electron_vidNestedWPBitmap[i] >> (x * 3)) & 0x7) < 4)
             {
-                noIso_tight[i] = 1;
+                noIso_tight[i] = 0;
             }
         }
     }
     return noIso_tight;
 };
 
+auto elIP(RVec<float> &Electron_dz, RVec<float> &Electron_dxy, RVec<float> &Electron_eta)
+{
+  RVec<int> pass(Electron_dz.size(),0);
+  for(unsigned int i = 0; i < Electron_dz.size(); i++){
+    if(abs(Electron_eta[i]) <= 1.479){
+      if(abs(Electron_dz[i]) < 0.10 && abs(Electron_dxy[i]) < 0.05) pass[i] = 1;
+    }else{
+      if(abs(Electron_dz[i]) < 0.20 && abs(Electron_dxy[i]) < 0.10) pass[i] = 1;
+    }
+  }
+  return pass;
+}
 
 // -------------------------------------------
 //    TLORENTZVECTOR CONSTRUCTOR

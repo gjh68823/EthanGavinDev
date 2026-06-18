@@ -10,7 +10,7 @@ exec(open("/uscms_data/d3/jmanagan/EOSSafeUtils.py").read()) # this is a python2
 start_time = time.time()
 
 # --- Sample Dictionary ---
-sample_dic = samples_mc_standard
+sample_dic = samples_mc_test
 #sample_dic = samples_data # This is the name of the list (using list of class objects to keep ordering)
 
 # --- Size of Condor Job ---
@@ -22,12 +22,14 @@ makelists = False
 runanalyzer = False
 if len(sys.argv) >= 2: makelists = bool(eval(sys.argv[1]))
 if len(sys.argv) >= 3: runanalyzer = bool(eval(sys.argv[2]))
-taronly = False
+if len(sys.argv) >= 4: 
+    prefix = sys.argv[3] # 'singleTb'
+    textlist = prefix + "NanoList.txt"
     
-relbase = '/uscms/home/jmanagan/nobackup/TTBBto2TB4Tau/'
-outDir='/store/user/lpchtop/BBto2b4tau_May2026_Run3/'
-condorDir='/uscms/home/jmanagan/nobackup/TTBBto2TB4Tau/condor_May2026_Run3/' # recommend this be outside git area!
-tarfile = '/uscms/home/jmanagan/nobackup/rdfjobs.tar' 
+relbase = '/uscms/home/cai/nobackup/Run3VLQ/'
+outDir='/store/user/lpchtop/TTBB_Jun2026_Run3/'
+condorDir='/uscms/home/cai/nobackup/Run3VLQ/condor_Jun2026_Run3/' # recommend this be outside git area!
+tarfile = '/uscms/home/cai/nobackup/rdfjobs.tar' 
 
 runDir=os.getcwd()
 cTime=datetime.datetime.now()
@@ -62,10 +64,7 @@ if makelists:
             rootlist.writelines(rootfiles)
         
 # --- Submit Condor Jobs ---
-if runanalyzer:    
-    
-    if (not os.path.isdir('Rootfiles')): os.system("mkdir Rootfiles")
-    if (not os.path.isdir('Output')): os.system("mkdir Output")
+if runanalyzer:
     
     # ------ Making the Tar File ------
     
@@ -74,18 +73,17 @@ if runanalyzer:
         print ('*********** tar already exists! I ASSUME YOU WANT TO MAKE A NEW ONE! *************')
         os.system('rm '+tarfile)
     os.chdir(relbase)
-    print ('tar --exclude="TIMBER/.git" --exclude="CMSSW*/tmp/" --exclude="vlq-BtoTW-RDF" --exclude="condor*Run3" --exclude="vlq-TTBBto2tb4tau-SLA" --exclude="TIMBER/*.root" --exclude="TIMBER/docs" --exclude="TIMBER/*/*.root" -zcf '+tarfile+' ./*')
-    os.system('tar --exclude="TIMBER/.git" --exclude="CMSSW*/tmp/" --exclude="vlq-BtoTW-RDF" --exclude="condor*Run3" --exclude="vlq-TTBBto2tb4tau-SLA" --exclude="TIMBER/*.root" --exclude="TIMBER/docs" --exclude="TIMBER/*/*.root" -zcf '+tarfile+' ./*')
+    print ('tar --exclude="TIMBER/.git" --exclude="CMSSW*/tmp/" --exclude="condor*Run3"  --exclude="TIMBER/*.root" --exclude="TIMBER/docs" --exclude="TIMBER/*/*.root" -zcf '+tarfile+' ./*')
+    os.system('tar --exclude="TIMBER/.git" --exclude="CMSSW*/tmp/" --exclude="condor*Run3" --exclude="TIMBER/*.root" --exclude="TIMBER/docs" --exclude="TIMBER/*/*.root" -zcf '+tarfile+' ./*')
     os.chdir(runDir)
-    if taronly:
-        exit(0) #stop after the tar
+    #exit(0) #stop after the tar
 
     count = 0
 
     for k,v in sample_dic.items(): # This is fine.  It is a dictionary that exists in samples.py that gets imported at runtime
-        prefix = v.prefix;
-        textlist = "NanoList/" + v.textlist;
-        year = v.year;
+        prefix = v.prefix
+        textlist = "NanoList/" + v.textlist
+        year = v.year
 
         print('Submitting ' + prefix)
 
@@ -110,9 +108,10 @@ if runanalyzer:
                         exit(1)
 
         jobsPerSample = max(1,round(samplesize/50000000000.))
-        #if "TTToSemiLeptonic" in v.samplename or "TTToHadronic" in v.samplename or "SingleMuon" in v.samplename or "TT_Mtt-1000" in v.samplename or "WJets" in v.samplename or 'ST_t-' in v.samplename:
-        #    jobsPerSample *= 1.1 # add jobs to the ones that seem to go over or take too long
-                    
+        if "TTToSemiLeptonic" in v.samplename or "TTToHadronic" in v.samplename or "SingleMuon" in v.samplename or "TT_Mtt-1000" in v.samplename or "WJets" in v.samplename or 'ST_t-' in v.samplename:
+            jobsPerSample *= 1.1 # add jobs to the ones that seem to go over or take too long
+            
+        
         num = newNum = 0
         
         with open(textlist,'r') as rootfiles:
@@ -120,12 +119,11 @@ if runanalyzer:
 
         print ('\t Number of Rootfiles: ' + str(num))
     
+        #if "TTToSemiLeptonic" in prefix: 
         filesPerJob = int(max(1,round(num/jobsPerSample)))
         
         os.system('eos root://cmseos.fnal.gov/ mkdir -p '+outDir+'/')
         os.system('mkdir -p '+condorDir+'/'+prefix)
-        if sample_dic == samples_data:
-            os.system('mkdir -p '+condorDir+'/Nonprompt'+prefix)
         
         # Redefining fileName so it is accessed from the directory above for analyzer_RDF.h
         fileName = "condor/"+textlist
@@ -142,7 +140,7 @@ if runanalyzer:
             jdf.write(
             """use_x509userproxy = true
 universe = vanilla
-Executable = %(RUNDIR)s/condor.sh
+Executable = %(RUNDIR)s/condorTTBB.sh
 Should_Transfer_Files = YES
 WhenToTransferOutput = ON_EXIT
 Transfer_Input_Files = %(TARBALL)s
@@ -160,35 +158,7 @@ Queue 1"""%dict)
             os.chdir('%s'%(runDir))
             print ( str(count) + " jobs submitted!!!")
             count += 1
-
-            if sample_dic == samples_data:
-                
-                jdfName=condorDir+'Nonprompt'+prefix+'/Nonprompt%(PREFIX)s_%(TESTNUM1)s.job'%dict
-                print ("jdfname: ",jdfName)
-                jdf=open(jdfName,'w')
-                jdf.write(
-                """use_x509userproxy = true
-universe = vanilla
-Executable = %(RUNDIR)s/condor_nonprompt.sh
-Should_Transfer_Files = YES
-WhenToTransferOutput = ON_EXIT
-Transfer_Input_Files = %(TARBALL)s
-Output = Nonprompt%(PREFIX)s_%(TESTNUM1)s.out
-Error = Nonprompt%(PREFIX)s_%(TESTNUM1)s.err
-Log = Nonprompt%(PREFIX)s_%(TESTNUM1)s.log
-Notification = Never
-Arguments = %(FILENAME)s %(OUTPUTDIR)s %(TESTNUM1)s %(TESTNUM2)s %(YEAR)s 
-
-Queue 1"""%dict)
-                jdf.close()
-                os.chdir('%s/'%(condorDir+'/Nonprompt'+prefix))
-                os.system('condor_submit Nonprompt%(PREFIX)s_%(TESTNUM1)s.job'%dict)
-                os.system('sleep 0.5')                                
-                os.chdir('%s'%(runDir))
-                print ( str(count) + " jobs submitted!!!")
-                count += 1
-
-            
+        
         #Formatting line 101
                 
     #for k,v in sample_dic.items():

@@ -489,7 +489,7 @@ auto W_bkg_idx(string sample, unsigned int nGenPart, RVec<int> &GenPart_pdgId, R
 auto FatJet_matching_sig(string sample, RVec<float> &goodcleanFatJets, RVec<float> &gcFatJet_eta, RVec<float> &gcFatJet_phi, int NFatJets, RVec<unsigned char> &gcFatJet_hadronFlavour, RVec<int> &GenPart_pdgId, double daughterb_gen_eta, double daughterb_gen_phi, double tDaughter1_gen_eta, double tDaughter1_gen_phi, int tDaughter1_gen_pdgId, double tDaughter2_gen_eta, double tDaughter2_gen_phi, int tDaughter2_gen_pdgId, double WDaughter1_gen_eta, double WDaughter1_gen_phi, int WDaughter1_gen_pdgId, double WDaughter2_gen_eta, double WDaughter2_gen_phi, int WDaughter2_gen_pdgId)
 {
   RVec<int> matched_GenPart(NFatJets, -9);
-  if (sample.find("Bprime") == std::string::npos)
+  if (sample.find("Bprime") == std::string::npos) //QUESTION: Does this need to be changed to a Tprime? Do we need to change the code above??
   {
     return matched_GenPart;
   }
@@ -508,7 +508,9 @@ auto FatJet_matching_sig(string sample, RVec<float> &goodcleanFatJets, RVec<floa
     double dR_q3 = DeltaR(fatjet_eta, WDaughter1_gen_eta, fatjet_phi, WDaughter1_gen_phi);
     double dR_q4 = DeltaR(fatjet_eta, WDaughter2_gen_eta, fatjet_phi, WDaughter2_gen_phi);
 
-    if (dR_b < 0.8 && dR_q1 < 0.8 && dR_q2 < 0.8)
+    //TO DO: Add dR_q5 through dR_q8 for Z and H???
+
+    if (dR_b < 0.8 && dR_q1 < 0.8 && dR_q2 < 0.8) //if our tDaughter matches the GenPart of a t:
     {
       if (abs(tDaughter1_gen_pdgId) < 6)
       {
@@ -519,7 +521,7 @@ auto FatJet_matching_sig(string sample, RVec<float> &goodcleanFatJets, RVec<floa
         matched_GenPart[i] = -6;
       } // neg stands for leptonic t
     }
-    else if (dR_q1 < 0.8 && dR_q2 < 0.8)
+    else if (dR_q1 < 0.8 && dR_q2 < 0.8) //if our tDaughter matches the GenPart of a W:
     {
       if (abs(tDaughter1_gen_pdgId) < 6)
       {
@@ -547,7 +549,7 @@ auto FatJet_matching_sig(string sample, RVec<float> &goodcleanFatJets, RVec<floa
     {
       continue;
     }
-
+    //its nothing
     matched_GenPart[i] = gcFatJet_hadronFlavour[i];
 
   }
@@ -575,6 +577,7 @@ auto FatJet_matching(string sample, RVec<float> &gcFatJet_eta, RVec<float> &gcFa
   
   if (ntD != 0)
     {
+      // THIS IS A MORE SUCCINCT WAY TO SKIP OVER ANY DUPLICATES AS YOU GO UP A CHAIN
       for (unsigned int i = 0; i < ntD; i++)
 	{
 	  int igen = t_bkg_idx[i];
@@ -635,7 +638,7 @@ auto FatJet_matching(string sample, RVec<float> &gcFatJet_eta, RVec<float> &gcFa
 	  double dR_q1 = DeltaR(fatjet_eta, t_eta[j * 3 + 1], fatjet_phi, t_phi[j * 3 + 1]);
 	  double dR_q2 = DeltaR(fatjet_eta, t_eta[j * 3 + 2], fatjet_phi, t_phi[j * 3 + 2]);
 	  
-	  if (std::min({dR_b,dR_q1,dR_q2}) < 0.8 && std::max({dR_b,dR_q1,dR_q2}) < 1.2)
+	  if (std::min({dR_b,dR_q1,dR_q2}) < 0.8 && std::max({dR_b,dR_q1,dR_q2}) < 1.2)//top
 	    //	  if (dR_b < 0.8 && dR_q1 < 0.8 && dR_q2 < 0.8)
 	    {
 	      if (abs(GenPart_pdgId[t_bkg_idx[j * 3 + 1]]) < 6)
@@ -652,7 +655,7 @@ auto FatJet_matching(string sample, RVec<float> &gcFatJet_eta, RVec<float> &gcFa
 		  break;
 		} // neg stands for leptonic t
 	    }
-	  else if (std::min({dR_q1,dR_q2}) < 0.8 && std::max({dR_q1,dR_q2}) < 1.2)
+	  else if (std::min({dR_q1,dR_q2}) < 0.8 && std::max({dR_q1,dR_q2}) < 1.2) //subcase of top quark
 	    //	  else if (dR_q1 < 0.8 && dR_q2 < 0.8)
 	    {
 	      if (abs(GenPart_pdgId[t_bkg_idx[j * 3 + 1]]) < 6)
@@ -670,6 +673,13 @@ auto FatJet_matching(string sample, RVec<float> &gcFatJet_eta, RVec<float> &gcFa
 		  break;
 		}
 	    }
+
+
+	  //if Z dR here
+
+	  //if H dR here
+
+	  
 	  //	  else{if ((dR_b < 1.5 || dR_q1 < 1.5 || dR_q2 < 1.5) && abs(GenPart_pdgId[t_bkg_idx[j * 3 + 1]]) < 6) std::cout << "hadronic t didn't match: dRb = " << dR_b << ", dRq1 = " << dR_q1 << ", dRq2 = " << dR_q2 << std::endl; }
 	}
       

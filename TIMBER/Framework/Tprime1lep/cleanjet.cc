@@ -115,7 +115,7 @@ RVec<RVec<float>> cleanJetsMC (const bool &debug, const string &campaign, const 
     if (met > 0) jet *= (1 - jt_murf[ijet]);                                       // further correct raw to muon-substracted raw for T1.
     float rawpt = jet.Pt();
     
-    if (campaign == "2023BPix") {
+    if (campaign == "2023BPix" || campaign == "2024" || campaign == "2025") {
       jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),jet.Phi(),rawpt,rho}); // Data & MC get jes for 2023BPix
     }
     else {
@@ -125,7 +125,12 @@ RVec<RVec<float>> cleanJetsMC (const bool &debug, const string &campaign, const 
     
     // ----- MC specific: ----- 
     float res = ak4ptres->evaluate({jet.Eta(),rawpt*jes,rho});
-    float sf = ak4jer->evaluate({jet.Eta(),rawpt*jes, jervar});
+    float sf = -999.9;
+    if (campaign == "2024" || campaign == "2025") {
+      sf = ak4jer->evaluate({jet.Eta(),rawpt*jes});
+    } else {
+      sf = ak4jer->evaluate({jet.Eta(),rawpt*jes,jervar});
+    }
     bool smeared = false;                                                       // MC only gets a JER smear, one of 2 methods below:
     if(jt_genidx[ijet] > -1 && genjt_p4[jt_genidx[ijet]].Pt() > 0){   
       double dPt = fabs(genjt_p4[jt_genidx[ijet]].Pt() - rawpt*jes);
@@ -205,7 +210,7 @@ RVec<RVec<float>> cleanJetsMC (const bool &debug, const string &campaign, const 
     if (met > 0) jet *= (1 - jt_murf[ijet]);                                       // further correct raw to muon-substracted raw for T1.
     float rawpt = jet.Pt();
     
-    if (campaign == "2023BPix") {
+    if (campaign == "2023BPix" || campaign == "2024" || campaign == "2025") {
       jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),jet.Phi(),rawpt,rho}); // Data & MC get jes for 2023BPix
     }
     else {
@@ -255,6 +260,17 @@ RVec<RVec<float>> cleanJetsMC (const bool &debug, const string &campaign, const 
   
   return output;
 };
+
+RVec<RVec<float>> cleanJetsMC (const bool &debug, const string &campaign, const string &jesvar, 
+ correction::CompoundCorrection::Ref& ak4corr, correction::Correction::Ref& ak4corrL1, correction::Correction::Ref& ak4corrUnc, correction::Correction::Ref& ak4ptres, correction::Correction::Ref& ak4jer,
+ correction::CompoundCorrection::Ref& ak8corr, correction::Correction::Ref& ak8corrUnc, 
+ const RVec<TLorentzVector> &jt_p4, const RVec<float> &jt_rf, const RVec<float> &jt_murf, const RVec<float> &jt_area, const RVec<float> &jt_em, 
+ const RVec<TLorentzVector> &genjt_p4, const RVec<int> &jt_genidx, const RVec<TLorentzVector> &mu_p4, const RVec<int> mu_jetid, 
+			       const RVec<TLorentzVector> &el_p4, const RVec<int> &el_jetid, const float &rho, const float &met, const float &phi) 
+{
+	RVec<int> jet_id(jt_p4.size(),9); // jetid isn't in 2024 NanoAOD, we assume all jets should pass so assign a value > 2
+	return cleanJetsMC(debug,campaign,jesvar,ak4corr,ak4corrL1,ak4corrUnc,ak4ptres,ak4jer,ak8corr,ak8corrUnc,jt_p4,jt_rf,jt_murf,jt_area,jt_em,jet_id,genjt_p4,jt_genidx,mu_p4,mu_jetid,el_p4,el_jetid,rho,met,phi);
+}
 
 // Clean Jets Data Function
 RVec<RVec<float>> cleanJetsData (const float run, const bool &debug, const string &campaign,
@@ -311,13 +327,13 @@ RVec<RVec<float>> cleanJetsData (const float run, const bool &debug, const strin
     if (met > 0) jet *= (1 - jt_murf[ijet]);                                       // further correct raw to muon-substracted raw for T1.
     float rawpt = jet.Pt();
 
-    if (campaign == "2023BPix") {
+    if (campaign == "2023BPix" || campaign == "2024" || campaign == "2025") {
 	 jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),jet.Phi(),rawpt,rho,run}); // Data & MC get jes for 2023BPix
     }
-    else if (campaign == "2023") {
+    else{ // if (campaign == "2023") {
          jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),rawpt,rho,run}); // Data & MC get jes for other campaigns
-    } else {
-         jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),rawpt,rho}); // Data & MC get jes for other campaigns
+	 //    } else {
+         //jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),rawpt,rho}); // Data & MC get jes for other campaigns
     }
 
     if (met > 0) jesL1 = ak4corrL1->evaluate({jt_area[ijet],jet.Eta(),rawpt,rho}); // L1-only jes for MET T1
@@ -376,13 +392,13 @@ RVec<RVec<float>> cleanJetsData (const float run, const bool &debug, const strin
     if (met > 0 && jt_em[ijet] > 0.9) continue;                                    // not these jets for MET 
     if (met > 0) jet *= (1 - jt_murf[ijet]);                                       // further correct raw to muon-substracted raw for T1.
     float rawpt = jet.Pt();
-    if (campaign == "2023BPix") {
+    if (campaign == "2023BPix" || campaign == "2024" || campaign == "2025") {
 	 jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),jet.Phi(),rawpt,rho,run}); // Data & MC get jes for 2023BPix
     }
-    else if (campaign == "2023") {
+    else{ // if (campaign == "2023") {
          jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),rawpt,rho,run}); // Data & MC get jes for other campaigns
-    } else {
-         jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),rawpt,rho}); // Data & MC get jes for other campaigns
+	 //    } else {
+         //jes = jescorr->evaluate({jt_area[ijet],jet.Eta(),rawpt,rho}); // Data & MC get jes for other campaigns
     }
 
     if (met > 0) {
@@ -413,3 +429,14 @@ RVec<RVec<float>> cleanJetsData (const float run, const bool &debug, const strin
   return output;
 };
 
+RVec<RVec<float>> cleanJetsData (const float run, const bool &debug, const string &campaign,
+ correction::CompoundCorrection::Ref& ak4corr, correction::Correction::Ref& ak4corrL1,
+ correction::CompoundCorrection::Ref& ak8corr,
+ const RVec<TLorentzVector> &jt_p4, const RVec<float> &jt_rf, const RVec<float> &jt_murf, const RVec<float> &jt_area, const RVec<float> &jt_em, //jet_id is removed
+ const RVec<TLorentzVector> &genjt_p4, const RVec<int> &jt_genidx, const RVec<TLorentzVector> &mu_p4, const RVec<int> mu_jetid, 
+ const RVec<TLorentzVector> &el_p4, const RVec<int> &el_jetid, const float &rho, const float &met, const float &phi) {
+ 
+  RVec<int> jet_id(jt_p4.size(),9);
+  return cleanJetsData(run, debug, campaign, ak4corr, ak4corrL1, ak8corr, jt_p4, jt_rf, jt_murf, jt_area, jt_em, jet_id, genjt_p4, jt_genidx, mu_p4, mu_jetid, el_p4, el_jetid, rho, met, phi);
+ }
+//May not be fully implemented. Worth double checking.
