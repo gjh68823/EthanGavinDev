@@ -125,12 +125,7 @@ RVec<RVec<float>> cleanJetsMC (const bool &debug, const string &campaign, const 
     
     // ----- MC specific: ----- 
     float res = ak4ptres->evaluate({jet.Eta(),rawpt*jes,rho});
-    float sf = -999.9;
-    if (campaign == "2024" || campaign == "2025") {
-      sf = ak4jer->evaluate({jet.Eta(),rawpt*jes});
-    } else {
-      sf = ak4jer->evaluate({jet.Eta(),rawpt*jes,jervar});
-    }
+    float sf = ak4jer->evaluate({jet.Eta(),rawpt*jes});
     bool smeared = false;                                                       // MC only gets a JER smear, one of 2 methods below:
     if(jt_genidx[ijet] > -1 && genjt_p4[jt_genidx[ijet]].Pt() > 0){   
       double dPt = fabs(genjt_p4[jt_genidx[ijet]].Pt() - rawpt*jes);
@@ -220,7 +215,7 @@ RVec<RVec<float>> cleanJetsMC (const bool &debug, const string &campaign, const 
     
     // ----- MC specific: ----- 
     float res = ak4ptres->evaluate({jet.Eta(),rawpt*jes,rho});
-    float sf = ak4jer->evaluate({jet.Eta(),rawpt*jes, jervar});
+    float sf = ak4jer->evaluate({jet.Eta(),rawpt*jes});
     bool smeared = false;                                                       // MC only gets a JER smear, one of 2 methods below:
     if(jt_genidx[ijet] > -1 && genjt_p4[jt_genidx[ijet]].Pt() > 0){   
       double dPt = fabs(genjt_p4[jt_genidx[ijet]].Pt() - rawpt*jes);
