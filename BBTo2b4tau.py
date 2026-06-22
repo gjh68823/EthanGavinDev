@@ -4,7 +4,7 @@ import ROOT
 from ROOT import TFile
 import sys, os
 import gc
-from rates import to_cpp_vec2d, pnet_loose
+from rates import to_cpp_vec2d, pnet_loose, upart_loose
 
 gc.disable()
 
