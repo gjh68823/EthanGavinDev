@@ -270,7 +270,7 @@ def analyze(jesvar):
   eandmuVars.Add('LooseEl_mass', 'Electron_mass[looseElectrons == true]')
   eandmuVars.Add('LooseEl_charge', 'Electron_charge[looseElectrons == true]')
   eandmuVars.Add('LooseEl_ID', 'ROOT::VecOps::RVec<int>(NlooseElecs, 11)')
-  eandmuVars.Add('LooseEl_isTight','Electron_mvaIso_WP90[looseElectrons == true] == 1')
+  eandmuVars.Add('LooseEl_isTight','Electron_mvaIso_WP80[looseElectrons == true] == 1')
 
   # eandmuVars.Add('GoodEl_pt','Electron_pt[goodElectrons == true]')
   # eandmuVars.Add('GoodEl_eta','Electron_eta[goodElectrons == true]')
