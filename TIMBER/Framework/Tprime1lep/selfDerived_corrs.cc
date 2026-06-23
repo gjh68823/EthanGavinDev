@@ -75,7 +75,7 @@ std::vector<float> elhlt_etas = {0,0.8,1.442,1.566,2.0,2.5};
 float muonisosfunc = 0.002;
 
 // DeepJet Loose efficiencies
-std::vector<float> btagpts = {15.0, 20.0, 30.0, 50.0, 70.0, 100.0, 150.0, 200.0, 300.0, 400.0, 500.0, 600.0, 800.0, 1000.0, 1200.0, 99999.0};
+std::vector<float> btagpts = {15.0, 20.0, 30.0, 50.0, 70.0, 100.0, 150.0, 200.0, 300.0, 400.0, 500.0, 600.0, 800.0, 1000.0, 1200.0, 99999.0}; 
 
 // ParticleNet Top and W efficiencies
 std::vector<float> pnetpts = {200,300,400,500,600,800,1000,1200,1500,2000};
@@ -209,7 +209,6 @@ void initialize(string year)   ///void initialize(string initargument) --OR-- vo
   if(year == "2022"){
 //if(year == "2022"), based on Tprime1lepRUN3.py if/else conditions right after campaign --OR-- if(campaign == "Summer22"), needs a further "year=2022" variable? --OR-- if(initargument == Summer22")
 
-
     elecidsfs = {  // AN-2019-199 v11 Fig 6(7,8,9 for other eras) (SUSY Double Disco)
       {1.005, 1.001, 0.988, 0.988, 0.968, 0.961, 0.977, 0.977, 0.980, 0.999},
       {1.024, 1.018, 1.082, 0.993, 0.977, 0.987, 0.975, 1.103, 1.001, 1.005},
@@ -331,6 +330,7 @@ void initialize(string year)   ///void initialize(string initargument) --OR-- vo
       {0.251020,0.428866,1.000000,0.851152,1.000000}
     };
   }else{ //2023BPix
+
 
     elecidsfs = {
       {0.986, 0.980, 1.021, 0.964, 0.973, 0.973, 0.973, 0.980, 0.976, 0.969},
