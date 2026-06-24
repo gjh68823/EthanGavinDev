@@ -15,6 +15,9 @@ correctionlib.register_pyroot_binding()
 sys.path.append('../../')
 sys.path.append('../../../')
 
+ROOT.gInterpreter.ProcessLine('#pragma GCC diagnostic ignored "-Wdeprecated-declarations"') #Command to ignore certain warning messages
+
+
 # ------------------ Command Line Arguments and Parsing -------------------
 inputFiles = sys.argv[1] #fileList
 testNum1 = sys.argv[2]   #first file in the list to use 
@@ -691,8 +694,8 @@ def analyze(jesvar):
 
   nodeToPlot = a.Apply([flagCuts, gjsonVars, gjsonCuts, tVars, eandmuVars, lVars, lCuts, TrigVars, TrigCuts])
   
-  #if isSig:
-  #  a.Apply([GenVars])
+  if isSig:
+    a.Apply([GenVars])
 
   # # Solution to cleanJets() problem:
   # #       The analyzer .Apply() calls the analyzer .Define().  This .Define() calls self._collectionOrg.CollectionDefCheck(var, newNode).
@@ -703,8 +706,8 @@ def analyze(jesvar):
   
   newNode = a.ActiveNode.Apply(jVars)
   a.SetActiveNode(newNode)
-  #if isSig:
-  #    a.Apply([recoGenVars])
+  if isSig:
+    a.Apply([recoGenVars])
   a.Apply([jCuts, metVars, metCuts, lepSFs, manualVars])#, rframeVars]) 
   
   allColumns = a.GetColumnNames()
