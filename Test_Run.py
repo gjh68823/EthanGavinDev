@@ -15,6 +15,8 @@ correctionlib.register_pyroot_binding()
 sys.path.append('../../')
 sys.path.append('../../../')
 
+ROOT.gInterpreter.ProcessLine('#pragma GCC diagnostic ignored "-Wdeprecated-declarations"') #Command to ignore certain warning messages
+
 # ------------------ Command Line Arguments and Parsing -------------------
 inputFiles = sys.argv[1] #fileList
 testNum1 = sys.argv[2]   #first file in the list to use 
@@ -225,7 +227,7 @@ def analyze(jesvar):
   
   puname = {'2022':"Collisions2022_355100_357900_eraBCD_GoldenJson",'2022EE':"Collisions2022_359022_362760_eraEFG_GoldenJson",'2023':"Collisions2023_366403_369802_eraBC_GoldenJson",'2023BPix':"Collisions2023_369803_370790_eraD_GoldenJson",'2024':"Collisions24_B_goldenJSON",'2025':"Collisions25_goldenJSON"}
 
-  jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1",'2024',"Summer24Prompt24_RunBCDEFGHI_V1"}    #Need 2025
+  jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1",'2024':"Summer24Prompt24_RunBCDEFGHI_V1"}    #Need 2025
   
   elecyr = {'2022':"2022Re-recoBCD",'2022EE':"2022Re-recoE+PromptFG",'2023':"2023PromptC",'2023BPix':"2023PromptD",'2024':"2024Prompt",'2025':"2025Prompt"}
 
@@ -237,7 +239,7 @@ def analyze(jesvar):
 
   btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"particleNet_comb",'2023BPix':"particleNet_comb",'2024':'UPartAK4_comb','2025':'UPartAK4_comb'}
 
-  lightname = {'2022':"particleNet_light",'2022EE':"particleNet_light",'2023':"particleNet_light",'2023BPix':"particleNet_light",'2024':"UParTAK4_light",'2025':"UParTAK4_light
+  lightname = {'2022':"particleNet_light",'2022EE':"particleNet_light",'2023':"particleNet_light",'2023BPix':"particleNet_light",'2024':"UParTAK4_light",'2025':"UParTAK4_light"}
 
   print(jecyr[year]+"_"+jecver[year]+"_DATA_L1L2L3Res_AK4PFPuppi")
  
@@ -260,6 +262,7 @@ def analyze(jesvar):
   string METyr = \""""+METyr[year]+"""\";
   string METsimpleyr = \""""+METsimpleyr[year]+"""\";
   string btagname = \""""+btagname[year]+"""\";
+
   string lightname = \""""+lightname[year]+"""\";
 
   std::vector<int> btagptbins = {15,20,30,50,70,100,150,200,300,400,500,600,800,1000,1200,1500};
@@ -753,6 +756,12 @@ def analyze(jesvar):
     mode = 'UPDATE'
   #print('\n(1)\n') 
   #sys.setprofile(trace_calls)
+
+
+  branches_to_exclude = ["GenInfo", "GenList"]
+  columns = [c for c in columns if c not in branches_to_exclude]
+  
+
   a.Snapshot(columns, finalFile, "Events_"+jesvar, lazy=False, openOption=mode, saveRunChain=True)
   #print('\n(2)\n')
   if jesvar == "Nominal":

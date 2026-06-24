@@ -1,9 +1,10 @@
 import os,sys,subprocess,fnmatch
+from pathlib import Path
 
-logdir = sys.argv[1]
+logdir = Path(sys.argv[1]).resolve()
 resubmit = False
 if len(sys.argv) > 2:
-    resubmit = sys.argv[2]
+    resubmit = bool(eval(sys.argv[2]))
 
 deletefakes = False
 killdisconnect = False
@@ -216,7 +217,7 @@ for rerun in resubs.keys():
     if splitjobs:
         if resubs[rerun][0] == resubs[rerun][1]:
             print('NOT SPLITTING THIS ONE, SINGLE FILE '+folder+'/'+jobfile)
-            os.chdir(logdir+folder)
+            os.chdir(str(logdir)+'/'+folder)
             os.system('condor_submit '+jobfile)
             continue
 
@@ -225,7 +226,7 @@ for rerun in resubs.keys():
             print(folder+': new ranges '+str(resubs[rerun][0])+' - '+str(half)+' , '+str(half+1)+' - '+str(resubs[rerun][1]))
 
             newjobfile = jobfile.replace('_'+str(resubs[rerun][0]),'_'+str(half+1))
-            os.chdir(logdir+folder)
+            os.chdir(str(logdir)+'/'+folder)
             os.system('cp '+jobfile+' '+newjobfile)
             os.system('sed -i "s| '+str(resubs[rerun][1])+' | '+str(half)+' |" '+jobfile) # only change upper in original file
             os.system('sed -i "s| '+str(resubs[rerun][0])+' | '+str(half+1)+' |" '+newjobfile) # only change lower in new file
@@ -244,7 +245,7 @@ for rerun in resubs.keys():
             newjobfile = jobfile.replace('_'+str(resubs[rerun][0]),'_'+str(third+1))
             newjobfile2 = jobfile.replace('_'+str(resubs[rerun][0]),'_'+str(third2+1))
         
-            os.chdir(logdir+folder)
+            os.chdir(str(logdir)+'/'+folder)
             os.system('cp '+jobfile+' '+newjobfile)
             os.system('cp '+jobfile+' '+newjobfile2)
             os.system('sed -i "s| '+str(resubs[rerun][1])+' | '+str(third)+' |" '+jobfile) # only change upper in original file
@@ -265,7 +266,7 @@ for rerun in resubs.keys():
 
         if nsplit == -1:
             print(folder+': new ranges:')
-            os.chdir(logdir+folder)
+            os.chdir(str(logdir)+'/'+folder)
             for ijob in range(resubs[rerun][0]+1,resubs[rerun][1]+1): # loop for everything past the first file
                 newjobfile = jobfile.replace('_'+str(resubs[rerun][0]),'_'+str(ijob))
                 print('\t ',ijob,' with file name ',newjobfile)
@@ -284,6 +285,6 @@ for rerun in resubs.keys():
             
             
     else:
-        os.chdir(logdir+folder)
+        os.chdir(str(logdir)+'/'+folder)
         os.system('condor_submit '+jobfile)
             

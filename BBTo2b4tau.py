@@ -4,7 +4,7 @@ import ROOT
 from ROOT import TFile
 import sys, os
 import gc
-from rates import to_cpp_vec2d, pnet_loose
+from rates import to_cpp_vec2d, pnet_loose, upart_loose
 
 gc.disable()
 
@@ -194,13 +194,12 @@ def analyze(jesvar):
 
   jmeyrstr = {'2022':yrstr['2022'],'2022EE':yrstr['2022EE'],'2023':yrstr['2023'],'2023BPix':yrstr['2023BPix'],'2024':yrstr['2024'],'2025':yrstr['2024']} # yes, really use 24 for 25
   jecyr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23",'2024':"Summer24Prompt24", '2025':"Summer24Prompt24"}
-  jeryr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23_RunCv1234",'2023BPix':"Summer23BPixPrompt23_RunD",'2024':"Summer24Prompt24",'2025':"Summer24Prompt24"}
+  jeryr = {'2022':"Summer22_22Sep2023_JRV2",'2022EE':"Summer22EE_22Sep2023_JRV2",'2023':"Summer23Prompt23_RunCv1234_JRV2",'2023BPix':"Summer23BPixPrompt23_RunD_JRV2",'2024':"Summer24Prompt24_JRV1",'2025':"Summer24Prompt25_JRV1"}
   jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1",'2024':"Summer24Prompt24_RunBCDEFGHI_V1",'2025':"Summer24Prompt24_RunBCDEFGHI_V1"}      
   if not isMC: #is DATA
-    jmeyrstr = {'2022':yrstr['2022'],'2022EE':yrstr['2022EE'],'2023':yrstr['2023'],'2023BPix':yrstr['2023BPix'],'2024':yrstr['2024'],'2025':'Run3-25Prompt-Winter25-NanoAODv15'} # this 25 is different from yrstr
-    jecyr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23",'2024':"Summer24Prompt24", '2025':"Winter25Prompt25"}
-    jeryr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23_RunCv1234",'2023BPix':"Summer23BPixPrompt23_RunD",'2024':"Summer24Prompt24",'2025':"Winter25Prompt25"}
-    jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1",'2024':"Summer24Prompt24_RunBCDEFGHI_V1",'2025':"Winter25Prompt25_RunCDEFG_V1"}    
+    jmeyrstr['2025'] = 'Run3-25Prompt-Winter25-NanoAODv15'
+    jecyr['2025'] = "Winter25Prompt25"
+    jetvetoname['2025'] = "Winter25Prompt25_RunCDEFG_V1"    
   
   jecver = {'2022':"V4",'2022EE':"V4",'2023':"V4",'2023BPix':"V4",'2024':"V3",'2025':"V3"}   
   puname = {'2022':"Collisions2022_355100_357900_eraBCD_GoldenJson",'2022EE':"Collisions2022_359022_362760_eraEFG_GoldenJson",'2023':"Collisions2023_366403_369802_eraBC_GoldenJson",'2023BPix':"Collisions2023_369803_370790_eraD_GoldenJson",'2024':"Collisions24_BCDEFGHI_goldenJSON",'2025':"Collisions25_goldenJSON"}  
@@ -224,7 +223,6 @@ def analyze(jesvar):
   string yrstr = \""""+yrstr[year]+"""\";
   string jmeyrstr = \""""+jmeyrstr[year]+"""\";
   string jecyr = \""""+jecyr[year]+"""\";
-  string jeryr = \""""+jeryr[year]+"""\";
   string jecver = \""""+jecver[year]+"""\";
   string jmetag = \""""+jmetags[year]+"""\";
   string btvtag = \""""+btvtags[year]+"""\";
@@ -288,18 +286,20 @@ def analyze(jesvar):
     """)
     print('made it')    
   else:
+    print(jeryr[year]+"_JRV1_MC_PtResolution_AK4PFPuppi")
     ROOT.gInterpreter.Declare("""
+    string jeryr = \""""+jeryr[year]+"""\";
     auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+jmeyrstr+"/"+jmetag+"/jet_jerc.json.gz"); 
     auto ak8corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+jmeyrstr+"/"+jmetag+"/fatJet_jerc.json.gz"); 
 
     auto ak4corr = ak4corrset->compound().at(jecyr+"_"+jecver+"_MC_L1L2L3Res_AK4PFPuppi");
     auto ak4corrL1 = ak4corrset->at(jecyr+"_"+jecver+"_MC_L1FastJet_AK4PFPuppi");
     auto ak4corrUnc = ak4corrset->at(jecyr+"_"+jecver+"_MC_Total_AK4PFPuppi");
-    auto ak4ptres = ak4corrset->at(jeryr+"_JRV1_MC_PtResolution_AK4PFPuppi");
-    auto ak4jer = ak4corrset->at(jeryr+"_JRV1_MC_ScaleFactor_AK4PFPuppi");
+    auto ak4ptres = ak4corrset->at(jeryr+"_MC_PtResolution_AK4PFPuppi");
+    auto ak4jer = ak4corrset->at(jeryr+"_MC_ScaleFactor_AK4PFPuppi");
     auto ak8corr = ak8corrset->compound().at(jecyr+"_"+jecver+"_MC_L1L2L3Res_AK8PFPuppi");
     auto ak8corrUnc = ak8corrset->at(jecyr+"_"+jecver+"_MC_Total_AK8PFPuppi");
-    """)    
+    """)
  
   # ------------------ Flag Cuts ------------------
   flagCuts = CutGroup('FlagCuts')
@@ -590,7 +590,7 @@ def analyze(jesvar):
   jVars.Add("gcJet_ht", "Sum(gcJet_pt)")
   if isMC:
     jVars.Add("gcJet_hflav", "reorder(Jet_hadronFlavour[goodcleanJets == true],gcJet_ptargsort)")
-    jVars.Add('btagWeights', 'btagshapefunc(year,jesvar,btagwpbccorr,btagwplcorr,btagptbins,btageffs,BTagL,gcJet_pt,gcJet_eta,gcJet_PNet,gcJet_hflav)')
+    jVars.Add('btagWeights', 'btagshapefunc("L",year,jesvar,btagwpbccorr,btagwplcorr,btagptbins,btageffs,BTagL,gcJet_pt,gcJet_eta,gcJet_BTag,gcJet_hflav)')
 
   jCuts = CutGroup('JetCuts')  
   jCuts.Add('NgoodcleanJets >= 2', 'NgoodcleanJets >= 2')
@@ -628,7 +628,7 @@ def analyze(jesvar):
 
   # --------------------- Old Topograph info, keeping for now ------------------
   recoGenVars = VarGroup('recoGenVars')
-  recoGenVars.Add('Matching', 'recoGenMatch(isSig, NgoodLeptons, Good4Lepton_eta, Good4Lepton_phi, NJets_BTagL, gcJet_PNet, gcBJet_eta, gcBJet_phi, gcBJet_pt, nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status)')
+  recoGenVars.Add('Matching', 'recoGenMatch(isSig, NgoodLeptons, Good4Lepton_eta, Good4Lepton_phi, NJets_BTagL, gcJet_BTag, gcBJet_eta, gcBJet_phi, gcBJet_pt, nGenPart, GenPart_pdgId, GenPart_mass, GenPart_pt, GenPart_phi, GenPart_eta, GenPart_genPartIdxMother, GenPart_status)')
   recoGenVars.Add('ObjectList_indices', 'Matching[0]') # Topograph thing
   recoGenVars.Add('matchabilityArr', 'Matching[1]') # Topograph thing
   recoGenVars.Add('nObjects', 'Matching[2]') # Topograph thing
@@ -705,7 +705,7 @@ def analyze(jesvar):
   a.SetActiveNode(newNode)
   #if isSig:
   #    a.Apply([recoGenVars])
-  a.Apply([jCuts]) #, metVars, metCuts, lepSFs, manualVars, rframeVars]) 
+  a.Apply([jCuts, metVars, metCuts, lepSFs, manualVars])#, rframeVars]) 
   
   allColumns = a.GetColumnNames()
      
@@ -771,4 +771,5 @@ else:
   #TODO fix why this not work?  shifts = ["Nominal","JECup","JECdn","JERup","JERdn"]
   #for shift in shifts:
   #  analyze(shift)
+  ## WHEN YOU FIX THIS, ADD THE UNCERTAINTY correctionlib for JER
   
