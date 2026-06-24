@@ -201,7 +201,7 @@ def analyze(jesvar):
   lumtags = {'2022':'2024-01-31','2022EE':'2024-01-31','2023':'2024-01-31','2023BPix':'2024-01-31','2024':'2026-04-15','2025':'latest'}      
 
   jecyr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23",'2024':"Summer24Prompt24"}   #Need 2025
-
+  
   if not isMC:
       jecyr = {'2022':"Summer22_22Sep2023_RunCD",'2022EE':"Summer22EE_22Sep2023_Run"+jecera,'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23",'2024':"Summer24Prompt24"}   #Need 2025
 
@@ -220,7 +220,7 @@ def analyze(jesvar):
 
   METsimpleyr = {'2022':"2022",'2022EE':"2022",'2023':"2023",'2023BPix':"2023",'2024':"2024",'2025':"2025"} 
 
-  btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"deepJet_comb",'2023BPix':"deepJet_comb",'2024':'UPartAK4_comb','2025':'UPartAK4_comb'}
+  btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"particleNet_comb",'2023BPix':"particleNet_comb",'2024':'UPartAK4_comb','2025':'UPartAK4_comb'}
 
   lightname = {'2022':"particleNet_light",'2022EE':"particleNet_light",'2023':"particleNet_light",'2023BPix':"particleNet_light",'2024':"UParTAK4_light",'2025':"UParTAK4_light"}
 
@@ -280,6 +280,8 @@ def analyze(jesvar):
   auto METcorr = METcorrset->at("met_xy_corrections");
   """)
 
+  #Check definitions above to see if any new variables can be created to remove hardcoding
+
   if not isMC:
     ROOT.gInterpreter.Declare("""
     auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/jet_jerc.json.gz"); 
@@ -292,11 +294,6 @@ def analyze(jesvar):
   else:
     ROOT.gInterpreter.Declare("""
     auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/jet_jerc.json.gz"); 
-    auto ak8corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/fatJet_jerc.json.gz"); 
-
-    auto ak4corr = ak4corrset->compound().at(jecyr+"_"+jecver+"_MC_L1L2L3Res_AK4PFPuppi");
-    auto ak4corrL1 = ak4corrset->at(jecyr+"_"+jecver+"_MC_L1FastJet_AK4PFPuppi");
-    auto ak4corrUnc = ak4corrset->at(jecyr+"_"+jecver+"_MC_Total_AK4PFPuppi");
     auto ak4ptres = ak4corrset->at(jeryr+"_JRV1_MC_PtResolution_AK4PFPuppi");
     auto ak4jer = ak4corrset->at(jeryr+"_JRV1_MC_ScaleFactor_AK4PFPuppi");
     auto ak8corr = ak8corrset->compound().at(jecyr+"_"+jecver+"_MC_L1L2L3Res_AK8PFPuppi");
@@ -705,6 +702,11 @@ def analyze(jesvar):
   allColumns = a.GetColumnNames()
      
   columns = []
+  for col in allColumns:
+     if ("P4" in col) or ("cleanedJets" in col) or ("cleanFatJets" in col) or ("cleanMets" in col) or ("Dummy" in col): continue 
+     if ("LHE" in col) and ("Weight" not in col) and (col != "LHE_HT") and (col != "LHE_Vpt") and (col != "gcHTCorr_WjetLHE"): continue
+     if col.startswith("Muon") and ("_tightId" not in col) and ("_isPF" not in col) and ("tunep" not in col) and ("genPartFlav" not in col): continue
+     if col.startswith("Electron") and ("genPartFlav" not in col): continue
   for col in allColumns:
      if ("P4" in col) or ("cleanedJets" in col) or ("cleanFatJets" in col) or ("cleanMets" in col) or ("Dummy" in col): continue 
      if ("LHE" in col) and ("Weight" not in col) and (col != "LHE_HT") and (col != "LHE_Vpt") and (col != "gcHTCorr_WjetLHE"): continue
