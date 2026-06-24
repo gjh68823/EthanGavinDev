@@ -194,34 +194,31 @@ def analyze(jesvar):
   #jmetags = {'2022':'2026-04-13','2022EE':'2026-04-13','2023':'2026-04-13','2023BPix':'2026-04-13','2024':'2025-12-02'}  #Need 2025
 
 
-  #btvtags = {'2022':'2025-08-20','2022EE':'2025-08-20','2023':'2025-08-20','2023BPix':'2025-08-20','2024':'2026-03-10','2025':'2026-05-27'}
+  btvtags = {'2022':'2025-08-20','2022EE':'2025-08-20','2023':'2025-08-20','2023BPix':'2025-08-20','2024':'2026-03-10','2025':'2026-05-27'}
   #old tags
-  btvtags = {'2022':'2025-08-20','2022EE':'2025-08-20','2023':'2025-08-20','2023BPix':'2025-08-20'}
+  #btvtags = {'2022':'2025-08-20','2022EE':'2025-08-20','2023':'2025-08-20','2023BPix':'2025-08-20'}
 
-  #egmtags = {'2022':'2025-12-15','2022EE':'2025-12-15','2023':'2025-12-15','2023BPix':'2025-12-15','2024':'2025-12-15','2025':'2026-05-06'}
+  egmtags = {'2022':'2025-12-15','2022EE':'2025-12-15','2023':'2025-12-15','2023BPix':'2025-12-15','2024':'2025-12-15','2025':'2026-05-06'}
   #old tags
-  egmtags = {'2022':'2025-10-22','2022EE':'2025-10-22','2023':'2025-10-22','2023BPix':'2025-10-22'}
+  #egmtags = {'2022':'2025-10-22','2022EE':'2025-10-22','2023':'2025-10-22','2023BPix':'2025-10-22'}
 
-  #muotags = {'2022':'2026-04-28','2022EE':'2026-04-28','2023':'2026-04-28','2023BPix':'2026-04-28','2024':'2026-04-28','2025':'2026-04-28'}
+  muotags = {'2022':'2026-04-28','2022EE':'2026-04-28','2023':'2026-04-28','2023BPix':'2026-04-28','2024':'2026-04-28','2025':'2026-04-28'}
   #old tags
-  muotags = {'2022':'2025-08-14','2022EE':'2025-08-14','2023':'2025-08-14','2023BPix':'2025-08-14'}
+  #muotags = {'2022':'2025-08-14','2022EE':'2025-08-14','2023':'2025-08-14','2023BPix':'2025-08-14'}
 
-  #tautags = {'2022':'2025-12-25','2022EE':'2025-12-25','2023':'2025-12-25','2023BPix':'2025-12-25','2024':'2026-01-14'}  #Need 2025
+  tautags = {'2022':'2025-12-25','2022EE':'2025-12-25','2023':'2025-12-25','2023BPix':'2025-12-25','2024':'2026-01-14'}  #Need 2025
   #old tags
-  tautags = {'2022':'2025-10-01','2022EE':'2025-10-01','2023':'2025-10-01','2023BPix':'2025-10-01'}
+  #tautags = {'2022':'2025-10-01','2022EE':'2025-10-01','2023':'2025-10-01','2023BPix':'2025-10-01'}
 
-  #lumtags = {'2022':'2024-01-31','2022EE':'2024-01-31','2023':'2024-01-31','2023BPix':'2024-01-31','2024':'2026-04-15','2025':'latest'}      
+  lumtags = {'2022':'2024-01-31','2022EE':'2024-01-31','2023':'2024-01-31','2023BPix':'2024-01-31','2024':'2026-04-15','2025':'latest'}      
   #old tags
-  lumtags = {'2022':'2024-01-31','2022EE':'2024-01-31','2023':'2024-01-31','2023BPix':'2024-01-31'}
+  #lumtags = {'2022':'2024-01-31','2022EE':'2024-01-31','2023':'2024-01-31','2023BPix':'2024-01-31'}
 
   jecyr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23",'2024':"Summer24Prompt24"}   #Need 2025
-  #old tags
-  #not updated
+  
 
   if not isMC:
       jecyr = {'2022':"Summer22_22Sep2023_RunCD",'2022EE':"Summer22EE_22Sep2023_Run"+jecera,'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23",'2024':"Summer24Prompt24"}   #Need 2025
-      #old tags
-      #not updated
 
   jeryr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23_RunCv1234",'2023BPix':"Summer23BPixPrompt23_RunD",'2024':"Summer24Prompt24"}  #Need 2025
   jecver = {'2022':"V3",'2022EE':"V3",'2023':"V2",'2023BPix':"V3",'2024':"V3"}   #Need 2025
@@ -238,7 +235,7 @@ def analyze(jesvar):
 
   METsimpleyr = {'2022':"2022",'2022EE':"2022",'2023':"2023",'2023BPix':"2023",'2024':"2024",'2025':"2025"} 
 
-  btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"deepJet_comb",'2023BPix':"deepJet_comb",'2024':'UPartAK4_comb','2025':'UPartAK4_comb'}
+  btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"particleNet_comb",'2023BPix':"particleNet_comb",'2024':'UPartAK4_comb','2025':'UPartAK4_comb'}
 
   lightname = {'2022':"particleNet_light",'2022EE':"particleNet_light",'2023':"particleNet_light",'2023BPix':"particleNet_light",'2024':"UParTAK4_light",'2025':"UParTAK4_light
 
@@ -257,11 +254,6 @@ def analyze(jesvar):
   string tautag = \""""+tautags[year]+"""\";
   string lumtag = \""""+lumtags[year]+"""\";
   string puname = \""""+puname[year]+"""\";
-  string jetvetoname = \""""+jetvetoname[year]+"""\";
-  string elecyr = \""""+elecyr[year]+"""\";
-  string tauyr = \""""+tauyr[year]+"""\";
-  string METyr = \""""+METyr[year]+"""\";
-  string METsimpleyr = \""""+METsimpleyr[year]+"""\";
   string jetvetoname = \""""+jetvetoname[year]+"""\";
   string elecyr = \""""+elecyr[year]+"""\";
   string tauyr = \""""+tauyr[year]+"""\";
@@ -297,6 +289,8 @@ def analyze(jesvar):
   auto METcorr = METcorrset->at("met_xy_corrections");
   """)
 
+  #Check definitions above to see if any new variables can be created to remove hardcoding
+
   if not isMC:
     ROOT.gInterpreter.Declare("""
     auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/jet_jerc.json.gz"); 
@@ -309,11 +303,6 @@ def analyze(jesvar):
   else:
     ROOT.gInterpreter.Declare("""
     auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/jet_jerc.json.gz"); 
-    auto ak8corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/fatJet_jerc.json.gz"); 
-
-    auto ak4corr = ak4corrset->compound().at(jecyr+"_"+jecver+"_MC_L1L2L3Res_AK4PFPuppi");
-    auto ak4corrL1 = ak4corrset->at(jecyr+"_"+jecver+"_MC_L1FastJet_AK4PFPuppi");
-    auto ak4corrUnc = ak4corrset->at(jecyr+"_"+jecver+"_MC_Total_AK4PFPuppi");
     auto ak4ptres = ak4corrset->at(jeryr+"_JRV1_MC_PtResolution_AK4PFPuppi");
     auto ak4jer = ak4corrset->at(jeryr+"_JRV1_MC_ScaleFactor_AK4PFPuppi");
     auto ak8corr = ak8corrset->compound().at(jecyr+"_"+jecver+"_MC_L1L2L3Res_AK8PFPuppi");
@@ -722,6 +711,11 @@ def analyze(jesvar):
   allColumns = a.GetColumnNames()
      
   columns = []
+  for col in allColumns:
+     if ("P4" in col) or ("cleanedJets" in col) or ("cleanFatJets" in col) or ("cleanMets" in col) or ("Dummy" in col): continue 
+     if ("LHE" in col) and ("Weight" not in col) and (col != "LHE_HT") and (col != "LHE_Vpt") and (col != "gcHTCorr_WjetLHE"): continue
+     if col.startswith("Muon") and ("_tightId" not in col) and ("_isPF" not in col) and ("tunep" not in col) and ("genPartFlav" not in col): continue
+     if col.startswith("Electron") and ("genPartFlav" not in col): continue
   for col in allColumns:
      if ("P4" in col) or ("cleanedJets" in col) or ("cleanFatJets" in col) or ("cleanMets" in col) or ("Dummy" in col): continue 
      if ("LHE" in col) and ("Weight" not in col) and (col != "LHE_HT") and (col != "LHE_Vpt") and (col != "gcHTCorr_WjetLHE"): continue
