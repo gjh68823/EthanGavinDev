@@ -695,6 +695,7 @@ TTH2B2024 = sample("TTH2B2024", 0.5742, "2024", "TTH2B2024NanoList.txt", "/TTH-H
 sample_test = {
     "SingleElecRun2022C":      SingleElecRun2022C,
     "BpBp_M1200_2024": BpBp_M1200_2024,  
+    "Bprime_M1000_2024":Bprime_M1000_2024,
 }
 
 samples_data = {
