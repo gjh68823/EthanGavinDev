@@ -1253,10 +1253,12 @@ samples_mc = {
     "TTZM42024":      TTZM42024,
     "TTWH2024":       TTWH2024,
     "TTZM502024":     TTZM502024,
-
-
-
-
+    "TTWH2024":       TTWH2024,
+    "TTWW2024":       TTWW2024,
+    "TTWZ2024":       TTWZ2024,
+    "TTZH2024":       TTZH2024,
+    "TTZZ2024":       TTZZ2024,
+    "TTTT2024":       TTTT2024,
 }
 
 samples_mc_standard = {
