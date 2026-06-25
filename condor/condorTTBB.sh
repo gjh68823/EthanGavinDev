@@ -35,11 +35,14 @@ cd CMSSW_13_2_10
 eval `scramv1 runtime -sh`
 cd ../
 source timber-env/bin/activate
+echo "PATH = " $PATH
+echo "BOOSTPATH = " $BOOSTPATH
+ls $BOOSTPATH
 cd TIMBER/
 
 # Run analyzer_RDF files through two C files
 echo "Running TIMBER:"
-python3 BBTo2b4tau.py ${infilename} ${testnum1} ${testnum2} ${year}
+python3 Tprime1lepRUN3.py ${infilename} ${testnum1} ${testnum2} ${year}
 
 # Viewing ROOT Files
 echo "ROOT Files:"

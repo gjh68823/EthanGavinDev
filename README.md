@@ -13,6 +13,7 @@ cd nobackup/BBto2b4tau/
 cmsrel CMSSW_13_2_10
 cd CMSSW_13_2_10
 cmsenv
+pip3 install --user --no-binary=correctionlib --upgrade correctionlib
 cd ..
 python3 -m virtualenv timber-env #If this step fails, you might need to do `python3 -m pip install --user virtualenv`
 git clone git@github.com:jmhogan/TIMBER.git # this requires an "SSH key" for cmslpc-el9. If you don't have it, use the https:// clone method
@@ -25,7 +26,7 @@ cd ../..
 
 Boost library path (the boost version as well!) may change depending on the CMSSW version so this may need to be modified by hand.
 
-Copy the whole multi-line string to the environment activation script
+Copy the whole multi-line string to the environment activation script by copying this cell and executing it on the command line. NOTE: it will NOT WORK to copy and paste these contents into your activate script using a text editor!
 
 ```
 cat <<EOT >> timber-env/bin/activate
@@ -46,6 +47,8 @@ if [[ ":\$LD_LIBRARY_PATH:" != *":\$BOOSTPATH:"* ]]; then
 else
   echo "BOOSTPATH already on LD_LIBRARY_PATH"
 fi
+
+pip3 install --no-binary=correctionlib correctionlib==2.8.0 --quiet
 EOT
 ```
 
