@@ -754,7 +754,6 @@ def analyze(jesvar):
     mode = 'UPDATE'
   #print('\n(1)\n') 
   #sys.setprofile(trace_calls)
-  #a.DataFrame = a.DataFrame.Range(50) # Only process the first 50 events
   
   a.Snapshot(columns, finalFile, "Events_"+jesvar, lazy=False, openOption=mode, saveRunChain=True)
   #print('\n(2)\n')

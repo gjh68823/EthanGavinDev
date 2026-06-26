@@ -197,11 +197,11 @@ MuonEGRun2023BPixD2  = sample("MuonEGRun2023BPixD2", 1.0, "2023BPix", "MuonEGRun
 MuonEGRun2024C = sample("MuonEGRun2024C", 1.0, "2024", "MuonEGRun2024CNanoList.txt","/MuonEG/Run2024C-MINIv6NANOv15-v1/NANOAOD")
 MuonEGRun2024D = sample("MuonEGRun2024D", 1.0, "2024", "MuonEGRun2024DNanoList.txt","/MuonEG/Run2024D-MINIv6NANOv15-v1/NANOAOD")
 MuonEGRun2024E = sample("MuonEGRun2024E", 1.0, "2024", "MuonEGRun2024ENanoList.txt","/MuonEG/Run2024E-MINIv6NANOv15-v1/NANOAOD")
-MuonEGRun2024F = sample("MuonEGRun2024F", 1.0, "2024", "MuonEGRun2024FNanoList.txt","/MuonEG/Run2024F-MINIv6NANOv15-v1/NANOAOD")
-MuonEGRun2024G = sample("MuonEGRun2024G", 1.0, "2024", "MuonEGRun2024GNanoList.txt","/MuonEG/Run2024G-MINIv6NANOv15-v1/NANOAOD")
-MuonEGRun2024H = sample("MuonEGRun2024H", 1.0, "2024", "MuonEGRun2024HNanoList.txt","/MuonEG/Run2024H-MINIv6NANOv15-v1/NANOAOD")
-MuonEGRun2024I1 = sample("MuonEGRun2024I1", 1.0, "2024", "MuonEGRun2024I1NanoList.txt","/MuonEG/Run2024I-MINIv6NANOv15-v1/NANOAOD")
-MuonEGRun2024I2 = sample("MuonEGRun2024I2", 1.0, "2024", "MuonEGRun2024I2NanoList.txt","/MuonEG/Run2024I-MINIv6NANOv15_v2-v1/NANOAOD")
+MuonEGRun2024F = sample("MuonEGRun2024F", 1.0, "2024", "MuonEGRun2024FNanoList.txt","/MuonEG/Run2024F-MINIv6NANOv15-v2/NANOAOD")
+MuonEGRun2024G = sample("MuonEGRun2024G", 1.0, "2024", "MuonEGRun2024GNanoList.txt","/MuonEG/Run2024G-MINIv6NANOv15-v3/NANOAOD")
+MuonEGRun2024H = sample("MuonEGRun2024H", 1.0, "2024", "MuonEGRun2024HNanoList.txt","/MuonEG/Run2024H-MINIv6NANOv15-v2/NANOAOD")
+MuonEGRun2024I1 = sample("MuonEGRun2024I1", 1.0, "2024", "MuonEGRun2024I1NanoList.txt","/MuonEG/Run2024I-MINIv6NANOv15-v2/NANOAOD")
+MuonEGRun2024I2 = sample("MuonEGRun2024I2", 1.0, "2024", "MuonEGRun2024I2NanoList.txt","/MuonEG/Run2024I-MINIv6NANOv15_v2-v2/NANOAOD")
 MuonEGRun2025B  = sample("MuonEGRun2025B" , 1.0, "2025", "MuonEGRun2025BNanoList.txt" ,"/MuonEG/Run2025B-PromptReco-v1/NANOAOD")
 MuonEGRun2025C1 = sample("MuonEGRun2025C1", 1.0, "2025", "MuonEGRun2025C1NanoList.txt","/MuonEG/Run2025C-PromptReco-v1/NANOAOD")
 MuonEGRun2025C2 = sample("MuonEGRun2025C2", 1.0, "2025", "MuonEGRun2025C2NanoList.txt","/MuonEG/Run2025C-PromptReco-v2/NANOAOD")
@@ -1256,10 +1256,12 @@ samples_mc = {
     "TTZM42024":      TTZM42024,
     "TTWH2024":       TTWH2024,
     "TTZM502024":     TTZM502024,
-
-
-
-
+    "TTWH2024":       TTWH2024,
+    "TTWW2024":       TTWW2024,
+    "TTWZ2024":       TTWZ2024,
+    "TTZH2024":       TTZH2024,
+    "TTZZ2024":       TTZZ2024,
+    "TTTT2024":       TTTT2024,
 }
 
 samples_mc_standard = {
