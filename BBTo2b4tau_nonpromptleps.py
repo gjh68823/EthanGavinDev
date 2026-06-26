@@ -132,7 +132,7 @@ ROOT.gInterpreter.Declare("""
 def analyze(jesvar):
   ROOT.gInterpreter.ProcessLine('string jesvar = "' + jesvar + '"; ')
 
-  # Create analyzer instance
+  #/TIMBER/Framework/Tprime1lep/topographInput.cc Create analyzer instance
   # is filelist still what you want it be here
   a = analyzer(filelist)
   
@@ -263,7 +263,7 @@ def analyze(jesvar):
   eandmuVars = VarGroup('ElandMuVars')
 
   #Good Electrons
-  eandmuVars.Add('looseElectrons', 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && (Electron_mvaIso_WP90 == 1)')
+  eandmuVars.Add('looseElectrons', 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && (Electron_mvaNoIso_WP90 == 1)')
   eandmuVars.Add('NlooseElecs', 'Sum(looseElectrons)')
   #eandmuVars.Add('goodElectrons', 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && (Electron_mvaIso_WP80 == 1)')
   #eandmuVars.Add('NgoodElecs', 'Sum(goodElectrons)')
@@ -287,7 +287,7 @@ def analyze(jesvar):
   # eandmuVars.Add('GoodEl_charge', 'Electron_charge[goodElectrons == true]')
 
   #Good Muons
-  eandmuVars.Add('looseMuons', 'Muon_pt >= 15 && abs(Muon_eta) < 2.4 && Muon_pfIsoId >= 2')
+  eandmuVars.Add('looseMuons', 'Muon_pt >= 15 && abs(Muon_eta) < 2.4 && Muon_looseId == 1 && Muon_pfIsoId >= 2')
   eandmuVars.Add('NlooseMuons', 'Sum(looseMuons)')
   #eandmuVars.Add('goodMuons', 'Muon_pt >= 15 && abs(Muon_eta) < 2.4 && Muon_mediumId == 1 && abs(Muon_dxy) < 0.2 && abs(Muon_dz) < 0.5 && Muon_pfIsoId >= 3')
   #eandmuVars.Add('NgoodMuons', 'Sum(goodMuons)')

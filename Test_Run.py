@@ -353,7 +353,7 @@ def analyze(jesvar):
   eandmuVars = VarGroup('ElandMuVars')
 
   #Good Electrons
-  eandmuVars.Add('goodElectrons', 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && (Electron_mvaIso_WP80 == 1)')
+  eandmuVars.Add('goodElectrons', 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && (Electron_mvaIso_WP80 == 1) && abs(Electron_dxy) < 0.2 && abs(Electron_dz) < 0.5')
   eandmuVars.Add('NgoodElecs', 'Sum(goodElectrons)')
 
   # Use for generator-level checks

@@ -696,6 +696,9 @@ sample_test = {
     "SingleElecRun2022C":      SingleElecRun2022C,
     "BpBp_M1200_2024": BpBp_M1200_2024,  
     "Bprime_M1000_2024":Bprime_M1000_2024,
+    "MuonEGRun2024I2": MuonEGRun2024I2,
+    "MuonEGRun2025B":  MuonEGRun2025B,
+    "TauRun2024H":  TauRun2024H,
 }
 
 samples_data = {

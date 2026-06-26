@@ -15,7 +15,7 @@ correctionlib.register_pyroot_binding()
 sys.path.append('../../')
 sys.path.append('../../../')
 
-ROOT.gInterpreter.ProcessLine('#pragma GCC diagnostic ignored "-Wdeprecated-declarations"') #Command to ignore certain warning messages
+#ROOT.giInterpreter.ProcessLine('#pragma GCC diagnostic ignored "-Wdeprecated-declarations"') #Command to ignore certain warning messages
 
 
 # ------------------ Command Line Arguments and Parsing -------------------
