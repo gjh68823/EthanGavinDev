@@ -15,6 +15,8 @@ correctionlib.register_pyroot_binding()
 sys.path.append('../../')
 sys.path.append('../../../')
 
+#ROOT.giInterpreter.ProcessLine('#pragma GCC diagnostic ignored "-Wdeprecated-declarations"') #Command to ignore certain warning messages
+
 # ------------------ Command Line Arguments and Parsing -------------------
 inputFiles = sys.argv[1] #fileList
 # Are all the files running if 0 and 8?
@@ -276,7 +278,7 @@ def analyze(jesvar):
   eandmuVars.Add('LooseEl_ID', 'ROOT::VecOps::RVec<int>(NlooseElecs, 11)')
   eandmuVars.Add('LooseEl_isTight','Electron_mvaIso_WP80[looseElectrons == true] == 1')
 
-  eandmuVars.Add('LooseEl_isabnormal', '(Electron_mvaTso_WP80 == 1) != (Electron_cutBased >= 2)')  #Check to make sure each process is working as expected. False is normal/expected behavior, True is something is wrong
+  eandmuVars.Add('LooseEl_isabnormal', '(Electron_mvaIso_WP80 == 1) != (Electron_cutBased >= 2)')  #Check to make sure each process is working as expected. False is normal/expected behavior, True is something is wrong
 
   # eandmuVars.Add('GoodEl_pt','Electron_pt[goodElectrons == true]')
   # eandmuVars.Add('GoodEl_eta','Electron_eta[goodElectrons == true]')
