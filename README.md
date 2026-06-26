@@ -10,8 +10,8 @@ These instructions use python3 and CMSSW. The instructions below have been teste
 source /cvmfs/cms.cern.ch/cmsset_default.sh # this should go in your ~/.bashrc or ~/.bash_profile so it's done automatically when you log in
 mkdir nobackup/BBto2b4tau
 cd nobackup/BBto2b4tau/
-cmsrel CMSSW_13_2_10
-cd CMSSW_13_2_10
+cmsrel CMSSW_14_1_9
+cd CMSSW_14_1_9
 cmsenv
 pip3 install --user --no-binary=correctionlib --upgrade correctionlib
 cd ..
@@ -62,7 +62,7 @@ source setup.sh
 
 Tip: Add the lines below to the top of `timber-env/bin/activate` script. With this, one can skip doing `cmsenv` every time after opening a new shell and just activate the environment instead.
 ```
-cd CMSSW_13_2_10
+cd CMSSW_14_1_9
 cmsenv
 cd ..
 ```
