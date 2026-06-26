@@ -696,6 +696,9 @@ sample_test = {
     "SingleElecRun2022C":      SingleElecRun2022C,
     "BpBp_M1200_2024": BpBp_M1200_2024,  
     "Bprime_M1000_2024":Bprime_M1000_2024,
+    "MuonEGRun2024I2": MuonEGRun2024I2,
+    "MuonEGRun2025B":  MuonEGRun2025B,
+    "TauRun2024H":  TauRun2024H,
 }
 
 samples_data = {
@@ -1182,7 +1185,7 @@ samples_mc = {
     "TTG1Jpt1002023BPix" : TTG1Jpt1002023BPix, 
     "TTG1Jpt2002022"     : TTG1Jpt2002022,
     "TTG1Jpt2002022EE"   : TTG1Jpt2002022EE, 
-    "TTG1Jpt2002023"     : TTG1Jpt20020350u23,
+    "TTG1Jpt2002023"     : TTG1Jpt2002023,
     "TTG1Jpt2002023BPix" : TTG1Jpt2002023BPix, 
     "TTHnonB2022":    TTHnonB2022,    
     "TTHnonB2022EE":  TTHnonB2022EE,  
