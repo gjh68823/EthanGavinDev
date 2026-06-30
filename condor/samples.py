@@ -699,7 +699,13 @@ sample_test = {
     "MuonEGRun2024I2": MuonEGRun2024I2,
     "MuonEGRun2025B":  MuonEGRun2025B,
     "TauRun2024H":  TauRun2024H,
-}
+    "WZZ2024":        WZZ2024,
+    "ZZZ2024":        ZZZ2024,
+    "NonpromptSingleElecRun2024C1":  NonpromptSingleElecRun2024C1, 
+    "NonpromptSingleMuonRun2024C0":  NonpromptSingleMuonRun2024C0,
+    "NonpromptTauRun2024D":     NonpromptTauRun2024D,
+    "NonpromptMuonEGRun2024G":  NonpromptMuonEGRun2024G,
+    }
 
 samples_data = {
     "SingleElecRun2022C":      SingleElecRun2022C,      

@@ -468,14 +468,8 @@ def analyze(jesvar):
   # ----------------- corrections/SFs for el/mu/tau ----------------------
   lepSFs = VarGroup('Lepton Scale Factors')
   if (isMC):
-    
-    #############################################These are the problem lines!#############################################
-
     lepSFs.Add('elrecoSF', 'elrecofunc(electroncorr, elecyr, Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_phi, Good4Lepton_ID)')
     lepSFs.Add('elidSF', 'elidfunc(electroncorr, elecyr, Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_phi, Good4Lepton_ID)')         
-    
-    ######################################################################################################################
-
     lepSFs.Add('muonidSF', 'muidfunc(muonidcorr, Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_ID)')
     lepSFs.Add('muonisoSF', 'muisofunc(muonisocorr, Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_ID)')
     lepSFs.Add('tauidVSeSF', 'tauefunc(tauidVSecorr, Good4Lepton_eta, Good4Lepton_TauDM, Good4Lepton_TauMch, Good4Lepton_ID)')
