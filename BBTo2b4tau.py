@@ -15,7 +15,7 @@ correctionlib.register_pyroot_binding()
 sys.path.append('../../')
 sys.path.append('../../../')
 
-#ROOT.giInterpreter.ProcessLine('#pragma GCC diagnostic ignored "-Wdeprecated-declarations"') #Command to ignore certain warning messages
+ROOT.gInterpreter.ProcessLine('#pragma GCC diagnostic ignored "-Wdeprecated-declarations"') #Command to ignore certain warning messages
 
 
 # ------------------ Command Line Arguments and Parsing -------------------
@@ -85,12 +85,13 @@ if not isMC:   #Need to update??
       jecera = 'Cv123'
     else:
       jecera = 'Cv4'
-    
+  elif year == '2024':
+     jecera = 'JRV1'
+
 if isMC:
   if (("_ext1" in sampleName)): era = "ext1"
   if (("_ext2" in sampleName)): era = "ext2"
   if (("_ext3" in sampleName)): era = "ext3"
-
 region = "Signal"
 if isTT:
   region = "TTbar" 
@@ -123,7 +124,7 @@ CompileCpp('TIMBER/Framework/Tprime1lep/manualreco.cc')
 ROOT.gInterpreter.ProcessLine('#include "TString.h"')
 
 # Enable using 4 threads
-#ROOT.ROOT.EnableImplicitMT(num_threads)
+ROOT.ROOT.EnableImplicitMT(num_threads)
 
 # load rest frames handler
 handler_name = 'Bprime_handler_new.cc'
@@ -261,6 +262,9 @@ def analyze(jesvar):
   auto jetidAK4TLcorr = jetidcorrset->at("AK4PUPPI_TightLeptonVeto");
   auto jetidAK8Tcorr = jetidcorrset->at("AK8PUPPI_Tight");
   auto jetidAK8TLcorr = jetidcorrset->at("AK8PUPPI_TightLeptonVeto");
+
+
+
   auto jetvetocorr = jetvetocorrset->at(jetvetoname);
   auto pileupcorr = pileupcorrset->at(puname);
   auto btagwpbccorr = btagcorrset->at(btagname);
@@ -464,8 +468,14 @@ def analyze(jesvar):
   # ----------------- corrections/SFs for el/mu/tau ----------------------
   lepSFs = VarGroup('Lepton Scale Factors')
   if (isMC):
+    
+    #############################################These are the problem lines!#############################################
+
     lepSFs.Add('elrecoSF', 'elrecofunc(electroncorr, elecyr, Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_phi, Good4Lepton_ID)')
-    lepSFs.Add('elidSF', 'elidfunc(electroncorr, elecyr, Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_phi, Good4Lepton_ID)')
+    lepSFs.Add('elidSF', 'elidfunc(electroncorr, elecyr, Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_phi, Good4Lepton_ID)')         
+    
+    ######################################################################################################################
+
     lepSFs.Add('muonidSF', 'muidfunc(muonidcorr, Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_ID)')
     lepSFs.Add('muonisoSF', 'muisofunc(muonisocorr, Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_ID)')
     lepSFs.Add('tauidVSeSF', 'tauefunc(tauidVSecorr, Good4Lepton_eta, Good4Lepton_TauDM, Good4Lepton_TauMch, Good4Lepton_ID)')
@@ -518,10 +528,10 @@ def analyze(jesvar):
   jVars = VarGroup('JetCleaningVars')
   
   jVars.Add("Jet_P4", "fVectorConstructor(Jet_pt,Jet_eta,Jet_phi,Jet_mass)")
-  #jVars.Add("FatJet_P4", "fVectorConstructor(FatJet_pt,FatJet_eta,FatJet_phi,FatJet_mass)")
+  jVars.Add("FatJet_P4", "fVectorConstructor(FatJet_pt,FatJet_eta,FatJet_phi,FatJet_mass)")
   jVars.Add("Jet_EmEF","Jet_neEmEF + Jet_chEmEF")
   jVars.Add("DummyZero","float(0.0)")
-  if year == '2024' or year == '2025':
+  if year == '2024' or year == '2025' or year =='2023':
     jVars.Add("Jet_jetId","jetidfunc(jetidAK4Tcorr,jetidAK4TLcorr,Jet_eta,Jet_chHEF,Jet_neHEF,Jet_chEmEF,Jet_neEmEF,Jet_muEF,Jet_chMultiplicity,Jet_neMultiplicity)")
     jVars.Add("FatJet_jetId","fatjetidfunc(jetidAK8Tcorr,jetidAK8TLcorr,FatJet_eta,FatJet_chHEF,FatJet_neHEF,FatJet_chEmEF,FatJet_neEmEF,FatJet_muEF,FatJet_chMultiplicity,FatJet_neMultiplicity)")
   
@@ -754,7 +764,6 @@ def analyze(jesvar):
     mode = 'UPDATE'
   #print('\n(1)\n') 
   #sys.setprofile(trace_calls)
-  
   a.Snapshot(columns, finalFile, "Events_"+jesvar, lazy=False, openOption=mode, saveRunChain=True)
   #print('\n(2)\n')
   if jesvar == "Nominal":
