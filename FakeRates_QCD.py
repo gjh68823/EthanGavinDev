@@ -256,8 +256,8 @@ def analyze(jesvar):
   a.Apply([gjsonVars,gjsonCuts])
 
   eandmuVars = VarGroup("eandmuVars")
-  eandmuVars.Add('looseElectrons', 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && (Electron_mvaIso_WP90 == 1)')
-  eandmuVars.Add('looseMuons', 'Muon_pt >= 15 && abs(Muon_eta) < 2.4 && Muon_looseId == 1 && abs(Muon_dxy) < 0.2 && abs(Muon_dz) < 0.5 && Muon_pfIsoIdseMu_isTigh >= 2')
+  eandmuVars.Add('looseElectrons', 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && (Electron_cutBased >= 2)')
+  eandmuVars.Add('looseMuons', 'Muon_pt >= 15 && abs(Muon_eta) < 2.4 && Muon_looseId == 1 && Muon_pfIsoIdseMu_isTigh >= 2')
   eandmuVars.Add('LooseEl_isTight','Electron_mvaIso_WP80[looseElectrons == 1] == 1')
   eandmuVars.Add('LooseMu_isTight','Muon_mediumId[looseMuons == 1] == 1 && Muon_pfIsoId[looseMuons == 1] >= 3')
   eandmuVars.Add("nLooseMuons",     "Sum(looseMuons)")
@@ -288,6 +288,9 @@ def analyze(jesvar):
   jVars.Add("Jet_EmEF","Jet_neEmEF + Jet_chEmEF")
   jVars.Add("DummyZero","float(0.0)")
 
+  if year == '2024' or year == '2025':
+    jVars.Add("Jet_jetId","jetidfunc(jetidAK4Tcorr,jetidAK4TLcorr,Jet_eta,Jet_chHEF,Jet_neHEF,Jet_chEmEF,Jet_neEmEF,Jet_muEF,Jet_chMultiplicity,Jet_neMultiplicity)"
+            )
   jVars.Add("cleanedJets", "cleanJetsData(run,debug,year,ak4corr,ak4corrL1,ak8corr,Jet_P4,Jet_rawFactor,Jet_muonSubtrFactor,Jet_area,Jet_EmEF,Jet_jetId,Jet_P4,Jet_jetId,Rho_fixedGridRhoFastjetAll,DummyZero,DummyZero)") # muon and EM factors unused in this call, args 16-17 are dummies
   jVars.Add("cleanMets", "cleanJetsData(run,debug,year,ak4corr,ak4corrL1,ak8corr,Jet_P4,Jet_rawFactor,Jet_muonSubtrFactor,Jet_area,Jet_EmEF,Jet_jetId,Jet_P4,Jet_jetId,Rho_fixedGridRhoFastjetAll,RawPuppiMET_pt,RawPuppiMET_phi)") # lepton args unused in this call, args 16-17 are dummies
   jVars.Add("cleanJet_pt", "cleanedJets[0]")

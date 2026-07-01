@@ -116,11 +116,12 @@ def analyze(jesvar):
 
 
   tightLooseLabel = VarGroup("TLLabel")
-  tightLooseLabel.Add("elLoose", 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && (Electron_mvaIso_WP90 == 1)')
-  tightLooseLabel.Add("elTight", 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && Electron_mvaIso_WP80 == 1')
-  tightLooseLabel.Add("muLoose", 'Muon_pt >= 15 && abs(Muon_eta) < 2.4 && Muon_looseId == 1 && abs(Muon_dxy) < 0.2 && abs(Muon_dz) < 0.5 && Muon_pfIsoId >= 2')
+  tightLooseLabel.Add("Electron_passIP", "elIP(Electron_dz, Electron_dxy, Electron_eta)")
+  tightLooseLabel.Add("elLoose", 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && (Electron_cutBased >= 2)')
+  tightLooseLabel.Add("elTight", 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && Electron_mvaIso_WP80 == 1 && Electron_passIP == 1')
+  tightLooseLabel.Add("muLoose", 'Muon_pt >= 15 && abs(Muon_eta) < 2.4 && Muon_looseId == 1 && Muon_pfIsoId >= 2')
   tightLooseLabel.Add("muTight", 'Muon_pt >= 15 && abs(Muon_eta) < 2.4 && Muon_mediumId == 1 && abs(Muon_dxy) < 0.2 && abs(Muon_dz) < 0.5 && Muon_pfIsoId >= 3')
-  tightLooseLabel.Add('goodTaumu', 'Tau_pt > 20 && abs(Tau_eta) < 2.5 && abs(Tau_dz) < 0.2 && Tau_idDeepTau2018v2p5VSmu >= 1')
+  tightLooseLabel.Add('goodTaumu', 'Tau_pt > 20 && abs(Tau_eta) < 2.5 && Tau_idDeepTau2018v2p5VSmu >= 1')
   tightLooseLabel.Add('goodTaue', 'goodTaumu == 1 && Tau_idDeepTau2018v2p5VSe >= 2')
   tightLooseLabel.Add('tauLoose', 'goodTaue == 1 && Tau_idDeepTau2018v2p5VSjet >= 2')
   tightLooseLabel.Add('tauTight', 'goodTaue == 1 && Tau_idDeepTau2018v2p5VSjet >= 4')
