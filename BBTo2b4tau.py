@@ -85,8 +85,6 @@ if not isMC:   #Need to update??
       jecera = 'Cv123'
     else:
       jecera = 'Cv4'
-  elif year == '2024':
-     jecera = 'JRV1'
 
 if isMC:
   if (("_ext1" in sampleName)): era = "ext1"
@@ -198,13 +196,14 @@ def analyze(jesvar):
 
   jmeyrstr = {'2022':yrstr['2022'],'2022EE':yrstr['2022EE'],'2023':yrstr['2023'],'2023BPix':yrstr['2023BPix'],'2024':yrstr['2024'],'2025':yrstr['2024']} # yes, really use 24 for 25
   jecyr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23",'2024':"Summer24Prompt24", '2025':"Summer24Prompt24"}
-  jeryr = {'2022':"Summer22_22Sep2023_JRV2",'2022EE':"Summer22EE_22Sep2023_JRV2",'2023':"Summer23Prompt23_RunCv1234_JRV2",'2023BPix':"Summer23BPixPrompt23_RunD_JRV2",'2024':"Summer24Prompt24_JRV1",'2025':"Summer24Prompt25_JRV1"}
+  jeryr = {'2022':"Summer22_22Sep2023_JRV2",'2022EE':"Summer22EE_22Sep2023_JRV2",'2023':"Summer23Prompt23_RunCv1234_JRV2",'2023BPix':"Summer23BPixPrompt23_RunD_JRV2",'2024':"Summer24Prompt24_JRV1",'2025':"Summer24Prompt24_JRV1"}
   jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1",'2024':"Summer24Prompt24_RunBCDEFGHI_V1",'2025':"Summer24Prompt24_RunBCDEFGHI_V1"}      
   if not isMC: #is DATA
     jmeyrstr['2025'] = 'Run3-25Prompt-Winter25-NanoAODv15'
     jecyr['2025'] = "Winter25Prompt25"
+    jeryr['2025'] = "Summer24Prompt25_JRV1"
     jetvetoname['2025'] = "Winter25Prompt25_RunCDEFG_V1"    
-  
+
   jecver = {'2022':"V4",'2022EE':"V4",'2023':"V4",'2023BPix':"V4",'2024':"V3",'2025':"V3"}   
   puname = {'2022':"Collisions2022_355100_357900_eraBCD_GoldenJson",'2022EE':"Collisions2022_359022_362760_eraEFG_GoldenJson",'2023':"Collisions2023_366403_369802_eraBC_GoldenJson",'2023BPix':"Collisions2023_369803_370790_eraD_GoldenJson",'2024':"Collisions24_BCDEFGHI_goldenJSON",'2025':"Collisions25_goldenJSON"}  
   puweights = {'2022':"puWeights",'2022EE':'puWeights','2023':'puWeights','2023BPix':'puWeights','2024':"puWeights_BCDEFGHI",'2025':"puWeights_2025pp_Golden_Summer24_25ns_69200ub"}
@@ -214,7 +213,7 @@ def analyze(jesvar):
   METyr = {'2022':"2022",'2022EE':"2022EE",'2023':"2023",'2023BPix':"2023BPix",'2024':"2024",'2025':"2025"}                            
   METsimpleyr = {'2022':"2022",'2022EE':"2022",'2023':"2023",'2023BPix':"2023",'2024':"2024",'2025':"2025"} 
   btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"deepJet_comb",'2023BPix':"deepJet_comb",'2024':"UParTAK4_comb",'2025':"UParTAK4_comb"}
-  lightwps = {'2022':"particleNet_light", '2022EE':"particleNet_light",'2023':"particleNet_light",'2023BPix':"particleNet_light",'2024':"UParTAK4_light"} #Needs 2025
+  lightwps = {'2022':"particleNet_light", '2022EE':"particleNet_light",'2023':"particleNet_light",'2023BPix':"particleNet_light",'2024':"UParTAK4_light",'2025':"UParTAK4_light"}
   btageffsdict = pnet_loose
   if year == '2024' or year == '2025':
     btageffsdict = upart_loose
@@ -256,8 +255,13 @@ def analyze(jesvar):
   auto muoncorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/MUO/"+yrstr+"/"+muotag+"/muon_Z.json.gz");
   auto taucorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/TAU/"+yrstr+"/"+tautag+"/tau.json.gz");
   auto jetvetocorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+jmeyrstr+"/"+jmetag+"/jetvetomaps.json.gz");
-  auto jetidcorrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+jmeyrstr+"/"+jmetag+"/jetid.json.gz");
+  
+  auto path = (jmeyrstr == "Run3-25Prompt-Winter25-NanoAODv15") 
+            ? "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2026-06-05/jetid.json.gz"
+            : "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/" + jmeyrstr + "/" + jmetag + "/jetid.json.gz";
 
+  auto jetidcorrset = correction::CorrectionSet::from_file(path);
+  
   auto jetidAK4Tcorr = jetidcorrset->at("AK4PUPPI_Tight");
   auto jetidAK4TLcorr = jetidcorrset->at("AK4PUPPI_TightLeptonVeto");
   auto jetidAK8Tcorr = jetidcorrset->at("AK8PUPPI_Tight");
@@ -293,7 +297,7 @@ def analyze(jesvar):
     """)
     print('made it')    
   else:
-    print(jeryr[year]+"_JRV1_MC_PtResolution_AK4PFPuppi")
+    print(jeryr[year]+"_MC_PtResolution_AK4PFPuppi")
     ROOT.gInterpreter.Declare("""
     string jeryr = \""""+jeryr[year]+"""\";
     auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+jmeyrstr+"/"+jmetag+"/jet_jerc.json.gz"); 
@@ -712,7 +716,7 @@ def analyze(jesvar):
   a.SetActiveNode(newNode)
   if isSig:
     a.Apply([recoGenVars])
-  a.Apply([jCuts, metVars, metCuts, lepSFs, manualVars])#, rframeVars]) 
+  a.Apply([jCuts, metVars, metCuts, lepSFs, manualVars]) #,rframeVars]) 
   
   allColumns = a.GetColumnNames()
      

@@ -113,14 +113,18 @@ RVec<float> elrecofunc(correction::Correction::Ref& electroncorr, string elecyr,
 	RVec<float> el = {1.0, 1.0, 1.0};
 	string reco;
 	for(int i = 0; i < pt.size(); i++) {
-		if (pt[i] < 20) {reco = "RecoBelow20";} 
+		if (pt[i] < 20) {
+			if (elecyr == "2025Prompt") {reco = "Reco20to75";}    //2025 does not have RecoBelow20
+			else {reco = "RecoBelow20";}
+		} 
 		else if (pt[i] >= 20 && pt[i] <= 75) {reco = "Reco20to75";} 
 		else if (pt[i] > 75) {reco = "RecoAbove75";}
 		
 		if (ID[i] != 11) {continue;} //skip muons and taus
 		if (i > 3) {continue;} //skip leptons past the first 4 for mass reco
-	
-		if (elecyr == "2022Re-recoBCD" || elecyr == "2022Re-recoE+PromptFG" || elecyr == "2024Prompt"|| elecyr == "2025Prompt") {
+                
+
+		if (elecyr == "2022Re-recoBCD" || elecyr == "2022Re-recoE+PromptFG" || elecyr == "2024Prompt" || elecyr == "2025Prompt") {
 			el[0] *= electroncorr->evaluate({elecyr, "sf", reco, eta[i], pt[i]}); 
 			el[1] *= electroncorr->evaluate({elecyr, "sfup", reco, eta[i], pt[i]}); 
 			el[2] *= electroncorr->evaluate({elecyr, "sfdown", reco, eta[i], pt[i]});
