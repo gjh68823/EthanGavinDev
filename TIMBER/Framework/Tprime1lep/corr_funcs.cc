@@ -113,8 +113,9 @@ RVec<float> elrecofunc(correction::Correction::Ref& electroncorr, string elecyr,
 	RVec<float> el = {1.0, 1.0, 1.0};
 	string reco;
 	for(int i = 0; i < pt.size(); i++) {
+		float eval_pt = pt[i]; // Create a copy of the pT to safely modify for evaluation
 		if (pt[i] < 20) {
-			if (elecyr == "2025Prompt") {reco = "Reco20to75";}    //2025 does not have RecoBelow20
+			if (elecyr == "2025Prompt") {reco = "Reco20to75"; eval_pt = 20.01;}    //2025 does not have RecoBelow20
 			else {reco = "RecoBelow20";}
 		} 
 		else if (pt[i] >= 20 && pt[i] <= 75) {reco = "Reco20to75";} 
@@ -125,9 +126,9 @@ RVec<float> elrecofunc(correction::Correction::Ref& electroncorr, string elecyr,
                 
 
 		if (elecyr == "2022Re-recoBCD" || elecyr == "2022Re-recoE+PromptFG" || elecyr == "2024Prompt" || elecyr == "2025Prompt") {
-			el[0] *= electroncorr->evaluate({elecyr, "sf", reco, eta[i], pt[i]}); 
-			el[1] *= electroncorr->evaluate({elecyr, "sfup", reco, eta[i], pt[i]}); 
-			el[2] *= electroncorr->evaluate({elecyr, "sfdown", reco, eta[i], pt[i]});
+			el[0] *= electroncorr->evaluate({elecyr, "sf", reco, eta[i], eval_pt}); 
+			el[1] *= electroncorr->evaluate({elecyr, "sfup", reco, eta[i], eval_pt}); 
+			el[2] *= electroncorr->evaluate({elecyr, "sfdown", reco, eta[i], eval_pt});
 		}
 		else {
 			el[0] *= electroncorr->evaluate({elecyr, "sf", reco, eta[i], pt[i], phi[i]}); 

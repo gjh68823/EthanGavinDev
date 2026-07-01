@@ -530,7 +530,7 @@ def analyze(jesvar):
   jVars.Add("FatJet_P4", "fVectorConstructor(FatJet_pt,FatJet_eta,FatJet_phi,FatJet_mass)")
   jVars.Add("Jet_EmEF","Jet_neEmEF + Jet_chEmEF")
   jVars.Add("DummyZero","float(0.0)")
-  if year == '2024' or year == '2025' or year =='2023':
+  if year == '2024' or year == '2025':
     jVars.Add("Jet_jetId","jetidfunc(jetidAK4Tcorr,jetidAK4TLcorr,Jet_eta,Jet_chHEF,Jet_neHEF,Jet_chEmEF,Jet_neEmEF,Jet_muEF,Jet_chMultiplicity,Jet_neMultiplicity)")
     jVars.Add("FatJet_jetId","fatjetidfunc(jetidAK8Tcorr,jetidAK8TLcorr,FatJet_eta,FatJet_chHEF,FatJet_neHEF,FatJet_chEmEF,FatJet_neEmEF,FatJet_muEF,FatJet_chMultiplicity,FatJet_neMultiplicity)")
   
@@ -680,7 +680,9 @@ def analyze(jesvar):
 
   rframeVars = VarGroup('restFrameVars')
   
-  rframeVars.Add('VLQ', 'B_rfc.return_doubles(rdfslot_, Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_phi, Good4Lepton_mass, Good4Lepton_charge, gcBJet_pt, gcBJet_eta, gcBJet_phi, gcBJet_mass, MET_pt, MET_phi)')
+
+  rframeVars.Add('VLQ', 'B_rfc.return_doubles(rdfslot_, Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_phi, Good4Lepton_mass, Good4Lepton_charge, gcBJet_pt, gcBJet_eta, gcBJet_phi, gcBJet_mass, corrMET_pt, corrMET_phi)')
+  #rframeVars.Add('VLQ', 'B_rfc.return_doubles(rdfslot_, Good4Lepton_pt, Good4Lepton_eta, Good4Lepton_phi, Good4Lepton_mass, Good4Lepton_charge, gcBJet_pt, gcBJet_eta, gcBJet_phi, gcBJet_mass, MET_pt, MET_phi)')
   rframeVars.Add('VLQ_BBbar_mass', 'VLQ[0]')
   rframeVars.Add('VLQ_BBbar_cosDecayAngle', 'VLQ[1]')
   rframeVars.Add('VLQ_BBbar_deltaPhiDecayAngle', 'VLQ[2]')
@@ -717,7 +719,7 @@ def analyze(jesvar):
   a.SetActiveNode(newNode)
   if isSig:
     a.Apply([recoGenVars])
-  a.Apply([jCuts, metVars, metCuts, lepSFs, manualVars]) #,rframeVars]) 
+  a.Apply([jCuts, metVars, metCuts, lepSFs, manualVars,rframeVars]) 
   
   allColumns = a.GetColumnNames()
      
