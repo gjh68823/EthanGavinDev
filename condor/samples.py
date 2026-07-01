@@ -705,6 +705,8 @@ sample_test = {
     "NonpromptSingleMuonRun2024C0":  NonpromptSingleMuonRun2024C0,
     "NonpromptTauRun2024D":     NonpromptTauRun2024D,
     "NonpromptMuonEGRun2024G":  NonpromptMuonEGRun2024G,
+    "SingleMuonRun2025E1":  SingleMuonRun2025E1,   
+    "MuonEGRun2025E":  MuonEGRun2025E,
     }
 
 samples_data = {

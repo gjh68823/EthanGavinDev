@@ -16,6 +16,8 @@ correctionlib.register_pyroot_binding()
 sys.path.append('../../')
 sys.path.append('../../../')
 
+ROOT.gInterpreter.ProcessLine('#pragma GCC diagnostic ignored "-Wdeprecated-declarations"') #Command to ignore certain warning messages
+
 # ------------------ Command Line Arguments and Parsing -------------------
 inputFiles = sys.argv[1] #fileList
 # Are all the files running if 0 and 8?

@@ -15,7 +15,7 @@ correctionlib.register_pyroot_binding()
 sys.path.append('../../')
 sys.path.append('../../../')
 
-#ROOT.giInterpreter.ProcessLine('#pragma GCC diagnostic ignored "-Wdeprecated-declarations"') #Command to ignore certain warning messages
+ROOT.gInterpreter.ProcessLine('#pragma GCC diagnostic ignored "-Wdeprecated-declarations"') #Command to ignore certain warning messages
 
 # ------------------ Command Line Arguments and Parsing -------------------
 inputFiles = sys.argv[1] #fileList
@@ -232,7 +232,7 @@ def analyze(jesvar):
 
   # ------------------ Tau selection criteria ----------------
   tVars = VarGroup('TauVars')
-  tVars.Add('goodTaumu', 'Tau_pt > 20 && abs(Tau_eta) < 2.5 && abs(Tau_dz) < 0.2 && Tau_idDeepTau2018v2p5VSmu >= 1')
+  tVars.Add('goodTaumu', 'Tau_pt > 20 && abs(Tau_eta) < 2.5 && Tau_idDeepTau2018v2p5VSmu >= 1')
   tVars.Add('NgoodTaumu', 'Sum(goodTaumu)')
 
   tVars.Add('goodTaue', 'goodTaumu == 1 && Tau_idDeepTau2018v2p5VSe >= 2')
@@ -265,7 +265,7 @@ def analyze(jesvar):
   eandmuVars = VarGroup('ElandMuVars')
 
   #Good Electrons
-  eandmuVars.Add('looseElectrons', 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && (Electron_mvaNoIso_WP90 == 1)')
+  eandmuVars.Add('looseElectrons', 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && (Electron_cutBased >= 2)')
   eandmuVars.Add('NlooseElecs', 'Sum(looseElectrons)')
   #eandmuVars.Add('goodElectrons', 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && (Electron_mvaIso_WP80 == 1)')
   #eandmuVars.Add('NgoodElecs', 'Sum(goodElectrons)')

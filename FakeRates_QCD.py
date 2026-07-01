@@ -66,6 +66,8 @@ correctionlib.register_pyroot_binding()
 sys.path.append('../../')
 sys.path.append('../../../')
 
+ROOT.gInterpreter.ProcessLine('#pragma GCC diagnostic ignored "-Wdeprecated-declarations"') #Command to ignore certain warning messages
+
 # ------------------ Command Line Arguments and Parsing -------------------
 inputFiles = sys.argv[1] #fileList
 # Are all the files running if 0 and 8?
@@ -170,6 +172,10 @@ if '2022' in year:
   jsonfile = jsonfile + "Cert_Collisions2022_355100_362760_Golden.json"
 elif '2023' in year:
   jsonfile = jsonfile + "Cert_Collisions2023_366442_370790_Golden.json"
+elif '2024' in year:
+  jsonfile = jsonfile + "Cert_Collisions2024_378981_386951_Golden.json"
+elif '2025' in year:
+  jsonfile = jsonfile + "Cert_Collisions2025_391658_398903_Golden.json"
 else:
   print(f'ERROR: Can\'t parse the year to assign a golden json file. Expected 2022(EE) or 2023(BPix). Got: {year}\n')
 

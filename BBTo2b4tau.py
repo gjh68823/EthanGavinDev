@@ -85,8 +85,6 @@ if not isMC:   #Need to update??
       jecera = 'Cv123'
     else:
       jecera = 'Cv4'
-  elif year == '2024':
-     jecera = 'JRV1'
 
 if isMC:
   if (("_ext1" in sampleName)): era = "ext1"
@@ -214,7 +212,7 @@ def analyze(jesvar):
   METyr = {'2022':"2022",'2022EE':"2022EE",'2023':"2023",'2023BPix':"2023BPix",'2024':"2024",'2025':"2025"}                            
   METsimpleyr = {'2022':"2022",'2022EE':"2022",'2023':"2023",'2023BPix':"2023",'2024':"2024",'2025':"2025"} 
   btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"deepJet_comb",'2023BPix':"deepJet_comb",'2024':"UParTAK4_comb",'2025':"UParTAK4_comb"}
-  lightwps = {'2022':"particleNet_light", '2022EE':"particleNet_light",'2023':"particleNet_light",'2023BPix':"particleNet_light",'2024':"UParTAK4_light"} #Needs 2025
+  lightwps = {'2022':"particleNet_light", '2022EE':"particleNet_light",'2023':"particleNet_light",'2023BPix':"particleNet_light",'2024':"UParTAK4_light",'2025':"UParTAK4_light"} #Needs 2025
   btageffsdict = pnet_loose
   if year == '2024' or year == '2025':
     btageffsdict = upart_loose
