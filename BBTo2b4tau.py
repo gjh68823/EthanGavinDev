@@ -215,6 +215,7 @@ def analyze(jesvar):
   btagname = {'2022':"particleNet_comb",'2022EE':"particleNet_comb",'2023':"deepJet_comb",'2023BPix':"deepJet_comb",'2024':"UParTAK4_comb",'2025':"UParTAK4_comb"}
   lightwps = {'2022':"particleNet_light", '2022EE':"particleNet_light",'2023':"particleNet_light",'2023BPix':"particleNet_light",'2024':"UParTAK4_light",'2025':"UParTAK4_light"}
   btageffsdict = pnet_loose
+  
   if year == '2024' or year == '2025':
     btageffsdict = upart_loose
 
