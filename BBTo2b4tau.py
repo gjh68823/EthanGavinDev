@@ -4,6 +4,7 @@ import ROOT
 from ROOT import TFile
 import sys, os
 import gc
+import random
 from rates import to_cpp_vec2d, pnet_loose, upart_loose
 
 gc.disable()
@@ -521,7 +522,13 @@ def analyze(jesvar):
 
   TrigCuts = CutGroup('Trigger Cuts')
   TrigCuts.Add('Dataset Filter', 'passesMuPD == 1 || passesMuEGPD == 1 || passesEGPD == 1 || passesTauPD == 1') #getting errors?
-
+  
+  Random = CutGroup('24/25 split')
+  if isMC:
+      if year == '2024':
+          Random.Add('RandomSplit', 'event % 2 == 1')
+      elif year == '2025':
+          Random.Add('RandomSplit', 'event % 2 == 0')
 
   # ------------------ JET Cleaning and JERC ------------------
   jVars = VarGroup('JetCleaningVars')
@@ -703,7 +710,7 @@ def analyze(jesvar):
 
   # # -------------------------------------
 
-  nodeToPlot = a.Apply([flagCuts, gjsonVars, gjsonCuts, tVars, eandmuVars, lVars, lCuts, TrigVars, TrigCuts])
+  nodeToPlot = a.Apply([Random, flagCuts, gjsonVars, gjsonCuts, tVars, eandmuVars, lVars, lCuts, TrigVars, TrigCuts])
   
   if isSig:
     a.Apply([GenVars])
