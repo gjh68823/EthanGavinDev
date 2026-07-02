@@ -159,13 +159,18 @@ CompileCpp('TIMBER/Framework/Tprime1lep/topographInput.cc')
 CompileCpp('TIMBER/Framework/Tprime1lep/manualreco.cc')
 
 debug = False
-PNetL = {'2022':0.047,'2022EE':0.0499,'2023':0.0358,'2023BPix':0.0359} #PN
-yrstr = {'2022':"Run3-22CDSep23-Summer22-NanoAODv12",'2022EE':"Run3-22EFGSep23-Summer22EE-NanoAODv12",'2023':"Run3-23CSep23-Summer23-NanoAODv12",'2023BPix':"Run3-23DSep23-Summer23BPix-NanoAODv12"}
-jmetags = {'2022':'2025-09-23','2022EE':'2025-10-07','2023':'2025-10-07','2023BPix':'2025-10-07'}
-jecyr = {'2022':"Summer22_22Sep2023_RunCD",'2022EE':"Summer22EE_22Sep2023_Run"+jecera,'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23"}
-jecver = {'2022':"V3",'2022EE':"V3",'2023':"V2",'2023BPix':"V3"}
-jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1"}
+BTagL = {'2022':0.047,'2022EE':0.0499,'2023':0.0358,'2023BPix':0.0359, '2024':0.0246, '2025':0.0246} #PNet for 22-23BPix, UParT for 2024-2025
+yrstr = {'2022':"Run3-22CDSep23-Summer22-NanoAODv12",'2022EE':"Run3-22EFGSep23-Summer22EE-NanoAODv12",'2023':"Run3-23CSep23-Summer23-NanoAODv12",'2023BPix':"Run3-23DSep23-Summer23BPix-NanoAODv12",'2024':"Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15",'2025':"Run3-25Prompt-Summer24-NanoAODv15"}
+jmetags = {'2022':'2026-06-05','2022EE':'2026-06-05','2023':'2026-06-05','2023BPix':'2026-06-05','2024':'2026-06-05', '2025':'2026-06-05'} 
+jecyr = {'2022':"Summer22_22Sep2023",'2022EE':"Summer22EE_22Sep2023",'2023':"Summer23Prompt23",'2023BPix':"Summer23BPixPrompt23",'2024':"Summer24Prompt24", '2025':"Summer24Prompt24"}
+jecver = {'2022':"V4",'2022EE':"V4",'2023':"V4",'2023BPix':"V4",'2024':"V3",'2025':"V3"}   
+jetvetoname = {'2022':"Summer22_23Sep2023_RunCD_V1",'2022EE':"Summer22EE_23Sep2023_RunEFG_V1",'2023':"Summer23Prompt23_RunC_V1",'2023BPix':"Summer23BPixPrompt23_RunD_V1",'2024':"Summer24Prompt24_RunBCDEFGHI_V1",'2025':"Summer24Prompt24_RunBCDEFGHI_V1"}      
+jmeyrstr = {'2022':yrstr['2022'],'2022EE':yrstr['2022EE'],'2023':yrstr['2023'],'2023BPix':yrstr['2023BPix'],'2024':yrstr['2024'],'2025':yrstr['2024']} # yes, really use 24 for 25
 
+if not isMC: #is DATA
+  jecyr['2025'] = "Winter25Prompt25"
+  jetvetoname['2025'] = "Winter25Prompt25_RunCDEFG_V1"    
+  jmeyrstr['2025'] = 'Run3-25Prompt-Winter25-NanoAODv15'
 
 jsonfile = "./TIMBER/data/LumiJSON/"
 if '2022' in year:
@@ -197,11 +202,12 @@ bool isSig = """+str(isSig).lower()+""";
 int dataset = """+str(dataset)+""";
 """)
 ROOT.gInterpreter.Declare("""
-float PNetL = """+str(PNetL[year])+""";
+float BTagL = """+str(BTagL[year])+""";
 string yrstr = \""""+yrstr[year]+"""\";
 string jmetag = \""""+jmetags[year]+"""\";
 string jecyr = \""""+jecyr[year]+"""\";
 string jecver = \""""+jecver[year]+"""\";
+string jmeyrstr = \""""+jmeyrstr[year]+"""\";
 string jetvetoname = \""""+jetvetoname[year]+"""\";
 """)
 
@@ -217,6 +223,17 @@ print('Finished declaring corrections')
 ROOT.gInterpreter.Declare("""
 auto ak4corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/jet_jerc.json.gz");
 auto ak8corrset = correction::CorrectionSet::from_file("/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/"+yrstr+"/"+jmetag+"/fatJet_jerc.json.gz"); 
+
+auto path = (jmeyrstr == "Run3-25Prompt-Winter25-NanoAODv15")
+          ? "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/Run3-24CDEReprocessingFGHIPrompt-Summer24-NanoAODv15/2026-06-05/jetid.json.gz"
+          : "/cvmfs/cms-griddata.cern.ch/cat/metadata/JME/" + jmeyrstr + "/" + jmetag + "/jetid.json.gz";
+
+auto jetidcorrset = correction::CorrectionSet::from_file(path);
+
+auto jetidAK4Tcorr = jetidcorrset->at("AK4PUPPI_Tight");
+auto jetidAK4TLcorr = jetidcorrset->at("AK4PUPPI_TightLeptonVeto");
+auto jetidAK8Tcorr = jetidcorrset->at("AK8PUPPI_Tight");
+auto jetidAK8TLcorr = jetidcorrset->at("AK8PUPPI_TightLeptonVeto");
 
 auto ak4corr = ak4corrset->compound().at(jecyr+"_"+jecver+"_DATA_L1L2L3Res_AK4PFPuppi");
 auto ak4corrL1 = ak4corrset->at(jecyr+"_"+jecver+"_DATA_L1FastJet_AK4PFPuppi");
@@ -257,7 +274,7 @@ def analyze(jesvar):
 
   eandmuVars = VarGroup("eandmuVars")
   eandmuVars.Add('looseElectrons', 'Electron_pt > 10 && abs(Electron_eta) < 2.5 && (Electron_cutBased >= 2)')
-  eandmuVars.Add('looseMuons', 'Muon_pt >= 15 && abs(Muon_eta) < 2.4 && Muon_looseId == 1 && Muon_pfIsoIdseMu_isTigh >= 2')
+  eandmuVars.Add('looseMuons', 'Muon_pt >= 15 && abs(Muon_eta) < 2.4 && Muon_looseId == 1 && Muon_pfIsoId >= 2')
   eandmuVars.Add('LooseEl_isTight','Electron_mvaIso_WP80[looseElectrons == 1] == 1')
   eandmuVars.Add('LooseMu_isTight','Muon_mediumId[looseMuons == 1] == 1 && Muon_pfIsoId[looseMuons == 1] >= 3')
   eandmuVars.Add("nLooseMuons",     "Sum(looseMuons)")

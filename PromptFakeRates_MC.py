@@ -107,6 +107,9 @@ print('jecera = ',jecera)
 print('ver = ',ver)
 print('region = ',region)
 print('dataset = ', dataset)
+
+CompileCpp('TIMBER/Framework/Tprime1lep/utilities.cc') # Compile Our vlq c++ code
+
 def analyze(jesvar):
   ROOT.gInterpreter.ProcessLine('string jesvar = "' + jesvar + '"; ')
 
